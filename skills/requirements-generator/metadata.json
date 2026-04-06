@@ -1,6 +1,6 @@
 {
   "name": "requirements-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generates structured requirements documents with functional and non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.",
   "author": {
     "name": "Doug Eubanks",

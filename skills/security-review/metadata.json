@@ -1,6 +1,6 @@
 {
   "name": "security-review",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
   "author": {
     "name": "Doug Eubanks",

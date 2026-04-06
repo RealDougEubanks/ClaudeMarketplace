@@ -1,6 +1,6 @@
 {
   "name": "git-workflow",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference.",
   "author": {
     "name": "Doug Eubanks",

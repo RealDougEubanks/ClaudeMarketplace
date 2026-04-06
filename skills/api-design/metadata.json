@@ -1,6 +1,6 @@
 {
   "name": "api-design",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Designs REST, GraphQL, and gRPC APIs (OpenAPI/schema/proto output) and reviews existing APIs for consistency, best practices, and breaking change risks.",
   "author": {
     "name": "Doug Eubanks",

@@ -1,6 +1,6 @@
 {
   "name": "adr",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR format. Supports creating, listing, updating, superseding, and searching ADRs.",
   "author": {
     "name": "Doug Eubanks",

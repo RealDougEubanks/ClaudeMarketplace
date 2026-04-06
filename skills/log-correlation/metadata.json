@@ -1,6 +1,6 @@
 {
   "name": "log-correlation",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Correlates and troubleshoots logs across OS (Linux/macOS), AWS (CloudWatch, CloudTrail, ALB, Lambda), application (JSON, logfmt), and web servers (Nginx, Apache).",
   "author": {
     "name": "Doug Eubanks",
