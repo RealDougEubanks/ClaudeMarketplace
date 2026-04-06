@@ -11,14 +11,16 @@ Install mandatory security, coding, and design standards into this project's CLA
 
 1. Use Read to check if `./CLAUDE.md` exists in the current working directory.
 
-2. Use Grep to search `./CLAUDE.md` for the string `## Golden Rules` (if the file exists).
-   - If the section header is found: inform the user the Golden Rules are already installed and stop.
-   - If not found: proceed to step 3.
+2. If `CLAUDE.md` does not exist: use Write to create it with the Golden Rules Block below as the full content. Skip to step 5.
 
-3. If `CLAUDE.md` does not exist, use Write to create it with the Golden Rules Block below as the full content.
-   If `CLAUDE.md` exists but lacks the section, use Edit to append the Golden Rules Block to the end of the file.
+3. Use Read to load the full contents of `./CLAUDE.md`. Check whether a `## Golden Rules` section exists.
 
-4. Confirm to the user what was written and that the Golden Rules are now active for every Claude Code session in this project.
+4. If the section **does not exist**: use Edit to append the Golden Rules Block to the end of the file.
+   If the section **already exists**: use Edit to replace everything from `## Golden Rules` up to (but not including) the next `##` heading (or end of file if there is no next heading) with the Golden Rules Block. Preserve all content outside that section exactly as-is.
+
+5. Confirm to the user:
+   - Whether `CLAUDE.md` was created, updated (section replaced), or had the section appended.
+   - That the `## Golden Rules` section now contains the latest rules and is active for every Claude Code session in this project.
 
 ## Golden Rules Block
 
