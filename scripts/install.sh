@@ -13,9 +13,10 @@ PROJECT_DIR="${2:-$(pwd)}"
 SKILL_NAME=$(basename "$SKILL_DIR")
 COMMANDS_DIR="$PROJECT_DIR/.claude/commands"
 CLAUDE_MD="$PROJECT_DIR/CLAUDE.md"
+SKILL_MD="$SKILL_DIR/commands/$SKILL_NAME.md"
 
-if [ ! -f "$SKILL_DIR/skill.md" ]; then
-  echo "Error: $SKILL_DIR/skill.md not found. Is this a valid skill directory?"
+if [ ! -f "$SKILL_MD" ]; then
+  echo "Error: $SKILL_MD not found. Is this a valid skill directory?"
   exit 1
 fi
 
@@ -24,9 +25,9 @@ if [ ! -f "$SKILL_DIR/metadata.json" ]; then
   exit 1
 fi
 
-# Install skill.md and metadata.json to .claude/commands/
+# Install the skill command and metadata to .claude/commands/
 mkdir -p "$COMMANDS_DIR"
-cp "$SKILL_DIR/skill.md" "$COMMANDS_DIR/$SKILL_NAME.md"
+cp "$SKILL_MD" "$COMMANDS_DIR/$SKILL_NAME.md"
 cp "$SKILL_DIR/metadata.json" "$COMMANDS_DIR/$SKILL_NAME.metadata.json"
 echo "Installed: $COMMANDS_DIR/$SKILL_NAME.md"
 echo "Installed: $COMMANDS_DIR/$SKILL_NAME.metadata.json"
@@ -56,7 +57,7 @@ print(' '.join(w.capitalize() for w in name.split('-')))
   else
     {
       printf '\n%s\n\n' "$SECTION_HEADER"
-      cat "$SKILL_DIR/skill.md"
+      cat "$SKILL_MD"
       printf '\n'
     } >> "$CLAUDE_MD"
     echo "Appended to: $CLAUDE_MD  (section: $SECTION_HEADER)"
@@ -65,4 +66,4 @@ fi
 
 echo ""
 echo "Done. '$SKILL_NAME' installed to $PROJECT_DIR"
-echo "Invoke via the slash command(s) listed in $COMMANDS_DIR/$SKILL_NAME.metadata.json"
+echo "Invoke with: /$SKILL_NAME"

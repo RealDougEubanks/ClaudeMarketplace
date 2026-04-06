@@ -20,7 +20,8 @@ check() {
 echo "Validating skill at: $SKILL_DIR"
 echo "---"
 
-check "$SKILL_DIR/skill.md"
+SKILL_NAME=$(basename "$SKILL_DIR")
+check "$SKILL_DIR/commands/$SKILL_NAME.md"
 check "$SKILL_DIR/metadata.json"
 check "$SKILL_DIR/README.md"
 

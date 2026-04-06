@@ -22,10 +22,10 @@ if [ -d "$SKILL_DIR" ]; then
   exit 1
 fi
 
-mkdir -p "$SKILL_DIR"
+mkdir -p "$SKILL_DIR/commands"
 
-# Copy skill.md template
-cp "$TEMPLATES_DIR/skill.md" "$SKILL_DIR/skill.md"
+# Scaffold the command file from template
+sed "s/SKILL_NAME/$SKILL_NAME/g" "$TEMPLATES_DIR/skill.md" > "$SKILL_DIR/commands/$SKILL_NAME.md"
 
 # Write pre-filled metadata.json
 cat > "$SKILL_DIR/metadata.json" << METAEOF
@@ -78,9 +78,9 @@ READMEEOF
 echo "Scaffolded: $SKILL_DIR"
 echo ""
 echo "Next steps:"
-echo "  1. Edit skills/$SKILL_NAME/skill.md      — instructions Claude follows literally"
-echo "  2. Edit skills/$SKILL_NAME/metadata.json — set description, category, tags, tools"
-echo "  3. Edit skills/$SKILL_NAME/README.md     — human-readable docs"
+echo "  1. Edit skills/$SKILL_NAME/commands/$SKILL_NAME.md — instructions Claude follows literally"
+echo "  2. Edit skills/$SKILL_NAME/metadata.json           — set description, category, tags, tools"
+echo "  3. Edit skills/$SKILL_NAME/README.md               — human-readable docs"
 echo "  4. Run: ./scripts/validate.sh skills/$SKILL_NAME"
 echo "  5. Add your skill to skills/registry.json"
 echo "  6. Open a PR!"

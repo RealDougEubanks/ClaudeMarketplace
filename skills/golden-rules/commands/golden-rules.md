@@ -74,6 +74,31 @@ GIT HYGIENE (MANDATORY)
 - If you find yourself on `main` with uncommitted changes, stash or move them to a new branch before committing.
 - No PR may be merged without at least one approval from a reviewer other than the author. Self-merge is not permitted.
 
+PYTHON ENVIRONMENT (MANDATORY)
+
+- Never install Python packages into the OS Python install. Always use a virtual environment.
+- Create a venv at the project root: `python3 -m venv .venv`
+- Activate before running or installing: `source .venv/bin/activate`
+- Add `.venv/` to `.gitignore` — never commit it.
+- Pin all dependencies in `requirements.txt` (or `pyproject.toml`). Use `pip freeze > requirements.txt` after installing.
+
+CLAUDE CODE PLUGIN & SKILL LAYOUT (MANDATORY)
+
+Skills and plugins installed via the Claude Code plugin system must follow this layout so they are discovered automatically as slash commands:
+
+```
+skills/<skill-name>/
+  commands/
+    <skill-name>.md     ← skill content with YAML frontmatter (name, description)
+  metadata.json
+  README.md
+```
+
+- The command file must be at `commands/<skill-name>.md` — NOT at `skill.md` in the plugin root.
+- The YAML frontmatter in `commands/<skill-name>.md` must include `name` and `description` fields.
+- Run `./scripts/validate.sh skills/<skill-name>` after creating or editing a skill.
+- Use `./scripts/new-skill.sh <name>` to scaffold; it generates the correct structure automatically.
+
 ASSUMPTIONS TRACKING
 
 Any time a non-obvious decision is made, record it in docs/assumptions.md:
