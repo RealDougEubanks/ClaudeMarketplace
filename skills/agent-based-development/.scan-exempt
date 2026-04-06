@@ -1,0 +1,5 @@
+# agent-based-development/skill.md is a DevOps and development workflow skill.
+# It references .env files in the context of .env.example conventions — a standard
+# practice for documenting required environment variables without storing actual secrets.
+# These are instructional references, not actual secret values.
+\.env\b

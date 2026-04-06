@@ -1,0 +1,5 @@
+# onboarding/skill.md is a project onboarding guidance skill.
+# It references .env files in the context of instructing developers to read
+# .env.example for environment variable documentation. This is a standard onboarding
+# step, not a reference to actual secrets or credentials.
+\.env\b

@@ -1,0 +1,8 @@
+{
+  "name": "database-design",
+  "version": "1.0.0",
+  "description": "Designs database schemas from requirements or reviews existing schemas for normalization, indexes, migrations, and security.",
+  "author": { "name": "Doug Eubanks", "url": "https://github.com/RealDougEubanks" },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}

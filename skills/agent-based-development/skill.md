@@ -33,6 +33,7 @@ All agents must follow the Golden Rules (see `CLAUDE.md` or run `/golden-rules`)
 | Documentation | `/abd-docs` | Almost always — docs, ToDo, changelogs, assumptions |
 | Testing | `/abd-test` | When the project has automated tests |
 | DevOps | `/abd-devops` | When the project has CI/CD or a formal release process |
+| Status | `/abd-status` | At any time — shows project-wide task and finding status |
 
 Active agents are defined in `docs/agentRoster.md`. If that file does not exist, Claude creates it at project start.
 
@@ -135,7 +136,54 @@ Read the latest artifact in `handoffs/plans/` using Read and Glob. Execute the r
 
 - **Documentation (`/abd-docs`):** Use Glob and Read to read all handoffs and the codebase. Use Edit and Write to update `README.md`, `docs/ToDo.md`, `docs/assumptions.md`. On release, use Write to create `docs/CHANGELOG.md` or `docs/changelogs/<version>.md`.
 
+- **Testing (`/abd-test`):** Use Read to read the latest plan artifact from `handoffs/plans/` and dev artifacts from `handoffs/dev/`. Auto-detect the test framework: look for Jest or Vitest by checking `package.json`; pytest by checking `pyproject.toml` or `setup.py`; Go test by checking `go.mod`; PHPUnit by checking `composer.json`. Use Glob with patterns `**/*.test.*`, `**/*_test.*`, and `tests/**/*` to read existing tests and match their style and patterns. Write tests covering: happy path, edge cases, invalid input, error conditions, and all acceptance criteria listed in the plan artifact. Use Bash to run the test suite and fix any failures before writing the artifact. Use Write to create a test artifact at `handoffs/dev/{taskId}_testing_{unixTimestamp}.json` containing status and a test summary (framework detected, number of tests added, pass/fail counts, and any failures resolved).
+
+- **DevOps (`/abd-devops`):** Use Read to read the latest plan artifact from `handoffs/plans/`. Use Glob to check for existing CI/CD config files: `.github/workflows/**`, `bitbucket-pipelines.yml`, `.gitlab-ci.yml`, `Dockerfile`, and `docker-compose.yml`. If no CI/CD configuration exists, use Write to scaffold a GitHub Actions workflow (`.github/workflows/ci.yml`) with jobs for lint, test, and build. Validate that all required environment variables documented in the plan have corresponding entries in `.env.example`; add any that are missing. Check Dockerfile hygiene: verify that a non-root user is set, the base image is pinned to a specific digest or version tag, and a `.dockerignore` file is present — report or fix each gap found. For release tasks, invoke the git-workflow release steps (Action d from Part 4: open a PR from the release branch into `main` and tag the release). Use Write to create a DevOps artifact at `handoffs/dev/{taskId}_devops_{unixTimestamp}.json` with status and a summary of all checks performed and changes made.
+
 - **Planning Triage (`/abd-triage`):** Use Glob and Read to find all open findings in `handoffs/reviews/` with severity critical, severe, or moderate. Create rework assignments or mark resolved. Use Write to update `handoffs/plans/`.
+
+- **Status (`/abd-status`):**
+  1. Use Glob to find all JSON files in `handoffs/plans/`, `handoffs/dev/`, `handoffs/reviews/`, `handoffs/designs/`, `handoffs/docs/`.
+  2. Use Read on each artifact. Parse the `taskId`, `agent`, `status`, and `timestamp` fields.
+  3. Build a status summary:
+     - All tasks grouped by status: `assigned | in-progress | complete | blocked | needs-rework`
+     - Which agent owns each task
+     - For `handoffs/reviews/`: count findings by severity (critical/severe/moderate/low/info) across all open reviews
+     - Identify blockers: any task with status `blocked` or any finding with `critical` or `severe` severity in an open review
+  4. Read `docs/agentRoster.md` if it exists to know which agents are active.
+  5. Read `docs/ToDo.md` if it exists to include pending items.
+  6. Output the Status Dashboard:
+
+  ```
+  ## ABD Project Status — <project> — <timestamp>
+
+  ### Task Summary
+  | Status | Count | Tasks |
+  |--------|-------|-------|
+  | complete | 4 | task-001 (dev-senior), task-002 (design), ... |
+  | in-progress | 2 | task-003 (security), task-004 (dev-junior) |
+  | blocked | 1 | task-005 (tech-review) |
+  | assigned | 0 | — |
+
+  ### Open Findings
+  | Severity | Count | Source |
+  |----------|-------|--------|
+  | critical | 0 | — |
+  | severe | 1 | task-003_security_*.json |
+  | moderate | 3 | task-003_security_*.json, task-004_review_*.json |
+
+  ### 🚨 Blockers
+  - task-005: blocked — waiting on UX approval for modal design
+  - task-003 finding: SQL injection in auth handler (severe) — must resolve before merge
+
+  ### Next Actions
+  - Security (task-003): 1 severe finding needs rework assignment from Planning
+  - Tech Review (task-004): 3 moderate findings need triage
+  - Dev Junior (task-005): unblock after UX approval
+
+  ### Agent Roster
+  [list from docs/agentRoster.md]
+  ```
 
 **Step 4 — Every artifact you write must:**
 - Be valid JSON following the envelope schema.

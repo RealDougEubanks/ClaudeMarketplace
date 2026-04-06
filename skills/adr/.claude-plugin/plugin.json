@@ -1,0 +1,8 @@
+{
+  "name": "adr",
+  "version": "1.0.0",
+  "description": "Creates and maintains Architecture Decision Records (ADRs) in MADR format. Supports create, list, update, supersede, and search.",
+  "author": { "name": "Doug Eubanks", "url": "https://github.com/RealDougEubanks" },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}

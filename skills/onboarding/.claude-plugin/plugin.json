@@ -1,0 +1,11 @@
+{
+  "name": "onboarding",
+  "version": "1.0.0",
+  "description": "Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview.",
+  "author": {
+    "name": "Doug Eubanks",
+    "url": "https://github.com/RealDougEubanks"
+  },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}

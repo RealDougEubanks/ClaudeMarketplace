@@ -1,0 +1,11 @@
+{
+  "name": "architecture-review",
+  "version": "1.0.0",
+  "description": "Audits existing system architecture for anti-patterns, scalability risks, and reliability gaps. Produces graded findings with migration roadmap.",
+  "author": {
+    "name": "Doug Eubanks",
+    "url": "https://github.com/RealDougEubanks"
+  },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}

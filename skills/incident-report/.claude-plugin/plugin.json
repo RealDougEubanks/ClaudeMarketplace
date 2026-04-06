@@ -1,0 +1,8 @@
+{
+  "name": "incident-report",
+  "version": "1.0.0",
+  "description": "Generates professional incident reports using customizable templates and severity/escalation/SLA rules. Extensible via templates/ and rules/ directories.",
+  "author": { "name": "Doug Eubanks", "url": "https://github.com/RealDougEubanks" },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}

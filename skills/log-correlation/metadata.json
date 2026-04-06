@@ -1,0 +1,15 @@
+{
+  "name": "log-correlation",
+  "version": "1.0.0",
+  "description": "Correlates and troubleshoots logs across OS (Linux/macOS), AWS (CloudWatch, CloudTrail, ALB, Lambda), application (JSON, logfmt), and web servers (Nginx, Apache).",
+  "author": {
+    "name": "Doug Eubanks",
+    "github": "realdougeubanks"
+  },
+  "license": "MIT",
+  "category": "productivity",
+  "tags": ["logs", "troubleshooting", "aws", "nginx", "correlation", "debugging", "cloudwatch", "incident"],
+  "commands": ["/log-correlation"],
+  "triggers": [],
+  "tools": ["Bash", "Read", "Glob", "Grep", "Write"]
+}

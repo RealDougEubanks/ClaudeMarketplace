@@ -1,0 +1,5 @@
+# api-design/skill.md is an API design guidance skill.
+# It references "password" as a checklist item instructing developers NOT to expose
+# passwords in API responses. This is a security best-practice reminder, not a
+# secret value or credential.
+password

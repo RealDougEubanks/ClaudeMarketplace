@@ -1,0 +1,175 @@
+---
+id: security
+name: Security Incident
+incident_types: [security, breach, vulnerability, unauthorized, intrusion, CVE]
+required_sections: [summary, attack_vector, blast_radius, evidence_preserved, remediation, action_items]
+---
+
+# Security Incident Report: {{incident_title}}
+
+**Incident ID:** {{incident_id}}
+**Date:** {{date}}
+**Severity:** {{severity}} — {{severity_label}}
+**Status:** {{status}}
+**Duration:** {{duration}}
+
+> **CONFIDENTIAL** — This report may contain sensitive security information. Distribute only to personnel with a need to know.
+
+---
+
+## Executive Summary
+
+{{summary}}
+
+**User Impact:** {{user_impact}}
+**Systems Affected:** {{systems_affected}}
+
+---
+
+## Attack Vector
+
+**How the attacker gained access or what the vulnerability was:**
+
+[TODO: Describe the attack vector in detail. Include: the entry point (e.g., exposed API endpoint, compromised credential, unpatched CVE), the method used (e.g., SQL injection, credential stuffing, supply-chain compromise), and any indicators of compromise (IOCs) observed.]
+
+**CVE / Vulnerability reference:** [TODO: CVE-YYYY-NNNNN, or "No known CVE — internal vulnerability"]
+**CVSS score:** [TODO: if applicable]
+**Attack category:** [TODO: e.g., unauthorized access, data exfiltration, privilege escalation, denial of service]
+
+---
+
+## Blast Radius
+
+**What data or systems could have been accessed:**
+
+[TODO: Describe the maximum possible scope of the breach. Be specific — which data tables, S3 buckets, secrets, or services were accessible from the attacker's position.]
+
+**Confirmed data accessed:** [TODO: list confirmed accessed data, or "No confirmed exfiltration"]
+**Potentially exposed data:** [TODO: list data that was accessible but not confirmed accessed]
+**PII involved:** [TODO: Yes / No — if yes, describe type and estimated record count]
+**Credentials compromised:** [TODO: list any API keys, passwords, or tokens that may have been exposed]
+
+---
+
+## Timeline
+
+| Time (UTC) | Event | Who |
+|------------|-------|-----|
+| {{timeline}} | | |
+
+---
+
+## Root Cause
+
+{{root_cause}}
+
+---
+
+## Detection
+
+**Detected by:** {{detection_method}}
+**Time to detect:** [TODO: time from initial compromise/exposure to detection]
+**Time to contain:** [TODO: time from detection to attacker access revoked]
+**Time to resolve:** [TODO: time from detection to full remediation]
+
+---
+
+## Evidence Preserved
+
+[TODO: List all forensic artifacts collected and where they are stored. This section is critical for any regulatory or legal process.]
+
+| Artifact | Type | Location | Collected By | Timestamp (UTC) |
+|----------|------|----------|-------------|-----------------|
+| [TODO] | [log / screenshot / memory dump / network capture] | [TODO: path or storage location] | [TODO] | [TODO] |
+
+**Log retention confirmed:** [TODO: Yes / No — confirm logs are preserved beyond normal retention window]
+**Chain of custody maintained:** [TODO: Yes / No]
+
+---
+
+## Response
+
+**Responders:** {{responders}}
+
+### Actions Taken
+
+| Time (UTC) | Action | Who |
+|------------|--------|-----|
+| {{timeline}} | | |
+
+---
+
+## Remediation
+
+[TODO: Describe all remediation steps taken. Be specific.]
+
+**Patches applied:**
+- [TODO: e.g., upgraded library X from version Y to Z]
+
+**Credentials rotated:**
+- [TODO: e.g., all API keys in the affected service rotated on YYYY-MM-DD at HH:MM UTC]
+
+**Access revoked:**
+- [TODO: e.g., compromised user session invalidated, unauthorized OAuth app removed]
+
+**Configuration hardened:**
+- [TODO: e.g., removed public S3 bucket policy, enforced MFA on admin accounts]
+
+**Verification:** [TODO: How was it confirmed that the vulnerability is fully remediated?]
+
+---
+
+## Regulatory and Compliance
+
+**GDPR notification required:** [TODO: Yes / No — 72-hour notification window from discovery if PII of EU residents involved]
+**HIPAA notification required:** [TODO: Yes / No]
+**SOC 2 documentation required:** [TODO: Yes / No — record this incident in the security event log]
+**Cyber insurance notification required:** [TODO: Yes / No]
+**Law enforcement notification:** [TODO: Yes / No — if criminal activity suspected]
+
+**Notification deadlines:**
+- [TODO: list any regulatory deadlines and their dates]
+
+---
+
+## SLA Status
+
+[TODO: populated from rules/sla.md based on severity and duration]
+
+---
+
+## Notifications Sent
+
+[TODO: populated from rules/escalation.md based on severity]
+
+---
+
+## Action Items
+
+| # | Action | Owner | Due Date | Status |
+|---|--------|-------|----------|--------|
+| {{action_items}} | | | | |
+
+---
+
+## Lessons Learned
+
+### What went well
+
+[TODO: fill after post-mortem]
+
+### What could be improved
+
+[TODO: fill after post-mortem]
+
+### Security controls to add
+
+[TODO: List specific security controls, monitoring rules, or architectural changes that would detect or prevent a similar incident.]
+
+### Follow-up work
+
+[TODO: link to Jira tickets created]
+
+---
+
+*Report generated by `/incident-report` skill — Claude Code Skills Marketplace*

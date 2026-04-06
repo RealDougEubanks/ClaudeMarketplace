@@ -76,6 +76,198 @@
       },
       "keywords": ["example", "template"],
       "category": "productivity"
+    },
+    {
+      "name": "code-review",
+      "source": "./skills/code-review",
+      "description": "Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["code-review", "quality", "refactoring", "solid", "complexity", "standards"],
+      "category": "standards"
+    },
+    {
+      "name": "test-writer",
+      "source": "./skills/test-writer",
+      "description": "Generates comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching existing test style.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["testing", "unit-tests", "jest", "pytest", "quality", "tdd"],
+      "category": "standards"
+    },
+    {
+      "name": "dependency-audit",
+      "source": "./skills/dependency-audit",
+      "description": "Audits project dependencies for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["dependencies", "audit", "security", "cve", "npm", "pip", "go", "ruby"],
+      "category": "security"
+    },
+    {
+      "name": "changelog-generator",
+      "source": "./skills/changelog-generator",
+      "description": "Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["changelog", "release", "git", "documentation", "versioning"],
+      "category": "workflow"
+    },
+    {
+      "name": "onboarding",
+      "source": "./skills/onboarding",
+      "description": "Generates a comprehensive developer onboarding guide by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["onboarding", "documentation", "developer-experience", "getting-started", "architecture"],
+      "category": "productivity"
+    },
+    {
+      "name": "requirements-generator",
+      "source": "./skills/requirements-generator",
+      "description": "Generates structured requirements documents with functional requirements, non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["requirements", "specifications", "gherkin", "acceptance-criteria", "planning", "product"],
+      "category": "workflow"
+    },
+    {
+      "name": "log-correlation",
+      "source": "./skills/log-correlation",
+      "description": "Correlates and troubleshoots logs across OS, AWS (CloudWatch, CloudTrail, ALB, Lambda), application, and web server sources. Extensible via log-types/ definitions.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["logs", "troubleshooting", "aws", "nginx", "correlation", "debugging", "cloudwatch", "incident"],
+      "category": "productivity"
+    },
+    {
+      "name": "incident-report",
+      "source": "./skills/incident-report",
+      "description": "Generates professional incident reports using customizable templates and rules. Supports outage, security, performance, and data-loss types. Extensible via templates/ and rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["incident", "postmortem", "report", "sla", "on-call", "reliability", "devops", "templates"],
+      "category": "workflow"
+    },
+    {
+      "name": "pre-commit",
+      "source": "./skills/pre-commit",
+      "description": "Fast pre-commit quality gate: secrets, dead code, naming, conflict markers, and direct-to-main protection. Installs as a git hook.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["pre-commit", "git", "hooks", "secrets", "quality", "gate", "standards"],
+      "category": "standards"
+    },
+    {
+      "name": "best-practices",
+      "source": "./skills/best-practices",
+      "description": "Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["best-practices", "audit", "refactoring", "code-quality", "technical-debt", "improvement", "architecture"],
+      "category": "standards"
+    },
+    {
+      "name": "architecture-design",
+      "source": "./skills/architecture-design",
+      "description": "Guides the design of a new system or major feature from requirements to a documented architecture: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["architecture", "design", "c4-model", "microservices", "system-design", "diagrams", "planning"],
+      "category": "workflow"
+    },
+    {
+      "name": "architecture-review",
+      "source": "./skills/architecture-review",
+      "description": "Audits an existing system's architecture for structural anti-patterns, scalability and reliability risks, and testability gaps. Produces graded findings with migration paths and a to-be architecture diagram.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["architecture", "review", "anti-patterns", "scalability", "reliability", "refactoring", "technical-debt"],
+      "category": "standards"
+    },
+    {
+      "name": "adr",
+      "source": "./skills/adr",
+      "description": "Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR format. Supports creating, listing, updating, superseding, and searching ADRs.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["adr", "architecture", "decisions", "documentation", "design", "knowledge-management"],
+      "category": "workflow"
+    },
+    {
+      "name": "api-design",
+      "source": "./skills/api-design",
+      "description": "Designs and reviews REST, GraphQL, and gRPC APIs. Design mode produces OpenAPI specs, GraphQL schemas, or proto files. Review mode audits existing APIs for consistency, best practices, and breaking change risks.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["api", "rest", "graphql", "grpc", "openapi", "design", "review", "contracts"],
+      "category": "workflow"
+    },
+    {
+      "name": "database-design",
+      "source": "./skills/database-design",
+      "description": "Designs database schemas from domain requirements (ERD, indexes, migrations, security) or reviews existing schemas for normalization issues, missing indexes, unsafe migrations, and scalability risks.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["database", "schema", "erd", "migrations", "indexes", "postgresql", "design", "review"],
+      "category": "workflow"
+    },
+    {
+      "name": "accessibility",
+      "source": "./skills/accessibility",
+      "description": "Audits code for WCAG 2.2 AA compliance (review mode) and provides design guidance for building accessible components (design mode). Covers semantic HTML, ARIA, keyboard navigation, colour contrast, focus management, and motion.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["accessibility", "wcag", "a11y", "aria", "screen-reader", "keyboard", "inclusive-design"],
+      "category": "standards"
     }
   ]
 }
