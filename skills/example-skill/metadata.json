@@ -1,14 +1,23 @@
 {
   "name": "example-skill",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A sample skill that greets the user and summarizes the current project",
   "author": {
     "name": "Claude Marketplace",
     "github": "realdougeubanks"
   },
   "license": "MIT",
-  "tags": ["example", "template"],
-  "commands": ["/hello-project"],
+  "tags": [
+    "example",
+    "template"
+  ],
+  "commands": [
+    "/hello-project"
+  ],
   "triggers": [],
-  "tools": ["Bash", "Read", "Glob"]
+  "tools": [
+    "Bash",
+    "Read",
+    "Glob"
+  ]
 }

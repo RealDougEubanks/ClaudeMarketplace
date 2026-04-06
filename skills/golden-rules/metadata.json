@@ -1,6 +1,6 @@
 {
   "name": "golden-rules",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
   "author": {
     "name": "Doug Eubanks",
@@ -8,8 +8,23 @@
   },
   "license": "MIT",
   "category": "base",
-  "tags": ["base", "security", "standards", "always-on"],
-  "commands": ["/golden-rules", "/install-golden-rules"],
-  "triggers": ["always"],
-  "tools": ["Read", "Write", "Edit", "Grep"]
+  "tags": [
+    "base",
+    "security",
+    "standards",
+    "always-on"
+  ],
+  "commands": [
+    "/golden-rules",
+    "/install-golden-rules"
+  ],
+  "triggers": [
+    "always"
+  ],
+  "tools": [
+    "Read",
+    "Write",
+    "Edit",
+    "Grep"
+  ]
 }

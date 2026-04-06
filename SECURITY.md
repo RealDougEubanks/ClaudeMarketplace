@@ -18,7 +18,7 @@ Use GitHub's private vulnerability reporting feature:
 2. Click **"Report a vulnerability"**
 3. Fill in the details — include steps to reproduce, affected files, and potential impact
 
-You can also email **security@realdougeubanks.dev** if you prefer not to use GitHub's reporting tool.
+You can also email **`security@realdougeubanks.dev`** if you prefer not to use GitHub's reporting tool.
 
 ## What to Report
 
