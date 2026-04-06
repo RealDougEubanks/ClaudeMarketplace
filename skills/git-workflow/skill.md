@@ -2,6 +2,12 @@
 
 Enforce the release-branch Git model and help execute the correct git operations for your current context: start new work, open a PR, cut a release, or view the workflow reference.
 
+## Hard Rules (always enforced, no exceptions)
+
+- **Never commit or push directly to `main`.** If the current branch is `main`, stop and create a new branch before making any changes.
+- **Never force-push to `main`.**
+- All changes must reach `main` via a PR from a release branch.
+
 ## Instructions
 
 When invoked, ask the user what they want to do (if not already specified):
