@@ -172,6 +172,18 @@
       },
       "keywords": ["incident", "postmortem", "report", "sla", "on-call", "reliability", "devops", "templates"],
       "category": "workflow"
+    },
+    {
+      "name": "pre-commit",
+      "source": "./skills/pre-commit",
+      "description": "Fast pre-commit quality gate: secrets, dead code, naming, conflict markers, and direct-to-main protection. Installs as a git hook.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["pre-commit", "git", "hooks", "secrets", "quality", "gate", "standards"],
+      "category": "standards"
     }
   ]
 }

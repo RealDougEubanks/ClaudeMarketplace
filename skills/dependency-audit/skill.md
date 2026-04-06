@@ -4,6 +4,8 @@ Audit project dependencies for staleness, vulnerabilities, and hygiene issues ac
 
 ## Instructions
 
+Invoke as `/dependency-audit` for a report only, or `/dependency-audit --fix` to also apply safe upgrades.
+
 When invoked via `/dependency-audit`:
 
 ### Step 1 — Detect Package Manifests
@@ -127,3 +129,31 @@ Severity tiers:
 - **INFO** — Tree-shaking or bundle-size concerns, minor hygiene suggestions
 
 If no issues are found, report a clean bill of health and recommend running audits on a recurring schedule.
+
+### Step 9 — Auto-fix Mode (optional)
+
+After producing the report, ask the user:
+
+> "Would you like me to apply safe upgrades automatically? I'll upgrade patch and minor versions (non-breaking) and run your test suite to verify nothing broke."
+
+If the user agrees:
+
+1. **Determine the package manager** from the manifest files found in Step 1 (npm/yarn/pnpm, pip, go, bundler).
+
+2. **For each package flagged as outdated** (NOT CVE-critical — those require manual review), run the appropriate upgrade command:
+   - **npm**: `npm update --save` for minor/patch (does not cross major versions)
+   - **pip**: `pip install --upgrade <package>==<safe-version>` for each package individually
+   - **go**: `go get <module>@latest` for each indirect dependency
+   - **bundler**: `bundle update --conservative` (stays within Gemfile constraints)
+
+3. **After upgrading, detect and run the test suite:**
+   - **npm**: `npm test` if defined in `package.json` scripts
+   - **pip**: `pytest` or `python -m pytest` if pytest is installed
+   - **go**: `go test ./...`
+   - **bundler**: `bundle exec rspec` or `bundle exec rake test`
+
+4. **If tests pass:** summarize what was upgraded and confirm. Write a brief upgrade summary to `docs/dependency-upgrades-<date>.md`.
+
+5. **If tests fail:** immediately revert the upgrades (`git checkout -- package*.json` etc.), report which package likely caused the failure, and recommend upgrading that package manually after reading its changelog.
+
+6. **CVE-critical findings are always excluded from auto-fix** — report them separately with a note that they require manual review and testing.

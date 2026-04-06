@@ -4,6 +4,74 @@ Run a structured quality-gate audit before declaring any project an MVP. Check e
 
 ## Instructions
 
+**Two modes:**
+- **Full audit** (default `/mvp-readiness`): complete checklist across all 8 sections. Use before launch.
+- **Quick scan** (`/mvp-readiness --quick`): checks only the 5 hard blockers. Completes in under 30 seconds. Use during daily development.
+
+If `--quick` is passed, skip to the [Quick Scan](#quick-scan) section and stop after producing the quick scan output. Do not run the full checklist.
+
+---
+
+## Quick Scan
+
+Run each of the following 5 checks using Bash or Grep — do not read files individually. Report results in the compact output format below.
+
+### Check 1 — Secret Scan
+
+```bash
+grep -rn "password\s*=\s*['\"]" --include="*.js" --include="*.ts" --include="*.py" --exclude-dir=node_modules .
+```
+
+Adapt the file extensions for the detected language. **FAIL** if any match is found outside of test files (`*.test.*`, `*.spec.*`, `tests/`, `__tests__/`).
+
+### Check 2 — README Exists
+
+Check that `README.md` or `readme.md` exists and is greater than 100 bytes. **FAIL** if the file is missing or empty.
+
+### Check 3 — External Call Error Handling
+
+```bash
+grep -rn "fetch(\|axios\.\|\.query(\|\.connect(" --include="*.js" --include="*.ts" . | grep -v "try\|catch\|then\|catch"
+```
+
+This is a rough heuristic. **FAIL** if more than 5 uncovered calls are found.
+
+### Check 4 — No Secrets in Git History
+
+```bash
+git log --all --oneline -- "*.env" 2>/dev/null | head -5
+```
+
+**FAIL** if any `.env` files appear in the git history.
+
+### Check 5 — Placeholder Code
+
+```bash
+grep -rn "TODO\|FIXME\|stub\|placeholder\|impl later" --include="*.js" --include="*.ts" --include="*.py" --exclude-dir=node_modules . | grep -v "test\|spec"
+```
+
+**FAIL** if any results are found in non-test files.
+
+### Quick Scan Output Format
+
+Produce a compact result in this exact format:
+
+```
+## MVP Quick Scan — <project> — <date>
+
+✓ Secret scan: PASSED
+✗ README: FAILED — README.md not found
+✓ Error handling: PASSED (heuristic)
+✓ Git history: PASSED
+⚠ Placeholder code: WARNING — 3 TODOs in src/ (non-blocking)
+
+Status: NOT READY — 1 blocker. Run /mvp-readiness for full audit.
+```
+
+Use `✓` for PASSED, `✗` for FAILED (blocker), and `⚠` for WARNING (non-blocking). The status line must say `READY` only if all 5 checks pass.
+
+---
+
 1. Use Read to load `README.md` and any files found in `docs/`.
 
 2. Use Glob to discover the project structure:

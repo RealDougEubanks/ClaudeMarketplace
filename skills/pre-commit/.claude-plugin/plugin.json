@@ -1,0 +1,8 @@
+{
+  "name": "pre-commit",
+  "version": "1.0.0",
+  "description": "Fast pre-commit quality gate: secrets, dead code, naming, conflict markers, and direct-to-main protection. Installs as a git hook.",
+  "author": { "name": "Doug Eubanks", "url": "https://github.com/RealDougEubanks" },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}

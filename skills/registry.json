@@ -121,6 +121,14 @@
       "tags": ["incident", "postmortem", "report", "sla", "on-call", "reliability", "devops", "templates"],
       "version": "1.0.0",
       "category": "workflow"
+    },
+    {
+      "name": "pre-commit",
+      "path": "skills/pre-commit",
+      "description": "Fast pre-commit quality gate: scans staged files for secrets, dead code, naming issues, merge conflict markers, and direct-to-main commits. Installs as a git hook via /pre-commit install.",
+      "tags": ["pre-commit", "git", "hooks", "secrets", "quality", "gate", "standards"],
+      "version": "1.0.0",
+      "category": "standards"
     }
   ]
 }

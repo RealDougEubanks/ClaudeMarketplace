@@ -19,9 +19,45 @@ Generate a comprehensive developer onboarding guide for an unfamiliar codebase a
    - Python: `find . -name "*.py" | grep -v __pycache__ | wc -l`
    - Go: `find . -name "*.go" | wc -l`
 
-7. Use Glob to check for `docs/agentRoster.md`. If it exists, read it and include the agent roster section in the guide.
+7. **Generate architecture diagram.**
 
-8. Write the completed onboarding guide to `docs/ONBOARDING.md` using Write, following the output structure below.
+   a. Use Read on the primary entry point file identified in step 3 to understand how the application initializes and what it connects to.
+
+   b. Use Glob to find configuration files that reveal infrastructure: `docker-compose.yml`, `*.env.example`, `infrastructure/**`, `terraform/**`, `serverless.yml`, `.github/workflows/**`.
+
+   c. Use Grep to identify major inter-module dependencies: import/require/use statements at the top of the entry point and primary route/handler files.
+
+   d. Generate a Mermaid diagram using the most appropriate type:
+      - For web apps with a request flow: `sequenceDiagram` showing Client → Load Balancer → App Server → Database/Cache/Queue
+      - For microservices or modular apps: `graph LR` showing service dependencies
+      - For simple single-module apps: `graph TD` showing function/module call flow
+
+   e. Include the diagram in the generated `docs/ONBOARDING.md` under a "## Architecture" section, wrapped in a fenced code block with `mermaid` syntax tag.
+
+   f. Add a note: "This diagram was auto-generated and may not capture all relationships. Review and update as the architecture evolves."
+
+   Example output to include in ONBOARDING.md:
+
+   ````markdown
+   ## Architecture
+
+   ```mermaid
+   sequenceDiagram
+       Client->>+ALB: HTTPS Request
+       ALB->>+AppServer: Forward
+       AppServer->>+PostgreSQL: Query
+       PostgreSQL-->>-AppServer: Result
+       AppServer->>+Redis: Cache write
+       AppServer-->>-ALB: Response
+       ALB-->>-Client: HTTPS Response
+   ```
+
+   > This diagram was auto-generated and may not capture all relationships. Review and update as the architecture evolves.
+   ````
+
+8. Use Glob to check for `docs/agentRoster.md`. If it exists, read it and include the agent roster section in the guide.
+
+9. Write the completed onboarding guide to `docs/ONBOARDING.md` using Write, following the output structure below.
 
 ## Output Structure
 

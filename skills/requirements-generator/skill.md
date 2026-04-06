@@ -4,12 +4,18 @@ Take a project idea, feature description, or user story and generate a structure
 
 ## Instructions
 
+**Two modes:**
+- **Description mode** (default): user provides a free-form description or pastes a Jira/Confluence URL. Claude generates requirements from that.
+- **Interview mode** (`/requirements-generator --interview`): Claude asks a structured set of questions one at a time, then generates requirements from the answers.
+
 1. **Gather input.** Ask the user what they want to build if no description has been provided. Accept any of:
    - A pasted feature description or user story
    - A Jira ticket URL or Confluence page URL (read via available MCP tools if present)
    - A brief verbal description of the feature
 
    Prompt: _"Describe the feature or system you want to build. Include the user need it addresses and any known constraints."_
+
+   If the user invoked with `--interview`, skip this prompt and proceed to the **Interview Mode** section below instead.
 
 2. **Understand the existing codebase** (if one exists). Use Glob on `*` to detect the project structure. Read `package.json`, `pyproject.toml`, or `go.mod` to identify the tech stack. Read any files in `src/` or `app/` to understand patterns and conventions. This ensures requirements fit what already exists.
 
@@ -79,6 +85,40 @@ Take a project idea, feature description, or user story and generate a structure
 7. **Offer Jira/Confluence integration** (if MCP tools for Atlassian are available in the session). Ask: _"Would you like me to publish this to Confluence or create a Jira epic?"_ If yes, use the available MCP tools to do so.
 
 8. **Confirm completion.** Tell the user the file path, how many functional requirements were generated, and how many acceptance criteria scenarios were written.
+
+## Interview Mode
+
+When invoked with `--interview`, conduct a structured interview by asking each question below one at a time. Wait for the user's full answer before proceeding to the next question. Do not ask multiple questions at once.
+
+1. **Who is the primary user?** "Describe the person or system that will use this feature. What is their role, technical level, and what are they trying to accomplish?"
+
+2. **What problem does this solve?** "What is the user currently unable to do, or what pain point does this address? What happens today without this feature?"
+
+3. **What does success look like?** "How will you know this feature is working correctly? What would a user be able to do that they couldn't before?"
+
+4. **What are the constraints?** "Are there technology choices already made (language, framework, cloud provider)? Any performance requirements? Any compliance or regulatory constraints (GDPR, HIPAA, SOC2)?"
+
+5. **What is explicitly out of scope?** "What are you deliberately NOT building in this version? What might people assume is included but isn't?"
+
+6. **What could go wrong?** "What edge cases or error scenarios do you anticipate? What happens if the user provides invalid input? What if a dependency is unavailable?"
+
+7. **Who else is affected?** "Are there other systems, teams, or users impacted by this change? Any backwards compatibility concerns?"
+
+After collecting all answers, generate the full requirements document using the same format as description mode (FR-NNN requirements, NFRs, Gherkin scenarios, etc.), grounded in the interview answers. Include an **Interview Summary** section at the very top of the generated document (before Overview) that captures each answer in 1–2 sentences.
+
+```markdown
+## Interview Summary
+
+**Primary user:** ...
+**Problem being solved:** ...
+**Success criteria:** ...
+**Constraints:** ...
+**Out of scope:** ...
+**Risk areas:** ...
+**Other affected parties:** ...
+```
+
+Then continue with the standard sections (Overview, Stakeholders, Functional Requirements, etc.) as defined in the Output Format Reference.
 
 ## Output Format Reference
 

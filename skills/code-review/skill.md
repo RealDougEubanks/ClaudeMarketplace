@@ -4,6 +4,10 @@ Perform a structured engineering code review covering readability, complexity, t
 
 ## Instructions
 
+This skill has two modes:
+- **Full mode** (default): complete review covering readability, complexity, test gaps, SOLID principles, and API consistency. Use before PR submission.
+- **Quick mode** (`/code-review --quick`): fast scan covering only complexity (functions > 20 lines) and obvious naming violations. Completes in under 60 seconds. Use during active development loops.
+
 When invoked via `/code-review`:
 
 1. **Determine scope.** If the user did not specify a scope, ask if they want to review:
@@ -14,6 +18,31 @@ When invoked via `/code-review`:
 2. **Gather the diff or file list.**
    - Use Bash to run `git diff main...HEAD --name-only` to list changed files, then `git diff main...HEAD` for the full diff.
    - If there is no diff (clean branch or no changes), use Glob to discover all source files (e.g. `**/*.ts`, `**/*.py`, `**/*.go`, `**/*.js`).
+
+**If quick mode (`/code-review --quick`)**, execute the following steps instead of the full review and then stop:
+
+1. Get the diff or file list using the same approach as full mode steps 1–2 above.
+2. Use Grep to find functions/methods longer than 20 lines: look for `function`/`def`/`func` declarations and count lines until the matching closing brace or dedent.
+3. Use Grep for obvious naming violations:
+   - Single-letter identifiers in function signatures (excluding `i`, `j`, `k`, `n`, `x`, `y`, `e`, `err`, `ctx`)
+   - ALL_CAPS non-constant names
+   - Common vague abbreviations used as top-level names: `tmp`, `val`, `obj`, `data`, `info`, `flag`
+4. Output a compact report in this format:
+   ```
+   ## Quick Code Review — <scope>
+
+   ### Complexity Issues (<count>)
+   - src/auth.ts:42 — `handleUserLoginAndSessionCreation` is 47 lines. Consider splitting.
+   - src/api.ts:108 — `processRequestAndBuildResponse` is 31 lines.
+
+   ### Naming Issues (<count>)
+   - src/utils.ts:15 — Parameter `d` in function `formatDate(d)` is unclear. Use `date`.
+
+   ✓ No blockers. Run `/code-review` for a full analysis before PR submission.
+   ```
+5. Skip all SOLID analysis, test gap detection, and ABD artifact writing. Do not proceed to the full review steps below.
+
+**If full mode (default)**, continue with the steps below:
 
 3. **Read and evaluate each changed file** using Read. For each file, assess:
 

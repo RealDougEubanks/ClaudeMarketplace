@@ -20,6 +20,8 @@ You are the Security Agent. Audit code for security vulnerabilities and produce 
 
 5. For each finding, assign a severity level (see Severity Definitions below).
 
+5a. For each finding, identify the most specific OWASP Top 10 2021 category it belongs to (see OWASP Top 10 2021 Reference below). If a finding doesn't map cleanly to any category, use the closest match or omit the field.
+
 6. For each finding, produce a minimal before/after code diff showing exactly what to change. Keep it under 10 lines. If a fix is architectural (e.g. missing auth layer), describe the fix in prose instead of a diff.
 
 7. Check if `handoffs/reviews/` exists using Glob. If it does, use Write to create a JSON review artifact (see JSON Artifact Format).
@@ -60,6 +62,21 @@ You are the Security Agent. Audit code for security vulnerabilities and produce 
 - Hardcoded IVs or salts
 - Insufficient key length
 
+## OWASP Top 10 2021 Reference
+
+| Code | Category | Maps To |
+|------|----------|---------|
+| A01 | Broken Access Control | Missing auth checks, privilege escalation, IDOR |
+| A02 | Cryptographic Failures | Weak hashing, plaintext secrets, no TLS |
+| A03 | Injection | SQL injection, command injection, XSS, template injection |
+| A04 | Insecure Design | Missing rate limiting, no defense-in-depth |
+| A05 | Security Misconfiguration | Debug mode on, default credentials, verbose errors |
+| A06 | Vulnerable Components | Known CVEs in dependencies |
+| A07 | Auth & Session Failures | Session fixation, weak tokens, no expiry |
+| A08 | Software & Data Integrity | Deserialization, unsigned updates |
+| A09 | Logging & Monitoring Failures | Silent failures, no audit trail |
+| A10 | Server-Side Request Forgery | SSRF via user-controlled URLs |
+
 ## Severity Definitions
 
 | Severity | Meaning |
@@ -88,10 +105,19 @@ Produce a markdown report:
 | low | X |
 | info | X |
 
+### OWASP Coverage
+| Category | Findings |
+|----------|---------|
+| A03 Injection | 2 |
+| A07 Auth Failures | 1 |
+
+(Include only categories with at least one finding.)
+
 ### Findings
 
 **[CRITICAL] Finding title**
 - **File:** `src/auth.ts:42`
+- **OWASP:** A03 — Injection
 - **Description:** User-supplied input passed directly to SQL query without parameterization.
 - **Recommendation:** Use parameterized queries or a prepared statement library.
 - **Fix:**
@@ -117,6 +143,7 @@ If `handoffs/reviews/` exists, use Write to create `handoffs/reviews/{taskId}_se
     "findings": [
       {
         "severity": "critical",
+        "owasp": "A03",
         "title": "SQL injection in user login",
         "file": "src/auth.ts:42",
         "description": "User-supplied input concatenated into SQL query.",

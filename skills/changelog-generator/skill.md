@@ -4,6 +4,57 @@ Generate a structured CHANGELOG.md following the Keep a Changelog format from gi
 
 ## Instructions
 
+**Two modes:**
+- **Auto mode** (default): categorizes commits by keyword matching (existing behavior).
+- **Strict mode** (`/changelog-generator --strict`): follows the Conventional Commits spec exactly. Enables automatic semver bumping.
+
+If `--strict` is passed, run the [Strict Mode](#strict-mode) flow after Step 3 (commit collection) instead of Step 5's keyword categorization. Steps 1–4 and 6–8 still apply.
+
+---
+
+## Strict Mode
+
+### Step 5S — Parse Commits Against Conventional Commits Spec
+
+For each commit message collected in Step 3, parse it against the Conventional Commits specification:
+
+- **Format**: `<type>(<scope>): <description>`
+  - The `(<scope>)` part is optional.
+  - A `!` after the type (e.g. `feat!: ...`) indicates a breaking change.
+- **Valid types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+- **Breaking changes**: indicated by `!` after the type/scope OR by a `BREAKING CHANGE:` footer in the commit body.
+
+Map each parsed commit to changelog sections:
+
+| Conventional Commits type | Changelog section |
+|---------------------------|-------------------|
+| `feat` | **Added** |
+| `fix` | **Fixed** |
+| `perf` | **Changed** (note: performance improvement) |
+| `refactor`, `style` | **Changed** |
+| `revert` | **Reverted** (special section) |
+| `docs`, `ci`, `build`, `chore`, `test` | *(no entry — internal only)* |
+| Breaking change (any type with `!` or `BREAKING CHANGE:` footer) | **Breaking Changes** (always at the top of the version block) |
+| Does not match spec format | **Uncategorized** — with note: "These commits don't follow Conventional Commits format and were not auto-categorized." |
+
+### Step 5S-2 — Auto-Determine Semver Bump
+
+Inspect all parsed commits and determine the recommended version bump:
+
+| Condition | Bump |
+|-----------|------|
+| Any commit with `!` or `BREAKING CHANGE:` footer | **MAJOR** (x.0.0) |
+| Any `feat` commit (no breaking change) | **MINOR** (0.x.0) |
+| Only `fix`, `perf`, or `refactor` commits | **PATCH** (0.0.x) |
+
+Show the user the recommended version number based on the last tag (from Step 1) and the determined bump level:
+
+> "Based on the commits, the recommended version bump is **MINOR**. Suggested version: `<computed-version>`. Confirm this version, or enter a different one:"
+
+Wait for the user to confirm or override before proceeding to Step 6.
+
+---
+
 When invoked via `/changelog-generator`:
 
 ### Step 1 — Determine the Last Release Tag
