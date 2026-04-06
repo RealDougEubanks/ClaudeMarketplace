@@ -148,6 +148,30 @@
       },
       "keywords": ["requirements", "specifications", "gherkin", "acceptance-criteria", "planning", "product"],
       "category": "workflow"
+    },
+    {
+      "name": "log-correlation",
+      "source": "./skills/log-correlation",
+      "description": "Correlates and troubleshoots logs across OS, AWS (CloudWatch, CloudTrail, ALB, Lambda), application, and web server sources. Extensible via log-types/ definitions.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["logs", "troubleshooting", "aws", "nginx", "correlation", "debugging", "cloudwatch", "incident"],
+      "category": "productivity"
+    },
+    {
+      "name": "incident-report",
+      "source": "./skills/incident-report",
+      "description": "Generates professional incident reports using customizable templates and rules. Supports outage, security, performance, and data-loss types. Extensible via templates/ and rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["incident", "postmortem", "report", "sla", "on-call", "reliability", "devops", "templates"],
+      "category": "workflow"
     }
   ]
 }

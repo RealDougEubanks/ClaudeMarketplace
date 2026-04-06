@@ -105,6 +105,22 @@
       "tags": ["requirements", "specifications", "gherkin", "acceptance-criteria", "planning", "product"],
       "version": "1.0.0",
       "category": "workflow"
+    },
+    {
+      "name": "log-correlation",
+      "path": "skills/log-correlation",
+      "description": "Correlates and troubleshoots logs across OS (Linux/macOS), AWS (CloudWatch, CloudTrail, ALB, Lambda), application (JSON, logfmt), and web server (Nginx, Apache) sources. Extensible via log-types/ definitions.",
+      "tags": ["logs", "troubleshooting", "aws", "nginx", "correlation", "debugging", "cloudwatch", "incident"],
+      "version": "1.0.0",
+      "category": "productivity"
+    },
+    {
+      "name": "incident-report",
+      "path": "skills/incident-report",
+      "description": "Generates professional incident reports using customizable templates and classification rules. Supports outage, security, performance, and data-loss incident types. Extensible via templates/ and rules/ directories.",
+      "tags": ["incident", "postmortem", "report", "sla", "on-call", "reliability", "devops", "templates"],
+      "version": "1.0.0",
+      "category": "workflow"
     }
   ]
 }

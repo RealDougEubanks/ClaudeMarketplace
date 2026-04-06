@@ -1,0 +1,11 @@
+{
+  "name": "log-correlation",
+  "version": "1.0.0",
+  "description": "Correlates and troubleshoots logs across OS, AWS, application, and web server sources. Extensible via log-types/ definitions.",
+  "author": {
+    "name": "Doug Eubanks",
+    "url": "https://github.com/RealDougEubanks"
+  },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}
