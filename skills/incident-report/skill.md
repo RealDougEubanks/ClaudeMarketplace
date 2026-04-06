@@ -1,3 +1,8 @@
+---
+name: incident-report
+description: Generates professional incident reports using customizable templates. Supports outage, security, performance, and data-loss incident types. Extensible via templates/ and rules/.
+---
+
 # Incident Report
 
 Generate professional incident reports from symptoms, log data, and timeline information. Uses customizable templates and classification rules. Reports are saved to `docs/incidents/` and can optionally be published to Confluence.

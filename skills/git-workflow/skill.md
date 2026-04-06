@@ -1,3 +1,8 @@
+---
+name: git-workflow
+description: Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference.
+---
+
 # Git Workflow — Release-Branch Model
 
 Enforce the release-branch Git model and help execute the correct git operations for your current context: start new work, open a PR, cut a release, or view the workflow reference.

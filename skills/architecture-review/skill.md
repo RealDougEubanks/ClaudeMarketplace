@@ -1,3 +1,8 @@
+---
+name: architecture-review
+description: Audits existing architecture for anti-patterns, scalability and reliability risks, and testability gaps. Graded findings with migration paths and a to-be diagram.
+---
+
 # architecture-review
 
 ## Purpose

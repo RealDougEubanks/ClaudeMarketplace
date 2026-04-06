@@ -1,3 +1,8 @@
+---
+name: pre-commit
+description: Fast pre-commit quality gate: scans staged files for secrets, dead code, naming issues, merge conflict markers, and direct-to-main commits. Installs as a git hook via /pre-commit install.
+---
+
 # pre-commit
 
 Invoked via `/pre-commit`. This skill acts as a pre-commit quality gate — it runs a fast subset of checks before committing and blocks the commit if critical issues are found. It can also install itself as a git hook.

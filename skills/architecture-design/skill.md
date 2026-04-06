@@ -1,3 +1,8 @@
+---
+name: architecture-design
+description: Designs new systems from requirements: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns.
+---
+
 # architecture-design
 
 ## Purpose

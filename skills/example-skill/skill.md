@@ -1,3 +1,8 @@
+---
+name: example-skill
+description: A sample skill that greets the user and summarizes the current project
+---
+
 # Hello Project
 
 Greet the user and provide a brief summary of the current project.

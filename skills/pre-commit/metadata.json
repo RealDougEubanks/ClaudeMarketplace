@@ -1,12 +1,31 @@
 {
   "name": "pre-commit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fast pre-commit quality gate: scans staged files for secrets, dead code, naming issues, merge conflict markers, and direct-to-main commits. Installs as a git hook via /pre-commit install.",
-  "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
+  "author": {
+    "name": "Doug Eubanks",
+    "github": "realdougeubanks"
+  },
   "license": "MIT",
   "category": "standards",
-  "tags": ["pre-commit", "git", "hooks", "secrets", "quality", "gate", "standards"],
-  "commands": ["/pre-commit"],
+  "tags": [
+    "pre-commit",
+    "git",
+    "hooks",
+    "secrets",
+    "quality",
+    "gate",
+    "standards"
+  ],
+  "commands": [
+    "/pre-commit"
+  ],
   "triggers": [],
-  "tools": ["Bash", "Grep", "Read", "Write", "Glob"]
+  "tools": [
+    "Bash",
+    "Grep",
+    "Read",
+    "Write",
+    "Glob"
+  ]
 }

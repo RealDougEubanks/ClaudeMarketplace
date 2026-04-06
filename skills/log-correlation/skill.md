@@ -1,3 +1,8 @@
+---
+name: log-correlation
+description: Correlates and troubleshoots logs across OS (Linux/macOS), AWS (CloudWatch, CloudTrail, ALB, Lambda), application (JSON, logfmt), and web servers (Nginx, Apache).
+---
+
 # Skill: log-correlation
 
 ## Purpose

@@ -1,3 +1,8 @@
+---
+name: mvp-readiness
+description: Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.
+---
+
 # MVP Readiness Audit
 
 Run a structured quality-gate audit before declaring any project an MVP. Check every item. Report pass/fail with evidence. Flag blockers.

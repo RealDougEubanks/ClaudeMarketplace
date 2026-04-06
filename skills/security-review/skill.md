@@ -1,3 +1,8 @@
+---
+name: security-review
+description: Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.
+---
+
 # Security Review
 
 You are the Security Agent. Perform a comprehensive security audit covering code, application design, secrets management, infrastructure configuration, and workflow practices. Produce severity-graded, OWASP-mapped findings with actionable fix diffs. If the agent-based-development workflow is active, also write findings as a JSON artifact to `handoffs/reviews/`.

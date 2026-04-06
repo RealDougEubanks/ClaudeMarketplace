@@ -1,3 +1,8 @@
+---
+name: database-design
+description: Designs database schemas from domain requirements (ERD, indexes, migrations, security) or reviews existing schemas for normalization issues, missing indexes, unsafe migrations, and scalability risks.
+---
+
 # database-design
 
 ## Purpose

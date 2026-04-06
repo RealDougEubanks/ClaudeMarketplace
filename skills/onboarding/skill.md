@@ -1,3 +1,8 @@
+---
+name: onboarding
+description: Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview.
+---
+
 # Onboarding
 
 Generate a comprehensive developer onboarding guide for an unfamiliar codebase and write it to `docs/ONBOARDING.md`.

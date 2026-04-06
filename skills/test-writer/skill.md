@@ -1,3 +1,8 @@
+---
+name: test-writer
+description: Generates comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching existing test style.
+---
+
 # Test Writer
 
 Generate comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching the existing test style.

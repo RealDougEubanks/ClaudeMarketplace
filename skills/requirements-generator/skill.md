@@ -1,3 +1,8 @@
+---
+name: requirements-generator
+description: Generates structured requirements documents with functional and non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.
+---
+
 # Requirements Generator
 
 Take a project idea, feature description, or user story and generate a structured requirements document with functional requirements, non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.

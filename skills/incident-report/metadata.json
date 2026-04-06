@@ -1,12 +1,31 @@
 {
   "name": "incident-report",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generates professional incident reports using customizable templates. Supports outage, security, performance, and data-loss incident types. Extensible via templates/ and rules/.",
-  "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
+  "author": {
+    "name": "Doug Eubanks",
+    "github": "realdougeubanks"
+  },
   "license": "MIT",
   "category": "workflow",
-  "tags": ["incident", "postmortem", "report", "sla", "on-call", "reliability", "devops", "templates"],
-  "commands": ["/incident-report"],
+  "tags": [
+    "incident",
+    "postmortem",
+    "report",
+    "sla",
+    "on-call",
+    "reliability",
+    "devops",
+    "templates"
+  ],
+  "commands": [
+    "/incident-report"
+  ],
   "triggers": [],
-  "tools": ["Read", "Write", "Glob", "Bash"]
+  "tools": [
+    "Read",
+    "Write",
+    "Glob",
+    "Bash"
+  ]
 }

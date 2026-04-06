@@ -1,3 +1,8 @@
+---
+name: changelog-generator
+description: Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts. Prepends new version sections to existing changelogs.
+---
+
 # Changelog Generator
 
 Generate a structured CHANGELOG.md following the Keep a Changelog format from git history and ABD handoff artifacts.
