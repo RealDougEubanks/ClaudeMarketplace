@@ -53,6 +53,12 @@ DESIGN & UX GUIDELINES (apply unless project explicitly overrides)
 - Responsive design: Layouts must be responsive — usable across mobile, tablet, and desktop. Use fluid layouts and touch-friendly targets.
 - Accessibility: Choose accessible and pleasant color palettes. WCAG AA contrast minimum. Do not rely on color alone for meaning.
 
+GIT HYGIENE (MANDATORY)
+
+- Never commit or push directly to `main`. All changes must go through a branch and PR, no exceptions.
+- Branch from the current release branch (or `main` if no release branch exists). Name branches `feature/`, `fix/`, `hotfix/`, or `claude/` as appropriate.
+- If you find yourself on `main` with uncommitted changes, stash or move them to a new branch before committing.
+
 ASSUMPTIONS TRACKING
 
 Any time a non-obvious decision is made, record it in docs/assumptions.md:
