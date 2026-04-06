@@ -53,7 +53,7 @@ while IFS= read -r name; do
   fi
 done <<< "$registry_skills"
 
-# 6. Check metadata name matches directory name
+# 6. Check metadata name matches directory name, and registry version matches metadata version
 while IFS= read -r dir; do
   [ -z "$dir" ] && continue
   meta="$REPO_ROOT/skills/$dir/metadata.json"
@@ -61,6 +61,19 @@ while IFS= read -r dir; do
     meta_name=$(python3 -c "import json; print(json.load(open('$meta'))['name'])" 2>/dev/null || echo "")
     if [ "$meta_name" != "$dir" ]; then
       echo "  ERROR: skills/$dir/metadata.json name is '$meta_name', expected '$dir'"
+      errors=$((errors + 1))
+    fi
+
+    # Cross-validate registry version vs metadata version
+    registry_version=$(python3 -c "
+import json
+data = json.load(open('$REGISTRY'))
+match = next((s for s in data.get('skills', []) if s['name'] == '$dir'), None)
+print(match['version'] if match else '')
+" 2>/dev/null || echo "")
+    meta_version=$(python3 -c "import json; print(json.load(open('$meta'))['version'])" 2>/dev/null || echo "")
+    if [ -n "$registry_version" ] && [ "$registry_version" != "$meta_version" ]; then
+      echo "  ERROR: skills/$dir: registry.json version=\"$registry_version\" does not match metadata.json version=\"$meta_version\""
       errors=$((errors + 1))
     fi
   fi
