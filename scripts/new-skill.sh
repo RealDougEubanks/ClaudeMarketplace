@@ -24,6 +24,10 @@ fi
 
 mkdir -p "$SKILL_DIR"
 
+# Detect author info from git config
+AUTHOR_NAME=$(git config user.name 2>/dev/null || echo "Your Name")
+AUTHOR_GITHUB=$(git config user.email 2>/dev/null | sed 's/@.*//' || echo "your-username")
+
 # Copy skill.md template
 cp "$TEMPLATES_DIR/skill.md" "$SKILL_DIR/skill.md"
 
@@ -34,8 +38,8 @@ cat > "$SKILL_DIR/metadata.json" << METAEOF
   "version": "1.0.0",
   "description": "Short description of what the skill does (max 200 chars)",
   "author": {
-    "name": "Doug Eubanks",
-    "github": "realdougeubanks"
+    "name": "$AUTHOR_NAME",
+    "github": "$AUTHOR_GITHUB"
   },
   "license": "MIT",
   "category": "productivity",

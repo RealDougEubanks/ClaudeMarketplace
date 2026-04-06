@@ -4,11 +4,13 @@ Thanks for your interest in contributing a skill! Follow the steps below.
 
 ## Adding a New Skill
 
-1. **Copy the template**
+1. **Scaffold from the template**
 
    ```bash
-   cp -r templates/ skills/my-skill
+   ./scripts/new-skill.sh my-skill-name
    ```
+
+   This creates `skills/my-skill-name/` with pre-filled `skill.md`, `metadata.json`, and `README.md`, and validates the name is kebab-case. Alternatively, copy manually: `cp -r templates/ skills/my-skill-name`
 
 2. **Edit the files**
 

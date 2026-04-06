@@ -14,6 +14,11 @@ SKILL_NAME=$(basename "$SKILL_DIR")
 COMMANDS_DIR="$PROJECT_DIR/.claude/commands"
 CLAUDE_MD="$PROJECT_DIR/CLAUDE.md"
 
+if [ ! -d "$PROJECT_DIR" ]; then
+  echo "Error: project directory '$PROJECT_DIR' does not exist."
+  exit 1
+fi
+
 if [ ! -f "$SKILL_DIR/skill.md" ]; then
   echo "Error: $SKILL_DIR/skill.md not found. Is this a valid skill directory?"
   exit 1

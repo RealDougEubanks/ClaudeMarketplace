@@ -26,12 +26,25 @@ check "$SKILL_DIR/README.md"
 
 # Validate metadata.json has required fields
 if [ -f "$SKILL_DIR/metadata.json" ]; then
-  for field in name version description author tags; do
-    if ! grep -q "\"$field\"" "$SKILL_DIR/metadata.json"; then
+  missing=$(python3 - "$SKILL_DIR/metadata.json" <<'PYEOF'
+import json, sys
+required = ['name', 'version', 'description', 'author', 'tags']
+try:
+    d = json.load(open(sys.argv[1]))
+    missing = [f for f in required if f not in d]
+    if missing:
+        for f in missing:
+            print(f)
+except Exception as e:
+    print(f"PARSE_ERROR: {e}")
+PYEOF
+)
+  if [ -n "$missing" ]; then
+    while IFS= read -r field; do
       echo "MISSING FIELD in metadata.json: $field"
       errors=$((errors + 1))
-    fi
-  done
+    done <<< "$missing"
+  fi
 fi
 
 echo "---"
