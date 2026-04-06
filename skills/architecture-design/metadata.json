@@ -1,0 +1,12 @@
+{
+  "name": "architecture-design",
+  "version": "1.0.0",
+  "description": "Guides the design of a new system or major feature from requirements to a documented architecture: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns.",
+  "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
+  "license": "MIT",
+  "category": "workflow",
+  "tags": ["architecture", "design", "c4-model", "microservices", "system-design", "diagrams", "planning"],
+  "commands": ["/architecture-design"],
+  "triggers": [],
+  "tools": ["Read", "Write", "Glob", "Grep", "Bash"]
+}

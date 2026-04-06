@@ -137,6 +137,54 @@
       "tags": ["best-practices", "audit", "refactoring", "code-quality", "technical-debt", "improvement", "architecture"],
       "version": "1.0.0",
       "category": "standards"
+    },
+    {
+      "name": "architecture-design",
+      "path": "skills/architecture-design",
+      "description": "Guides the design of a new system or major feature from requirements to a documented architecture: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns.",
+      "tags": ["architecture", "design", "c4-model", "microservices", "system-design", "diagrams", "planning"],
+      "version": "1.0.0",
+      "category": "workflow"
+    },
+    {
+      "name": "architecture-review",
+      "path": "skills/architecture-review",
+      "description": "Audits an existing system's architecture for structural anti-patterns, scalability and reliability risks, and testability gaps. Produces graded findings with migration paths and a to-be architecture diagram.",
+      "tags": ["architecture", "review", "anti-patterns", "scalability", "reliability", "refactoring", "technical-debt"],
+      "version": "1.0.0",
+      "category": "standards"
+    },
+    {
+      "name": "adr",
+      "path": "skills/adr",
+      "description": "Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR format. Supports creating, listing, updating, superseding, and searching ADRs.",
+      "tags": ["adr", "architecture", "decisions", "documentation", "design", "knowledge-management"],
+      "version": "1.0.0",
+      "category": "workflow"
+    },
+    {
+      "name": "api-design",
+      "path": "skills/api-design",
+      "description": "Designs and reviews REST, GraphQL, and gRPC APIs. Design mode produces OpenAPI specs, GraphQL schemas, or proto files. Review mode audits existing APIs for consistency, best practices, and breaking change risks.",
+      "tags": ["api", "rest", "graphql", "grpc", "openapi", "design", "review", "contracts"],
+      "version": "1.0.0",
+      "category": "workflow"
+    },
+    {
+      "name": "database-design",
+      "path": "skills/database-design",
+      "description": "Designs database schemas from domain requirements (ERD, indexes, migrations, security) or reviews existing schemas for normalization issues, missing indexes, unsafe migrations, and scalability risks.",
+      "tags": ["database", "schema", "erd", "migrations", "indexes", "postgresql", "design", "review"],
+      "version": "1.0.0",
+      "category": "workflow"
+    },
+    {
+      "name": "accessibility",
+      "path": "skills/accessibility",
+      "description": "Audits code for WCAG 2.2 AA compliance (review mode) and provides design guidance for building accessible components (design mode). Covers semantic HTML, ARIA, keyboard navigation, colour contrast, focus management, and motion.",
+      "tags": ["accessibility", "wcag", "a11y", "aria", "screen-reader", "keyboard", "inclusive-design"],
+      "version": "1.0.0",
+      "category": "standards"
     }
   ]
 }

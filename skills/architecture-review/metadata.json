@@ -1,0 +1,12 @@
+{
+  "name": "architecture-review",
+  "version": "1.0.0",
+  "description": "Audits an existing system's architecture for structural anti-patterns, scalability and reliability risks, and testability gaps. Produces graded findings with migration paths and a to-be architecture diagram.",
+  "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
+  "license": "MIT",
+  "category": "standards",
+  "tags": ["architecture", "review", "anti-patterns", "scalability", "reliability", "refactoring", "technical-debt"],
+  "commands": ["/architecture-review"],
+  "triggers": [],
+  "tools": ["Read", "Glob", "Grep", "Write", "Bash"]
+}

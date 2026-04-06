@@ -1,0 +1,8 @@
+{
+  "name": "accessibility",
+  "version": "1.0.0",
+  "description": "WCAG 2.2 AA accessibility auditing and design guidance. Review mode audits existing code; design mode guides building accessible components.",
+  "author": { "name": "Doug Eubanks", "url": "https://github.com/RealDougEubanks" },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}
