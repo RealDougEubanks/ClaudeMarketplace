@@ -1,0 +1,65 @@
+name: Publish Registry
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - "schema/**"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Validate and tag release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install check-jsonschema
+        run: pip install check-jsonschema
+
+      - name: Full validation
+        run: |
+          # Structure
+          for dir in skills/*/; do
+            ./scripts/validate.sh "$dir"
+          done
+          # Schema
+          for meta in skills/*/metadata.json; do
+            check-jsonschema --schemafile schema/metadata.schema.json "$meta"
+          done
+          # Registry
+          ./scripts/check-registry.sh
+
+      - name: Count skills and generate summary
+        id: summary
+        run: |
+          count=$(find skills -mindepth 1 -maxdepth 1 -type d | wc -l)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Registry contains $count skill(s)"
+
+      - name: Tag release if registry changed
+        run: |
+          # Auto-increment patch version based on existing tags
+          latest=$(git tag -l 'v*' --sort=-v:refname | head -1)
+          if [ -z "$latest" ]; then
+            next="v0.1.0"
+          else
+            # Increment patch version
+            major=$(echo "$latest" | cut -d. -f1)
+            minor=$(echo "$latest" | cut -d. -f2)
+            patch=$(echo "$latest" | cut -d. -f3)
+            next="${major}.${minor}.$((patch + 1))"
+          fi
+          echo "Tagging $next (${{ steps.summary.outputs.count }} skills)"
+          git tag -a "$next" -m "Registry update: ${{ steps.summary.outputs.count }} skills"
+          git push origin "$next"
