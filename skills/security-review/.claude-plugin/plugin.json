@@ -1,0 +1,11 @@
+{
+  "name": "security-review",
+  "version": "1.0.0",
+  "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
+  "author": {
+    "name": "Doug Eubanks",
+    "url": "https://github.com/RealDougEubanks"
+  },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}
