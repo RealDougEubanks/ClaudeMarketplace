@@ -9,7 +9,7 @@
       "name": "golden-rules",
       "source": "./skills/golden-rules",
       "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -26,7 +26,7 @@
       "name": "agent-based-development",
       "source": "./skills/agent-based-development",
       "description": "Full async multi-agent development workflow: Planning \u2192 Design \u2192 Dev \u2192 Security/Tech Review loop with file-based handoffs and release-branch Git model.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -45,7 +45,7 @@
       "name": "mvp-readiness",
       "source": "./skills/mvp-readiness",
       "description": "Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -63,7 +63,7 @@
       "name": "security-review",
       "source": "./skills/security-review",
       "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -81,7 +81,7 @@
       "name": "git-workflow",
       "source": "./skills/git-workflow",
       "description": "Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"

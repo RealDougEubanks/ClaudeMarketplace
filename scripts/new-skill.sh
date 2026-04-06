@@ -15,7 +15,6 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SKILL_DIR="$REPO_ROOT/skills/$SKILL_NAME"
-TEMPLATES_DIR="$REPO_ROOT/templates"
 
 if [ -d "$SKILL_DIR" ]; then
   echo "Error: $SKILL_DIR already exists. Choose a different name or edit the existing skill."
