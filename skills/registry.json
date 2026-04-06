@@ -2,7 +2,7 @@
   "$schema": "../schema/metadata.schema.json",
   "description": "Registry of all skills in the Claude Code Skills Marketplace",
   "categories": {
-    "base": "Always-on context skills that install into CLAUDE.md — active for every Claude Code session",
+    "base": "Always-on context skills that install into CLAUDE.md \u2014 active for every Claude Code session",
     "workflow": "End-to-end development workflow skills",
     "agents": "Role-specific agent persona skills",
     "standards": "Quality gates, checklists, and coding standards",
@@ -14,176 +14,336 @@
       "name": "example-skill",
       "path": "skills/example-skill",
       "description": "A sample skill that greets the user and summarizes the current project",
-      "tags": ["example", "template"],
-      "version": "1.0.0",
+      "tags": [
+        "example",
+        "template"
+      ],
+      "version": "1.0.1",
       "category": "productivity"
     },
     {
       "name": "golden-rules",
       "path": "skills/golden-rules",
       "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
-      "tags": ["base", "security", "standards", "always-on"],
-      "version": "1.1.0",
+      "tags": [
+        "base",
+        "security",
+        "standards",
+        "always-on"
+      ],
+      "version": "1.1.1",
       "category": "base"
     },
     {
       "name": "agent-based-development",
       "path": "skills/agent-based-development",
-      "description": "Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model.",
-      "tags": ["workflow", "agents", "multi-agent", "planning", "development", "review", "handoffs"],
-      "version": "1.1.0",
+      "description": "Full async multi-agent development workflow: Planning \u2192 Design \u2192 Dev \u2192 Security/Tech Review loop with file-based handoffs and release-branch Git model.",
+      "tags": [
+        "workflow",
+        "agents",
+        "multi-agent",
+        "planning",
+        "development",
+        "review",
+        "handoffs"
+      ],
+      "version": "1.1.1",
       "category": "workflow"
     },
     {
       "name": "mvp-readiness",
       "path": "skills/mvp-readiness",
       "description": "Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.",
-      "tags": ["quality", "mvp", "audit", "checklist", "standards"],
-      "version": "1.1.0",
+      "tags": [
+        "quality",
+        "mvp",
+        "audit",
+        "checklist",
+        "standards"
+      ],
+      "version": "1.1.1",
       "category": "standards"
     },
     {
       "name": "security-review",
       "path": "skills/security-review",
       "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
-      "tags": ["security", "audit", "review", "owasp", "vulnerability", "injection"],
-      "version": "1.1.0",
+      "tags": [
+        "security",
+        "audit",
+        "review",
+        "owasp",
+        "vulnerability",
+        "injection"
+      ],
+      "version": "1.1.1",
       "category": "security"
     },
     {
       "name": "git-workflow",
       "path": "skills/git-workflow",
       "description": "Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference.",
-      "tags": ["git", "workflow", "release", "branching", "pr"],
-      "version": "1.1.0",
+      "tags": [
+        "git",
+        "workflow",
+        "release",
+        "branching",
+        "pr"
+      ],
+      "version": "1.1.1",
       "category": "workflow"
     },
     {
       "name": "code-review",
       "path": "skills/code-review",
       "description": "Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency. Complements security-review with general code quality.",
-      "tags": ["code-review", "quality", "refactoring", "solid", "complexity", "standards"],
-      "version": "1.0.0",
+      "tags": [
+        "code-review",
+        "quality",
+        "refactoring",
+        "solid",
+        "complexity",
+        "standards"
+      ],
+      "version": "1.0.1",
       "category": "standards"
     },
     {
       "name": "test-writer",
       "path": "skills/test-writer",
       "description": "Generates comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching existing test style.",
-      "tags": ["testing", "unit-tests", "jest", "pytest", "quality", "tdd"],
-      "version": "1.0.0",
+      "tags": [
+        "testing",
+        "unit-tests",
+        "jest",
+        "pytest",
+        "quality",
+        "tdd"
+      ],
+      "version": "1.0.1",
       "category": "standards"
     },
     {
       "name": "dependency-audit",
       "path": "skills/dependency-audit",
       "description": "Audits project dependencies across package.json, requirements.txt, go.mod, and Gemfile for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
-      "tags": ["dependencies", "audit", "security", "cve", "npm", "pip", "go", "ruby"],
-      "version": "1.0.0",
+      "tags": [
+        "dependencies",
+        "audit",
+        "security",
+        "cve",
+        "npm",
+        "pip",
+        "go",
+        "ruby"
+      ],
+      "version": "1.0.1",
       "category": "security"
     },
     {
       "name": "changelog-generator",
       "path": "skills/changelog-generator",
       "description": "Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts. Prepends new version sections to existing changelogs.",
-      "tags": ["changelog", "release", "git", "documentation", "versioning"],
-      "version": "1.0.0",
+      "tags": [
+        "changelog",
+        "release",
+        "git",
+        "documentation",
+        "versioning"
+      ],
+      "version": "1.0.1",
       "category": "workflow"
     },
     {
       "name": "onboarding",
       "path": "skills/onboarding",
       "description": "Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview.",
-      "tags": ["onboarding", "documentation", "developer-experience", "getting-started", "architecture"],
-      "version": "1.0.0",
+      "tags": [
+        "onboarding",
+        "documentation",
+        "developer-experience",
+        "getting-started",
+        "architecture"
+      ],
+      "version": "1.0.1",
       "category": "productivity"
     },
     {
       "name": "requirements-generator",
       "path": "skills/requirements-generator",
       "description": "Generates structured requirements documents with functional and non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.",
-      "tags": ["requirements", "specifications", "gherkin", "acceptance-criteria", "planning", "product"],
-      "version": "1.0.0",
+      "tags": [
+        "requirements",
+        "specifications",
+        "gherkin",
+        "acceptance-criteria",
+        "planning",
+        "product"
+      ],
+      "version": "1.0.1",
       "category": "workflow"
     },
     {
       "name": "log-correlation",
       "path": "skills/log-correlation",
       "description": "Correlates and troubleshoots logs across OS (Linux/macOS), AWS (CloudWatch, CloudTrail, ALB, Lambda), application (JSON, logfmt), and web servers (Nginx, Apache).",
-      "tags": ["logs", "troubleshooting", "aws", "nginx", "correlation", "debugging", "cloudwatch", "incident"],
-      "version": "1.0.0",
+      "tags": [
+        "logs",
+        "troubleshooting",
+        "aws",
+        "nginx",
+        "correlation",
+        "debugging",
+        "cloudwatch",
+        "incident"
+      ],
+      "version": "1.0.1",
       "category": "productivity"
     },
     {
       "name": "incident-report",
       "path": "skills/incident-report",
       "description": "Generates professional incident reports using customizable templates. Supports outage, security, performance, and data-loss incident types. Extensible via templates/ and rules/.",
-      "tags": ["incident", "postmortem", "report", "sla", "on-call", "reliability", "devops", "templates"],
-      "version": "1.0.0",
+      "tags": [
+        "incident",
+        "postmortem",
+        "report",
+        "sla",
+        "on-call",
+        "reliability",
+        "devops",
+        "templates"
+      ],
+      "version": "1.0.1",
       "category": "workflow"
     },
     {
       "name": "pre-commit",
       "path": "skills/pre-commit",
       "description": "Fast pre-commit quality gate: scans staged files for secrets, dead code, naming issues, merge conflict markers, and direct-to-main commits. Installs as a git hook via /pre-commit install.",
-      "tags": ["pre-commit", "git", "hooks", "secrets", "quality", "gate", "standards"],
-      "version": "1.0.0",
+      "tags": [
+        "pre-commit",
+        "git",
+        "hooks",
+        "secrets",
+        "quality",
+        "gate",
+        "standards"
+      ],
+      "version": "1.0.1",
       "category": "standards"
     },
     {
       "name": "best-practices",
       "path": "skills/best-practices",
       "description": "Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates.",
-      "tags": ["best-practices", "audit", "refactoring", "code-quality", "technical-debt", "improvement", "architecture"],
-      "version": "1.0.0",
+      "tags": [
+        "best-practices",
+        "audit",
+        "refactoring",
+        "code-quality",
+        "technical-debt",
+        "improvement",
+        "architecture"
+      ],
+      "version": "1.0.1",
       "category": "standards"
     },
     {
       "name": "architecture-design",
       "path": "skills/architecture-design",
       "description": "Designs new systems from requirements: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns.",
-      "tags": ["architecture", "design", "c4-model", "microservices", "system-design", "diagrams", "planning"],
-      "version": "1.0.0",
+      "tags": [
+        "architecture",
+        "design",
+        "c4-model",
+        "microservices",
+        "system-design",
+        "diagrams",
+        "planning"
+      ],
+      "version": "1.0.1",
       "category": "workflow"
     },
     {
       "name": "architecture-review",
       "path": "skills/architecture-review",
       "description": "Audits existing architecture for anti-patterns, scalability and reliability risks, and testability gaps. Graded findings with migration paths and a to-be diagram.",
-      "tags": ["architecture", "review", "anti-patterns", "scalability", "reliability", "refactoring", "technical-debt"],
-      "version": "1.0.0",
+      "tags": [
+        "architecture",
+        "review",
+        "anti-patterns",
+        "scalability",
+        "reliability",
+        "refactoring",
+        "technical-debt"
+      ],
+      "version": "1.0.1",
       "category": "standards"
     },
     {
       "name": "adr",
       "path": "skills/adr",
       "description": "Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR format. Supports creating, listing, updating, superseding, and searching ADRs.",
-      "tags": ["adr", "architecture", "decisions", "documentation", "design", "knowledge-management"],
-      "version": "1.0.0",
+      "tags": [
+        "adr",
+        "architecture",
+        "decisions",
+        "documentation",
+        "design",
+        "knowledge-management"
+      ],
+      "version": "1.0.1",
       "category": "workflow"
     },
     {
       "name": "api-design",
       "path": "skills/api-design",
       "description": "Designs REST, GraphQL, and gRPC APIs (OpenAPI/schema/proto output) and reviews existing APIs for consistency, best practices, and breaking change risks.",
-      "tags": ["api", "rest", "graphql", "grpc", "openapi", "design", "review", "contracts"],
-      "version": "1.0.0",
+      "tags": [
+        "api",
+        "rest",
+        "graphql",
+        "grpc",
+        "openapi",
+        "design",
+        "review",
+        "contracts"
+      ],
+      "version": "1.0.1",
       "category": "workflow"
     },
     {
       "name": "database-design",
       "path": "skills/database-design",
       "description": "Designs database schemas from domain requirements (ERD, indexes, migrations, security) or reviews existing schemas for normalization issues, missing indexes, unsafe migrations, and scalability risks.",
-      "tags": ["database", "schema", "erd", "migrations", "indexes", "postgresql", "design", "review"],
-      "version": "1.0.0",
+      "tags": [
+        "database",
+        "schema",
+        "erd",
+        "migrations",
+        "indexes",
+        "postgresql",
+        "design",
+        "review"
+      ],
+      "version": "1.0.1",
       "category": "workflow"
     },
     {
       "name": "accessibility",
       "path": "skills/accessibility",
       "description": "Audits code for WCAG 2.2 AA compliance and provides design guidance for accessible components. Covers semantic HTML, ARIA, keyboard nav, contrast, focus management, and motion.",
-      "tags": ["accessibility", "wcag", "a11y", "aria", "screen-reader", "keyboard", "inclusive-design"],
-      "version": "1.0.0",
+      "tags": [
+        "accessibility",
+        "wcag",
+        "a11y",
+        "aria",
+        "screen-reader",
+        "keyboard",
+        "inclusive-design"
+      ],
+      "version": "1.0.1",
       "category": "standards"
     }
   ]
