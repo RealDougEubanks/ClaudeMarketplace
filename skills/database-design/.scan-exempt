@@ -1,0 +1,5 @@
+# database-design/skill.md is a database design guidance skill.
+# It references "password" in a checklist item requiring passwords to be stored
+# as hashes and never in plaintext. This is a security best-practice instruction,
+# not an actual password or credential.
+password

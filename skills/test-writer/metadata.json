@@ -1,0 +1,12 @@
+{
+  "name": "test-writer",
+  "version": "1.0.0",
+  "description": "Generates comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching existing test style.",
+  "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
+  "license": "MIT",
+  "category": "standards",
+  "tags": ["testing", "unit-tests", "jest", "pytest", "quality", "tdd"],
+  "commands": ["/test-writer"],
+  "triggers": [],
+  "tools": ["Read", "Write", "Edit", "Glob", "Grep", "Bash"]
+}

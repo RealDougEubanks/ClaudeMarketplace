@@ -1,0 +1,7 @@
+# mvp-readiness/skill.md instructs Claude to run grep searches for dangerous patterns
+# in the user's codebase. The skill.md itself contains those pattern strings as
+# grep arguments — they are detection targets, not hardcoded credentials.
+\.env\b
+api[_-]?key
+secret[_-]?key
+password

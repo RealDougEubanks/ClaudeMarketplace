@@ -1,0 +1,12 @@
+{
+  "name": "database-design",
+  "version": "1.0.0",
+  "description": "Designs database schemas from domain requirements (ERD, indexes, migrations, security) or reviews existing schemas for normalization issues, missing indexes, unsafe migrations, and scalability risks.",
+  "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
+  "license": "MIT",
+  "category": "workflow",
+  "tags": ["database", "schema", "erd", "migrations", "indexes", "postgresql", "design", "review"],
+  "commands": ["/database-design"],
+  "triggers": [],
+  "tools": ["Read", "Write", "Glob", "Grep", "Bash"]
+}

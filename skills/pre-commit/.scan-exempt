@@ -1,0 +1,9 @@
+# pre-commit/skill.md IS the secret scanner skill. Its content intentionally
+# lists regex patterns (api[_-]?key, secret[_-]?key, access[_-]?token, password,
+# AWS_SECRET, etc.) as examples of what the pre-commit hook should scan for.
+# These are detection pattern examples used to build the scanner, not actual secrets.
+api[_-]?key
+secret[_-]?key
+access[_-]?token
+password
+AWS_SECRET

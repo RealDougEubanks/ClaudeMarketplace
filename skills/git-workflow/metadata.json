@@ -1,0 +1,15 @@
+{
+  "name": "git-workflow",
+  "version": "1.1.0",
+  "description": "Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference.",
+  "author": {
+    "name": "Doug Eubanks",
+    "github": "realdougeubanks"
+  },
+  "license": "MIT",
+  "category": "workflow",
+  "tags": ["git", "workflow", "release", "branching", "pr"],
+  "commands": ["/git-workflow"],
+  "triggers": [],
+  "tools": ["Bash", "Read", "Glob", "Write"]
+}

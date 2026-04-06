@@ -1,0 +1,26 @@
+{
+  "name": "agent-based-development",
+  "version": "1.1.0",
+  "description": "Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model.",
+  "author": {
+    "name": "Doug Eubanks",
+    "github": "realdougeubanks"
+  },
+  "license": "MIT",
+  "category": "workflow",
+  "tags": ["workflow", "agents", "multi-agent", "planning", "development", "review", "handoffs"],
+  "commands": [
+    "/agent-based-development",
+    "/abd",
+    "/abd-plan",
+    "/abd-design",
+    "/abd-dev-senior",
+    "/abd-dev-junior",
+    "/abd-security",
+    "/abd-review",
+    "/abd-docs",
+    "/abd-triage"
+  ],
+  "triggers": [],
+  "tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
+}

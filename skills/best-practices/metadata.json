@@ -1,0 +1,12 @@
+{
+  "name": "best-practices",
+  "version": "1.0.0",
+  "description": "Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates.",
+  "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
+  "license": "MIT",
+  "category": "standards",
+  "tags": ["best-practices", "audit", "refactoring", "code-quality", "technical-debt", "improvement", "architecture"],
+  "commands": ["/best-practices"],
+  "triggers": [],
+  "tools": ["Read", "Glob", "Grep", "Bash", "Write"]
+}

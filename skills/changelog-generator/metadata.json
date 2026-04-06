@@ -1,0 +1,15 @@
+{
+  "name": "changelog-generator",
+  "version": "1.0.0",
+  "description": "Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts. Prepends new version sections to existing changelogs.",
+  "author": {
+    "name": "Doug Eubanks",
+    "github": "realdougeubanks"
+  },
+  "license": "MIT",
+  "category": "workflow",
+  "tags": ["changelog", "release", "git", "documentation", "versioning"],
+  "commands": ["/changelog-generator"],
+  "triggers": [],
+  "tools": ["Bash", "Read", "Write", "Edit", "Glob"]
+}

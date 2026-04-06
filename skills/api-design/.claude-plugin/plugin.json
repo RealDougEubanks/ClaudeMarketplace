@@ -1,0 +1,8 @@
+{
+  "name": "api-design",
+  "version": "1.0.0",
+  "description": "Designs and reviews REST, GraphQL, and gRPC APIs. Produces OpenAPI specs, GraphQL schemas, and proto files.",
+  "author": { "name": "Doug Eubanks", "url": "https://github.com/RealDougEubanks" },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}
