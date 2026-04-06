@@ -1,0 +1,14 @@
+{
+  "name": "my-skill",
+  "version": "0.1.0",
+  "description": "Short description of what the skill does",
+  "author": {
+    "name": "Your Name",
+    "github": "your-github-username"
+  },
+  "license": "MIT",
+  "tags": [],
+  "commands": ["/my-skill"],
+  "triggers": [],
+  "tools": []
+}

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Skill Metadata",
+  "description": "Schema for Claude Code skill metadata",
+  "type": "object",
+  "required": ["name", "version", "description", "author", "tags"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique skill identifier (kebab-case)",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of what the skill does",
+      "maxLength": 200
+    },
+    "author": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "github": { "type": "string" },
+        "url": { "type": "string", "format": "uri" }
+      }
+    },
+    "license": {
+      "type": "string",
+      "default": "MIT"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Categorization tags (e.g., 'git', 'testing', 'documentation')"
+    },
+    "triggers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Conditions that should activate this skill"
+    },
+    "commands": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Slash commands this skill responds to (e.g., '/my-skill')"
+    },
+    "tools": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tools the skill expects to use (e.g., 'Bash', 'Read', 'Edit')"
+    },
+    "compatibility": {
+      "type": "object",
+      "properties": {
+        "claude_code_min_version": { "type": "string" }
+      }
+    },
+    "category": {
+      "type": "string",
+      "description": "Skill category grouping",
+      "enum": ["base", "workflow", "agents", "standards", "security", "productivity"]
+    }
+  },
+  "additionalProperties": false
+}
