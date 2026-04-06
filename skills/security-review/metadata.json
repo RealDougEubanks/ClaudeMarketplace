@@ -1,0 +1,15 @@
+{
+  "name": "security-review",
+  "version": "1.0.0",
+  "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
+  "author": {
+    "name": "Doug Eubanks",
+    "github": "realdougeubanks"
+  },
+  "license": "MIT",
+  "category": "security",
+  "tags": ["security", "audit", "review", "owasp", "vulnerability", "injection"],
+  "commands": ["/security-review"],
+  "triggers": [],
+  "tools": ["Read", "Glob", "Grep", "Write"]
+}

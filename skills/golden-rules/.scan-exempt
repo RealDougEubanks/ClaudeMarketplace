@@ -1,0 +1,11 @@
+# golden-rules/skill.md installs mandatory security standards into CLAUDE.md.
+# It references these terms in an educational, advisory context (e.g. "never store
+# plaintext passwords", "use env vars for API keys"). These are not active
+# exploitation instructions — they are the rules developers must follow.
+\.env\b
+credentials
+api[_-]?key
+secret[_-]?key
+access[_-]?token
+private[_-]?key
+password

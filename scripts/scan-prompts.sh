@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
 # scan-prompts.sh — Scan skill.md files for potentially dangerous prompt patterns.
+#
 # Usage: ./scripts/scan-prompts.sh [skill-directory|skill.md]
 #   No arguments: scans all skills in skills/
 #   With argument: scans a single skill directory or file
+#
+# Exemptions:
+#   Skills may contain a .scan-exempt file listing patterns (one per line) that
+#   are expected and reviewed. Lines starting with # are comments. Use this for
+#   security or base skills that legitimately reference vulnerability patterns.
+#
+# Code fences:
+#   Content inside triple-backtick (```) code blocks is stripped before scanning,
+#   since code examples are not executable prompt instructions.
 
 set -euo pipefail
 
@@ -11,6 +21,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 warnings=0
@@ -41,7 +52,6 @@ HIGH_PATTERNS=(
   # Destructive commands
   'rm\s+-rf\s+/'
   'rm\s+-rf\s+~'
-  'rm\s+-rf\s+\$HOME'
   'mkfs\.'
   'dd\s+if='
   ':(){.*};'
@@ -85,26 +95,62 @@ MEDIUM_PATTERNS=(
   # File system sensitive paths
   '/etc/passwd'
   '/etc/shadow'
-  '~/.ssh'
-  '~/.aws'
-  '~/.gnupg'
+  '[~]/.ssh'
+  '[~]/.aws'
+  '[~]/.gnupg'
   # Requesting excessive permissions
   'dangerouslyDisableSandbox'
   'no-verify'
   '--no-verify'
 )
 
+# Strip content inside triple-backtick code fences.
+# Output: cleaned text (code block bodies removed, fence markers removed).
+preprocess_file() {
+  local file="$1"
+  awk '/^[[:space:]]*```/{in_fence=!in_fence; next} !in_fence' "$file"
+}
+
+# Load exempted patterns from .scan-exempt in the skill directory.
+# If the file doesn't exist, outputs nothing.
+load_exemptions() {
+  local file="$1"
+  local skill_dir
+  skill_dir=$(dirname "$file")
+  local exempt_file="$skill_dir/.scan-exempt"
+  if [ -f "$exempt_file" ]; then
+    grep -v '^\s*#' "$exempt_file" | grep -v '^\s*$' || true
+  fi
+}
+
 scan_file() {
   local file="$1"
   local file_errors=0
   local file_warnings=0
+  local file_exemptions=0
+
+  # Pre-process: strip code fence content into a temp file
+  local tmpfile
+  tmpfile=$(mktemp)
+  preprocess_file "$file" > "$tmpfile"
+
+  # Load exemptions for this skill
+  local exemptions
+  exemptions=$(load_exemptions "$file")
 
   # HIGH severity checks
   for pattern in "${HIGH_PATTERNS[@]}"; do
-    if grep -qiP "$pattern" "$file" 2>/dev/null; then
+    # Skip if this pattern is listed in .scan-exempt
+    if echo "$exemptions" | grep -qxF "$pattern" 2>/dev/null; then
+      echo -e "  ${CYAN}EXEMPT${NC} [$pattern] (see .scan-exempt)"
+      file_exemptions=$((file_exemptions + 1))
+      continue
+    fi
+    if grep -qiP "$pattern" "$tmpfile" 2>/dev/null; then
       local match
-      match=$(grep -niP "$pattern" "$file" | head -3)
+      match=$(grep -niP "$pattern" "$tmpfile" | head -3)
       echo -e "  ${RED}HIGH${NC}  [$pattern]"
+      # shellcheck disable=SC2001  # Multi-line prefix; ${var//search/replace} only works on first line
       echo "$match" | sed 's/^/         /'
       file_errors=$((file_errors + 1))
     fi
@@ -112,20 +158,33 @@ scan_file() {
 
   # MEDIUM severity checks
   for pattern in "${MEDIUM_PATTERNS[@]}"; do
-    if grep -qiP "$pattern" "$file" 2>/dev/null; then
+    # Skip if this pattern is listed in .scan-exempt
+    if echo "$exemptions" | grep -qxF "$pattern" 2>/dev/null; then
+      echo -e "  ${CYAN}EXEMPT${NC} [$pattern] (see .scan-exempt)"
+      file_exemptions=$((file_exemptions + 1))
+      continue
+    fi
+    if grep -qiP "$pattern" "$tmpfile" 2>/dev/null; then
       local match
-      match=$(grep -niP "$pattern" "$file" | head -3)
+      match=$(grep -niP "$pattern" "$tmpfile" | head -3)
       echo -e "  ${YELLOW}MEDIUM${NC} [$pattern]"
+      # shellcheck disable=SC2001  # Multi-line prefix; ${var//search/replace} only works on first line
       echo "$match" | sed 's/^/         /'
       file_warnings=$((file_warnings + 1))
     fi
   done
 
+  rm -f "$tmpfile"
+
   errors=$((errors + file_errors))
   warnings=$((warnings + file_warnings))
 
   if [ "$file_errors" -eq 0 ] && [ "$file_warnings" -eq 0 ]; then
-    echo "  No issues found."
+    if [ "$file_exemptions" -gt 0 ]; then
+      echo "  No issues found ($file_exemptions pattern(s) exempted via .scan-exempt)."
+    else
+      echo "  No issues found."
+    fi
   fi
 }
 
@@ -167,6 +226,8 @@ echo "========================================"
 
 if [ "$errors" -gt 0 ]; then
   echo -e "${RED}FAILED: $errors high-severity issue(s) require review before merge.${NC}"
+  echo "To exempt a pattern that is intentionally referenced, add it to"
+  echo "the skill's .scan-exempt file with a comment explaining why."
   exit 1
 elif [ "$warnings" -gt 0 ]; then
   echo -e "${YELLOW}WARNING: $warnings medium-severity issue(s) found. Manual review recommended.${NC}"

@@ -36,11 +36,53 @@ ClaudeMarketplace/
 └── LICENSE                     # MIT
 ```
 
+## Available Skills
+
+### Base (always-on context)
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| [golden-rules](skills/golden-rules/) | `/golden-rules` | Installs mandatory security, coding, and design standards into `CLAUDE.md` |
+
+### Workflow
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| [agent-based-development](skills/agent-based-development/) | `/abd`, `/abd-plan`, `/abd-security`, … | Full async multi-agent dev workflow with file-based handoffs |
+| [git-workflow](skills/git-workflow/) | `/git-workflow` | Release-branch Git model: branch creation, PR gate, release tagging |
+
+### Standards
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| [mvp-readiness](skills/mvp-readiness/) | `/mvp-readiness` | 18-point MVP quality-gate audit with pass/fail report |
+
+### Security
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| [security-review](skills/security-review/) | `/security-review` | OWASP-aligned security audit with severity-graded findings |
+
+> The `example-skill` is a contributor reference — it demonstrates the expected file structure but is not a functional skill.
+
+---
+
+## How Base Skills Work
+
+Skills with `"category": "base"` (like `golden-rules`) do two things when installed:
+
+1. Copy `skill.md` to `.claude/commands/<skill-name>.md` so you can invoke it with a slash command.
+2. **Also append the skill content to `CLAUDE.md`** in your project root.
+
+Because Claude Code loads `CLAUDE.md` automatically at the start of every session, base skills become **always-on context** — no invocation required.
+
+---
+
 ## Quick Start
 
 ### Browse Skills
 
-Look through the [`skills/`](skills/) directory or check [`skills/registry.json`](skills/registry.json) for a list of all available skills.
+Look through the [`skills/`](skills/) directory or check [`skills/registry.json`](skills/registry.json) for a full index.
 
 ### Install a Skill
 
@@ -49,23 +91,31 @@ Look through the [`skills/`](skills/) directory or check [`skills/registry.json`
 git clone https://github.com/realdougeubanks/claudemarketplace.git
 cd claudemarketplace
 
-# Install a skill to your local Claude Code config
-./scripts/install.sh skills/example-skill
+# Install a skill into your project's .claude/commands/ directory
+./scripts/install.sh skills/golden-rules /path/to/your/project
+
+# Or install to the current directory
+./scripts/install.sh skills/mvp-readiness
 ```
+
+The script copies `skill.md` → `.claude/commands/<skill-name>.md` and `metadata.json` → `.claude/commands/<skill-name>.metadata.json`. For `base` skills, it also appends to `CLAUDE.md`.
 
 ### Create Your Own Skill
 
 ```bash
-# Start from the template
-cp -r templates/ skills/my-new-skill
+# Scaffold from templates
+./scripts/new-skill.sh my-new-skill
 
-# Edit the files
-# - skill.md       → instructions for Claude
-# - metadata.json  → metadata and tags
-# - README.md      → documentation for users (create this)
+# Edit the three files
+# - skills/my-new-skill/skill.md       → instructions Claude follows literally
+# - skills/my-new-skill/metadata.json  → name, version, category, tags, tools
+# - skills/my-new-skill/README.md      → human-readable docs
 
-# Validate your skill
+# Validate structure
 ./scripts/validate.sh skills/my-new-skill
+
+# Check registry consistency
+./scripts/check-registry.sh
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full submission guide.

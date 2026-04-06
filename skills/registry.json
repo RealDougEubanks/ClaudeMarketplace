@@ -1,13 +1,62 @@
 {
   "$schema": "../schema/metadata.schema.json",
   "description": "Registry of all skills in the Claude Code Skills Marketplace",
+  "categories": {
+    "base": "Always-on context skills that install into CLAUDE.md — active for every Claude Code session",
+    "workflow": "End-to-end development workflow skills",
+    "agents": "Role-specific agent persona skills",
+    "standards": "Quality gates, checklists, and coding standards",
+    "security": "Security audits and vulnerability scanning",
+    "productivity": "Day-to-day productivity and utility skills"
+  },
   "skills": [
     {
       "name": "example-skill",
       "path": "skills/example-skill",
       "description": "A sample skill demonstrating the expected structure",
       "tags": ["example", "template"],
-      "version": "1.0.0"
+      "version": "1.0.0",
+      "category": "productivity"
+    },
+    {
+      "name": "golden-rules",
+      "path": "skills/golden-rules",
+      "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
+      "tags": ["base", "security", "standards", "always-on"],
+      "version": "1.0.0",
+      "category": "base"
+    },
+    {
+      "name": "agent-based-development",
+      "path": "skills/agent-based-development",
+      "description": "Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model.",
+      "tags": ["workflow", "agents", "multi-agent", "planning", "development", "review", "handoffs"],
+      "version": "1.0.0",
+      "category": "workflow"
+    },
+    {
+      "name": "mvp-readiness",
+      "path": "skills/mvp-readiness",
+      "description": "Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.",
+      "tags": ["quality", "mvp", "audit", "checklist", "standards"],
+      "version": "1.0.0",
+      "category": "standards"
+    },
+    {
+      "name": "security-review",
+      "path": "skills/security-review",
+      "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
+      "tags": ["security", "audit", "review", "owasp", "vulnerability", "injection"],
+      "version": "1.0.0",
+      "category": "security"
+    },
+    {
+      "name": "git-workflow",
+      "path": "skills/git-workflow",
+      "description": "Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference.",
+      "tags": ["git", "workflow", "release", "branching", "pr"],
+      "version": "1.0.0",
+      "category": "workflow"
     }
   ]
 }

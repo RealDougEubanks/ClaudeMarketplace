@@ -59,6 +59,11 @@
       "properties": {
         "claude_code_min_version": { "type": "string" }
       }
+    },
+    "category": {
+      "type": "string",
+      "description": "Skill category grouping",
+      "enum": ["base", "workflow", "agents", "standards", "security", "productivity"]
     }
   },
   "additionalProperties": false

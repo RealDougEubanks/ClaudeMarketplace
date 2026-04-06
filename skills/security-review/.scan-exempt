@@ -1,0 +1,15 @@
+# security-review/skill.md is a security audit skill. Its content intentionally
+# references vulnerability patterns as checklist items and grep examples so Claude
+# knows what to look for. These are detection references, not exploitation instructions.
+\.env\b
+credentials
+api[_-]?key
+secret[_-]?key
+access[_-]?token
+private[_-]?key
+password
+AWS_SECRET
+GITHUB_TOKEN
+ANTHROPIC_API_KEY
+eval\s*\(
+eval\s+"
