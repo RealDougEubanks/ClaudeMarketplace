@@ -38,32 +38,53 @@ ClaudeMarketplace/
 
 ## Available Skills
 
+> The `example-skill` is a contributor reference — it demonstrates the expected file structure but is not a functional skill.
+
 ### Base (always-on context)
 
 | Skill | Command | Description |
 |-------|---------|-------------|
-| [golden-rules](skills/golden-rules/) | `/golden-rules` | Installs mandatory security, coding, and design standards into `CLAUDE.md` |
+| [golden-rules](skills/golden-rules/) | `/golden-rules` | Installs mandatory security, coding, naming, and design standards into `CLAUDE.md` as always-on context for every Claude Code session |
 
 ### Workflow
 
 | Skill | Command | Description |
 |-------|---------|-------------|
-| [agent-based-development](skills/agent-based-development/) | `/abd`, `/abd-plan`, `/abd-security`, … | Full async multi-agent dev workflow with file-based handoffs |
-| [git-workflow](skills/git-workflow/) | `/git-workflow` | Release-branch Git model: branch creation, PR gate, release tagging |
+| [agent-based-development](skills/agent-based-development/) | `/agent-based-development` | Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model |
+| [git-workflow](skills/git-workflow/) | `/git-workflow` | Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference |
+| [adr](skills/adr/) | `/adr` | Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR format. Supports creating, listing, updating, superseding, and searching ADRs |
+| [api-design](skills/api-design/) | `/api-design` | Designs REST, GraphQL, and gRPC APIs (OpenAPI/schema/proto output) and reviews existing APIs for consistency, best practices, and breaking change risks |
+| [architecture-design](skills/architecture-design/) | `/architecture-design` | Designs new systems from requirements: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns |
+| [changelog-generator](skills/changelog-generator/) | `/changelog-generator` | Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts |
+| [database-design](skills/database-design/) | `/database-design` | Designs database schemas from domain requirements (ERD, indexes, migrations, security) or reviews existing schemas for normalization issues, missing indexes, unsafe migrations, and scalability risks |
+| [incident-report](skills/incident-report/) | `/incident-report` | Generates professional incident reports using customizable templates. Supports outage, security, performance, and data-loss incident types |
+| [requirements-generator](skills/requirements-generator/) | `/requirements-generator` | Generates structured requirements documents with functional and non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items |
 
 ### Standards
 
 | Skill | Command | Description |
 |-------|---------|-------------|
-| [mvp-readiness](skills/mvp-readiness/) | `/mvp-readiness` | 18-point MVP quality-gate audit with pass/fail report |
+| [accessibility](skills/accessibility/) | `/accessibility` | Audits code for WCAG 2.2 AA compliance and provides design guidance for accessible components. Covers semantic HTML, ARIA, keyboard nav, contrast, focus management, and motion |
+| [architecture-review](skills/architecture-review/) | `/architecture-review` | Audits existing architecture for anti-patterns, scalability and reliability risks, and testability gaps. Graded findings with migration paths and a to-be diagram |
+| [best-practices](skills/best-practices/) | `/best-practices` | Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates |
+| [code-review](skills/code-review/) | `/code-review` | Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency |
+| [mvp-readiness](skills/mvp-readiness/) | `/mvp-readiness` | Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence |
+| [pre-commit](skills/pre-commit/) | `/pre-commit` | Fast pre-commit quality gate: scans staged files for secrets, dead code, naming issues, merge conflict markers, and direct-to-main commits. Installs as a git hook via `/pre-commit install` |
+| [test-writer](skills/test-writer/) | `/test-writer` | Generates comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching existing test style |
 
 ### Security
 
 | Skill | Command | Description |
 |-------|---------|-------------|
-| [security-review](skills/security-review/) | `/security-review` | OWASP-aligned security audit with severity-graded findings |
+| [dependency-audit](skills/dependency-audit/) | `/dependency-audit` | Audits project dependencies across package.json, requirements.txt, go.mod, and Gemfile for unpinned versions, deprecated packages, missing lockfiles, and known CVEs |
+| [security-review](skills/security-review/) | `/security-review` | Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings |
 
-> The `example-skill` is a contributor reference — it demonstrates the expected file structure but is not a functional skill.
+### Productivity
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| [log-correlation](skills/log-correlation/) | `/log-correlation` | Correlates and troubleshoots logs across OS (Linux/macOS), AWS (CloudWatch, CloudTrail, ALB, Lambda), application (JSON, logfmt), and web servers (Nginx, Apache) |
+| [onboarding](skills/onboarding/) | `/onboarding` | Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview |
 
 ---
 

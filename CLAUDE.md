@@ -31,13 +31,22 @@ GOLDEN RULES (MANDATORY — ALL WORK IN THIS PROJECT MUST FOLLOW THESE)
 
 CODING & NAMING GUIDELINES (apply unless project explicitly overrides in docs/assumptions.md)
 
-- camelCase for variables, functions, and filenames.
-- Exceptions: snake_case or PascalCase only when the language or framework strictly requires it.
-- kebab-case for CSS class names.
+- camelCase for variables, functions, and filenames (see language-specific table below).
+- Language-specific naming conventions:
+
+  | Language | Variables/Functions | Files | Classes |
+  |----------|-------------------|-------|---------|
+  | JavaScript/TypeScript | camelCase | camelCase | PascalCase |
+  | Python | snake_case | snake_case | PascalCase |
+  | Go | camelCase (unexported) / PascalCase (exported) | snake_case | PascalCase |
+  | SQL | snake_case | snake_case | N/A |
+  | CSS classes | kebab-case | kebab-case | N/A |
+
 - Strict typing and schema validation (e.g. Zod, Pydantic, or language-equivalent) for all inputs and boundaries.
 - No hardcoded API keys, credentials, or secrets — use configuration or secrets management.
 - No placeholder or stub code in production paths — write complete, functional code.
 - Move task notes to docs/ToDo.md or docs/ — do not leave // TODO in the codebase for project tracking.
+- Remove dead code before committing — commented-out code blocks, unused imports, unreachable functions, and orphaned files are not acceptable in production paths.
 
 DESIGN & UX GUIDELINES (apply unless project explicitly overrides)
 
@@ -46,6 +55,38 @@ DESIGN & UX GUIDELINES (apply unless project explicitly overrides)
 - Visual design: Prefer minimalist, clean designs. Avoid clutter; use clear hierarchy and whitespace.
 - Responsive design: Layouts must be responsive — usable across mobile, tablet, and desktop. Use fluid layouts and touch-friendly targets.
 - Accessibility: Choose accessible and pleasant color palettes. WCAG AA contrast minimum. Do not rely on color alone for meaning.
+
+GIT HYGIENE (MANDATORY)
+
+- Never commit or push directly to `main`. All changes must go through a branch and PR, no exceptions.
+- Branch from the current release branch (or `main` if no release branch exists). Name branches `feature/`, `fix/`, `hotfix/`, or `claude/` as appropriate.
+- If you find yourself on `main` with uncommitted changes, stash or move them to a new branch before committing.
+- No PR may be merged without at least one approval from a reviewer other than the author. Self-merge is not permitted.
+
+PYTHON ENVIRONMENT (MANDATORY)
+
+- Never install Python packages into the OS Python install. Always use a virtual environment.
+- Create a venv at the project root: `python3 -m venv .venv`
+- Activate before running or installing: `source .venv/bin/activate`
+- Add `.venv/` to `.gitignore` — never commit it.
+- Pin all dependencies in `requirements.txt` (or `pyproject.toml`). Use `pip freeze > requirements.txt` after installing.
+
+CLAUDE CODE PLUGIN & SKILL LAYOUT (MANDATORY)
+
+Skills and plugins installed via the Claude Code plugin system must follow this layout so they are discovered automatically as slash commands:
+
+```
+skills/<skill-name>/
+  commands/
+    <skill-name>.md     ← skill content with YAML frontmatter (name, description)
+  metadata.json
+  README.md
+```
+
+- The command file must be at `commands/<skill-name>.md` — NOT at `skill.md` in the plugin root.
+- The YAML frontmatter in `commands/<skill-name>.md` must include `name` and `description` fields.
+- Run `./scripts/validate.sh skills/<skill-name>` after creating or editing a skill.
+- Use `./scripts/new-skill.sh <name>` to scaffold; it generates the correct structure automatically.
 
 ASSUMPTIONS TRACKING
 
