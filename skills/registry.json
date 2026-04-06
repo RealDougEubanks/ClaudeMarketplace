@@ -1,0 +1,13 @@
+{
+  "$schema": "../schema/metadata.schema.json",
+  "description": "Registry of all skills in the Claude Code Skills Marketplace",
+  "skills": [
+    {
+      "name": "example-skill",
+      "path": "skills/example-skill",
+      "description": "A sample skill demonstrating the expected structure",
+      "tags": ["example", "template"],
+      "version": "1.0.0"
+    }
+  ]
+}
