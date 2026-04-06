@@ -1,6 +1,6 @@
 {
   "name": "mvp-readiness",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.",
   "author": {
     "name": "Doug Eubanks",
@@ -8,8 +8,20 @@
   },
   "license": "MIT",
   "category": "standards",
-  "tags": ["quality", "mvp", "audit", "checklist", "standards"],
-  "commands": ["/mvp-readiness"],
+  "tags": [
+    "quality",
+    "mvp",
+    "audit",
+    "checklist",
+    "standards"
+  ],
+  "commands": [
+    "/mvp-readiness"
+  ],
   "triggers": [],
-  "tools": ["Read", "Glob", "Grep"]
+  "tools": [
+    "Read",
+    "Glob",
+    "Grep"
+  ]
 }
