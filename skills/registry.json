@@ -13,7 +13,7 @@
     {
       "name": "example-skill",
       "path": "skills/example-skill",
-      "description": "A sample skill demonstrating the expected structure",
+      "description": "A sample skill that greets the user and summarizes the current project",
       "tags": ["example", "template"],
       "version": "1.0.0",
       "category": "productivity"
