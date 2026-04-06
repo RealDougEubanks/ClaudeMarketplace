@@ -1,3 +1,8 @@
+---
+name: best-practices
+description: Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates.
+---
+
 # Skill: best-practices
 
 Invoked via `/best-practices`.

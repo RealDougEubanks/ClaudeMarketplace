@@ -1,3 +1,8 @@
+---
+name: adr
+description: Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR format. Supports creating, listing, updating, superseding, and searching ADRs.
+---
+
 # adr
 
 ## Purpose

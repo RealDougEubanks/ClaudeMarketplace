@@ -1,3 +1,8 @@
+---
+name: dependency-audit
+description: Audits project dependencies across package.json, requirements.txt, go.mod, and Gemfile for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.
+---
+
 # Dependency Audit
 
 Audit project dependencies for staleness, vulnerabilities, and hygiene issues across multiple package ecosystems.

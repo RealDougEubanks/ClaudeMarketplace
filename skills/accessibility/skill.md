@@ -1,3 +1,8 @@
+---
+name: accessibility
+description: Audits code for WCAG 2.2 AA compliance and provides design guidance for accessible components. Covers semantic HTML, ARIA, keyboard nav, contrast, focus management, and motion.
+---
+
 # accessibility
 
 ## Purpose

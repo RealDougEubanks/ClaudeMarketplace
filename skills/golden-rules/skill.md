@@ -1,3 +1,8 @@
+---
+name: golden-rules
+description: Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.
+---
+
 # Golden Rules — Always-On Project Standards
 
 Install mandatory security, coding, and design standards into this project's CLAUDE.md so they are active for every Claude Code session automatically.

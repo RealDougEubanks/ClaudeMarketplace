@@ -1,3 +1,8 @@
+---
+name: api-design
+description: Designs REST, GraphQL, and gRPC APIs (OpenAPI/schema/proto output) and reviews existing APIs for consistency, best practices, and breaking change risks.
+---
+
 # api-design
 
 ## Purpose

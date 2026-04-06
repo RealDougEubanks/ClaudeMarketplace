@@ -1,3 +1,8 @@
+---
+name: agent-based-development
+description: Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model.
+---
+
 # Agent-Based Development — Async Multi-Agent Workflow
 
 Run a full async multi-agent software development workflow using file-based artifact handoffs. Each invocation adopts a specific agent role and operates according to that role's responsibilities.

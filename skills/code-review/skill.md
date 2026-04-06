@@ -1,3 +1,8 @@
+---
+name: code-review
+description: Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency. Complements security-review with general code quality.
+---
+
 # Code Review
 
 Perform a structured engineering code review covering readability, complexity, test coverage gaps, SOLID principles, and API consistency.
