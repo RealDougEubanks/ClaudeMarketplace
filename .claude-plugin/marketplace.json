@@ -184,6 +184,18 @@
       },
       "keywords": ["pre-commit", "git", "hooks", "secrets", "quality", "gate", "standards"],
       "category": "standards"
+    },
+    {
+      "name": "best-practices",
+      "source": "./skills/best-practices",
+      "description": "Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["best-practices", "audit", "refactoring", "code-quality", "technical-debt", "improvement", "architecture"],
+      "category": "standards"
     }
   ]
 }

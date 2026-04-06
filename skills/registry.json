@@ -129,6 +129,14 @@
       "tags": ["pre-commit", "git", "hooks", "secrets", "quality", "gate", "standards"],
       "version": "1.0.0",
       "category": "standards"
+    },
+    {
+      "name": "best-practices",
+      "path": "skills/best-practices",
+      "description": "Holistic codebase audit that auto-detects the stack and checks against best practices for that language, framework, and architecture. Produces a prioritized improvement roadmap with level-of-effort estimates.",
+      "tags": ["best-practices", "audit", "refactoring", "code-quality", "technical-debt", "improvement", "architecture"],
+      "version": "1.0.0",
+      "category": "standards"
     }
   ]
 }
