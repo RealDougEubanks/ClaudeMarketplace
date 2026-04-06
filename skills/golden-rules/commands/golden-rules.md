@@ -1,19 +1,30 @@
-# Claude Code Skills Marketplace — Project Context
+---
+name: golden-rules
+description: Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.
+---
 
-This is the **Claude Code Skills Marketplace** repository. It is a collection of reusable prompt skills for Claude Code — each skill is a directory under `skills/` containing a `commands/` subdirectory with the skill instruction file, `metadata.json` (machine-readable metadata), and `README.md` (human docs).
+# Golden Rules — Always-On Project Standards
 
-When working in this repo, your job is to help build, validate, and publish skills. Always follow the contribution conventions below.
+Install mandatory security, coding, and design standards into this project's CLAUDE.md so they are active for every Claude Code session automatically.
 
-## Contribution Conventions
+## Instructions
 
-- Skill directory names must be **kebab-case** (e.g. `git-workflow`, `golden-rules`).
-- Each skill directory has this structure: `commands/<skill-name>.md` (with YAML frontmatter), `metadata.json`, `README.md`. There is NO `skill.md` at the root.
-- `metadata.json` must validate against `schema/metadata.schema.json`.
-- After creating or editing a skill, run `./scripts/validate.sh skills/<skill-name>`.
-- After adding a skill directory, update `skills/registry.json` and run `./scripts/check-registry.sh`.
-- Use `./scripts/new-skill.sh <name>` to scaffold a new skill from templates.
-- Use `./scripts/install.sh skills/<name> [project-dir]` to install a skill into a project.
-- Do not modify `skills/example-skill/` — it is the canonical reference for contributors.
+1. Use Read to check if `./CLAUDE.md` exists in the current working directory.
+
+2. Use Grep to search `./CLAUDE.md` for the string `## Golden Rules` (if the file exists).
+   - If the section header is found: inform the user the Golden Rules are already installed and stop.
+   - If not found: proceed to step 3.
+
+3. If `CLAUDE.md` does not exist, use Write to create it with the Golden Rules Block below as the full content.
+   If `CLAUDE.md` exists but lacks the section, use Edit to append the Golden Rules Block to the end of the file.
+
+4. Confirm to the user what was written and that the Golden Rules are now active for every Claude Code session in this project.
+
+## Golden Rules Block
+
+Write or append the following content verbatim:
+
+---
 
 ## Golden Rules
 
@@ -63,31 +74,6 @@ GIT HYGIENE (MANDATORY)
 - If you find yourself on `main` with uncommitted changes, stash or move them to a new branch before committing.
 - No PR may be merged without at least one approval from a reviewer other than the author. Self-merge is not permitted.
 
-PYTHON ENVIRONMENT (MANDATORY)
-
-- Never install Python packages into the OS Python install. Always use a virtual environment.
-- Create a venv at the project root: `python3 -m venv .venv`
-- Activate before running or installing: `source .venv/bin/activate`
-- Add `.venv/` to `.gitignore` — never commit it.
-- Pin all dependencies in `requirements.txt` (or `pyproject.toml`). Use `pip freeze > requirements.txt` after installing.
-
-CLAUDE CODE PLUGIN & SKILL LAYOUT (MANDATORY)
-
-Skills and plugins installed via the Claude Code plugin system must follow this layout so they are discovered automatically as slash commands:
-
-```
-skills/<skill-name>/
-  commands/
-    <skill-name>.md     ← skill content with YAML frontmatter (name, description)
-  metadata.json
-  README.md
-```
-
-- The command file must be at `commands/<skill-name>.md` — NOT at `skill.md` in the plugin root.
-- The YAML frontmatter in `commands/<skill-name>.md` must include `name` and `description` fields.
-- Run `./scripts/validate.sh skills/<skill-name>` after creating or editing a skill.
-- Use `./scripts/new-skill.sh <name>` to scaffold; it generates the correct structure automatically.
-
 ASSUMPTIONS TRACKING
 
 Any time a non-obvious decision is made, record it in docs/assumptions.md:
@@ -95,3 +81,12 @@ Any time a non-obvious decision is made, record it in docs/assumptions.md:
 - Why: rationale
 - Recorded by: <agent or developer name>
 - Date: YYYY-MM-DD
+
+---
+
+## Output Format
+
+Report to the user:
+- Whether `CLAUDE.md` was created new or updated (appended).
+- That the `## Golden Rules` section is now active.
+- That every future Claude Code session in this project directory will load these rules automatically as context.

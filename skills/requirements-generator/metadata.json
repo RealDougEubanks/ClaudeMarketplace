@@ -1,12 +1,29 @@
 {
   "name": "requirements-generator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Generates structured requirements documents with functional and non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.",
-  "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
+  "author": {
+    "name": "Doug Eubanks",
+    "github": "realdougeubanks"
+  },
   "license": "MIT",
   "category": "workflow",
-  "tags": ["requirements", "specifications", "gherkin", "acceptance-criteria", "planning", "product"],
-  "commands": ["/requirements-generator"],
+  "tags": [
+    "requirements",
+    "specifications",
+    "gherkin",
+    "acceptance-criteria",
+    "planning",
+    "product"
+  ],
+  "commands": [
+    "/requirements-generator"
+  ],
   "triggers": [],
-  "tools": ["Read", "Write", "Glob", "Grep"]
+  "tools": [
+    "Read",
+    "Write",
+    "Glob",
+    "Grep"
+  ]
 }

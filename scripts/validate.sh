@@ -20,9 +20,28 @@ check() {
 echo "Validating skill at: $SKILL_DIR"
 echo "---"
 
-check "$SKILL_DIR/skill.md"
+SKILL_NAME=$(basename "$SKILL_DIR")
+check "$SKILL_DIR/commands/$SKILL_NAME.md"
 check "$SKILL_DIR/metadata.json"
 check "$SKILL_DIR/README.md"
+
+# Check commands file has YAML frontmatter with name and description
+COMMANDS_FILE="$SKILL_DIR/commands/$SKILL_NAME.md"
+if [ -f "$COMMANDS_FILE" ]; then
+  if ! head -1 "$COMMANDS_FILE" | grep -q '^---$'; then
+    echo "MISSING: YAML frontmatter (---) at top of commands/$SKILL_NAME.md"
+    errors=$((errors + 1))
+  else
+    if ! grep -q '^name:' "$COMMANDS_FILE"; then
+      echo "MISSING FIELD in commands/$SKILL_NAME.md frontmatter: name"
+      errors=$((errors + 1))
+    fi
+    if ! grep -q '^description:' "$COMMANDS_FILE"; then
+      echo "MISSING FIELD in commands/$SKILL_NAME.md frontmatter: description"
+      errors=$((errors + 1))
+    fi
+  fi
+fi
 
 # Validate metadata.json has required fields
 if [ -f "$SKILL_DIR/metadata.json" ]; then

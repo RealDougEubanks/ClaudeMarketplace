@@ -22,14 +22,40 @@ if [ -d "$SKILL_DIR" ]; then
   exit 1
 fi
 
-mkdir -p "$SKILL_DIR"
+mkdir -p "$SKILL_DIR/commands"
 
 # Detect author info from git config
 AUTHOR_NAME=$(git config user.name 2>/dev/null || echo "Your Name")
 AUTHOR_GITHUB=$(git config user.email 2>/dev/null | sed 's/@.*//' || echo "your-username")
 
-# Copy skill.md template
-cp "$TEMPLATES_DIR/skill.md" "$SKILL_DIR/skill.md"
+# Write commands/<skill-name>.md with YAML frontmatter
+cat > "$SKILL_DIR/commands/$SKILL_NAME.md" << SKILLEOF
+---
+name: $SKILL_NAME
+description: Short description of what this skill does (max 200 chars).
+---
+
+# Skill Name
+
+One-line description of what this skill does.
+
+## Instructions
+
+<!--
+  Write clear, step-by-step instructions for Claude to follow.
+  - Be specific about which tools to use (Read, Edit, Bash, etc.)
+  - Define the expected output format
+  - Include error-handling guidance if needed
+-->
+
+1. Step one
+2. Step two
+3. Step three
+
+## Output Format
+
+Describe the expected output format here.
+SKILLEOF
 
 # Write pre-filled metadata.json
 cat > "$SKILL_DIR/metadata.json" << METAEOF
@@ -82,9 +108,9 @@ READMEEOF
 echo "Scaffolded: $SKILL_DIR"
 echo ""
 echo "Next steps:"
-echo "  1. Edit skills/$SKILL_NAME/skill.md      — instructions Claude follows literally"
-echo "  2. Edit skills/$SKILL_NAME/metadata.json — set description, category, tags, tools"
-echo "  3. Edit skills/$SKILL_NAME/README.md     — human-readable docs"
+echo "  1. Edit skills/$SKILL_NAME/commands/$SKILL_NAME.md — update name, description frontmatter and instructions"
+echo "  2. Edit skills/$SKILL_NAME/metadata.json           — set description, category, tags, tools"
+echo "  3. Edit skills/$SKILL_NAME/README.md               — human-readable docs"
 echo "  4. Run: ./scripts/validate.sh skills/$SKILL_NAME"
 echo "  5. Add your skill to skills/registry.json"
 echo "  6. Open a PR!"
