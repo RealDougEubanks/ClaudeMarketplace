@@ -1,0 +1,11 @@
+{
+  "name": "agent-based-development",
+  "version": "1.0.0",
+  "description": "Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model.",
+  "author": {
+    "name": "Doug Eubanks",
+    "url": "https://github.com/RealDougEubanks"
+  },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}

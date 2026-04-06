@@ -1,0 +1,11 @@
+{
+  "name": "mvp-readiness",
+  "version": "1.0.0",
+  "description": "Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.",
+  "author": {
+    "name": "Doug Eubanks",
+    "url": "https://github.com/RealDougEubanks"
+  },
+  "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "license": "MIT"
+}
