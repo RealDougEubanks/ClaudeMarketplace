@@ -100,11 +100,13 @@ npm run dev
 - `src/routes/` — API route definitions
 
 ## Environment Variables
+
 | Variable | Required | Description |
 |----------|----------|-------------|
 | DATABASE_URL | Yes | PostgreSQL connection string |
 
 ## Key Commands
+
 | Command | What it does |
 |---------|-------------|
 | `npm run dev` | Start dev server with hot reload |

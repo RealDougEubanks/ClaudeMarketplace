@@ -5,7 +5,7 @@ Design database schemas from domain requirements, or audit existing schemas for 
 
 ## Instructions
 
-**Step 1 — Determine mode**
+### Step 1 — Determine mode
 - **Design mode** (default): design a new schema from requirements
 - **Review mode** (`/database-design --review`): audit an existing schema
 
@@ -13,7 +13,7 @@ Design database schemas from domain requirements, or audit existing schemas for 
 
 ### DESIGN MODE
 
-**Step 2 — Gather inputs**
+### Step 2 — Gather inputs
 Ask for: domain description, expected data volume (rows/table at 1 year), read vs write ratio, any existing schema to extend, compliance requirements (PII, HIPAA, PCI — affects encryption and retention).
 
 **Step 3 — Choose database type(s)**
@@ -28,7 +28,7 @@ Recommend and justify:
 | Search (Elasticsearch, Meilisearch) | Full-text search, faceted filtering |
 | Graph (Neo4j) | Highly relational data: social networks, recommendations |
 
-**Step 4 — Entity and Relationship Modeling**
+### Step 4 — Entity and Relationship Modeling
 
 Identify entities from the domain. For each entity:
 - Name (singular noun, snake_case table name)
@@ -75,7 +75,7 @@ For each table, recommend indexes:
 - Partial indexes for filtered queries: `WHERE deleted_at IS NULL`
 - Full-text indexes for search fields
 
-**Step 7 — Security and Compliance**
+### Step 7 — Security and Compliance
 - Identify PII fields (email, name, phone, address, SSN, DOB) — recommend encryption at rest or column-level encryption
 - Recommend row-level security (PostgreSQL RLS) for multi-tenant schemas
 - Define data retention policy for sensitive tables
@@ -95,10 +95,10 @@ Write ERD to `docs/database/schema.md`. Write migration files to `db/migrations/
 
 ### REVIEW MODE (`/database-design --review`)
 
-**Step 1 — Discover schema**
+### Step 1 — Discover schema
 Use Glob to find: migration files (`db/migrations/**`, `migrations/**`, `**/schema.sql`), ORM model files (`**/models/**`, `**/entities/**`), schema definitions (`schema.prisma`, `**/schema.rb`).
 
-**Step 2 — Audit checklist**
+### Step 2 — Audit checklist
 
 **Normalization:**
 - [ ] No repeating groups (arrays of values in a single column — use a junction table)

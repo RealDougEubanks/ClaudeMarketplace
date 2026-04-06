@@ -29,7 +29,9 @@ Take a project idea, feature description, or user story and generate a structure
    One paragraph summarizing what is being built, the user need it addresses, and why it matters.
 
    ### Stakeholders
+
    A table of who uses this feature and what they need from it.
+
    | Stakeholder | Role | Primary Need |
    |-------------|------|-------------|
    | End User | ... | ... |
@@ -37,7 +39,7 @@ Take a project idea, feature description, or user story and generate a structure
    ### Functional Requirements
    Numbered list using the prefix `FR-NNN` (e.g., FR-001, FR-002). Each requirement must be:
    - Specific and testable
-   - Implementation-agnostic (describe *what*, not *how*)
+   - Implementation-agnostic (describe _what_, not _how_)
    - Written in the form: "The system shall..."
 
    ### Non-Functional Requirements

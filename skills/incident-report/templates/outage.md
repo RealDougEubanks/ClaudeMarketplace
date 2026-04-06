@@ -37,7 +37,7 @@ required_sections: [summary, availability_impact, timeline, root_cause, recovery
 
 | Time (UTC) | Event | Who |
 |------------|-------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -64,7 +64,7 @@ required_sections: [summary, availability_impact, timeline, root_cause, recovery
 
 | Time (UTC) | Action | Who |
 |------------|--------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -124,7 +124,7 @@ required_sections: [summary, availability_impact, timeline, root_cause, recovery
 
 | # | Action | Owner | Due Date | Status |
 |---|--------|-------|----------|--------|
-{{action_items}}
+| {{action_items}} | | | | |
 
 ---
 

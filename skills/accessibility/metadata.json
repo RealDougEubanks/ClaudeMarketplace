@@ -1,7 +1,7 @@
 {
   "name": "accessibility",
   "version": "1.0.0",
-  "description": "Audits code for WCAG 2.2 AA compliance (review mode) and provides design guidance for building accessible components (design mode). Covers semantic HTML, ARIA, keyboard navigation, colour contrast, focus management, and motion.",
+  "description": "Audits code for WCAG 2.2 AA compliance and provides design guidance for accessible components. Covers semantic HTML, ARIA, keyboard nav, contrast, focus management, and motion.",
   "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
   "license": "MIT",
   "category": "standards",

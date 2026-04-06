@@ -47,8 +47,8 @@ The template body is standard markdown. Use `{{variable}}` placeholders for dyna
 | `{{user_impact}}` | Description of user impact (number of users, features affected). |
 | `{{systems_affected}}` | Comma-separated list of affected services/systems. |
 | `{{root_cause}}` | Root cause description, or `Under investigation`. |
-| `{{timeline}}` | Formatted as markdown table rows: `| HH:MM UTC | event | who |`. |
-| `{{action_items}}` | Formatted as markdown table rows: `| N | action | owner | due date | status |`. |
+| `{{timeline}}` | Formatted as markdown table rows with columns: HH:MM UTC, event, who. |
+| `{{action_items}}` | Formatted as markdown table rows with columns: N, action, owner, due date, status. |
 | `{{detection_method}}` | How the incident was detected (alert, user report, monitoring, etc.). |
 | `{{responders}}` | Comma-separated list of people who responded. |
 | `{{notifications_sent}}` | Populated from `rules/escalation.md` based on severity. |

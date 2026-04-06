@@ -47,6 +47,7 @@ CODING & NAMING GUIDELINES (apply unless project explicitly overrides in docs/as
   | Go | camelCase (unexported) / PascalCase (exported) | snake_case | PascalCase |
   | SQL | snake_case | snake_case | N/A |
   | CSS classes | kebab-case | kebab-case | N/A |
+
 - Strict typing and schema validation (e.g. Zod, Pydantic, or language-equivalent) for all inputs and boundaries.
 - No hardcoded API keys, credentials, or secrets — use configuration or secrets management.
 - No placeholder or stub code in production paths — write complete, functional code.

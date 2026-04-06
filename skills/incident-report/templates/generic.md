@@ -28,7 +28,7 @@ required_sections: [summary, timeline, root_cause, action_items]
 
 | Time (UTC) | Event | Who |
 |------------|-------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -55,7 +55,7 @@ required_sections: [summary, timeline, root_cause, action_items]
 
 | Time (UTC) | Action | Who |
 |------------|--------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -75,7 +75,7 @@ required_sections: [summary, timeline, root_cause, action_items]
 
 | # | Action | Owner | Due Date | Status |
 |---|--------|-------|----------|--------|
-{{action_items}}
+| {{action_items}} | | | | |
 
 ---
 

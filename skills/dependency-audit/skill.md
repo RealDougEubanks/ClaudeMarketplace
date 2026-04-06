@@ -25,7 +25,8 @@ Process all manifests that exist. If none are found, report that no supported ma
 
 For each manifest found, use Read to parse its contents and apply the following checks:
 
-**package.json**
+### package.json
+
 - Flag unpinned versions: `*`, `latest`, or ranges like `^x.x.x` or `~x.x.x` that allow major/minor drift.
 - Flag devDependencies that appear in the `dependencies` block (production runtime contamination).
 - Flag known deprecated or problematic packages:
@@ -34,25 +35,30 @@ For each manifest found, use Read to parse its contents and apply the following 
   - `lodash` — tree-shaking concerns; recommend per-method imports or native alternatives
   - `uuid` v3 or earlier — insecure random; recommend v4 or v7
 
-**requirements.txt**
+### requirements.txt
+
 - Flag unpinned packages (no `==` version pin).
 - Flag known deprecated packages:
   - `imp` — removed in Python 3.12; use `importlib`
   - `distutils` — deprecated in Python 3.10, removed in 3.12; use `setuptools`
   - `optparse` — deprecated; use `argparse`
 
-**go.mod**
+### go.mod
+
 - Flag `replace` directives pointing to local filesystem paths (dangerous in production).
 - Flag indirect dependencies that appear significantly behind their available versions.
 
-**Gemfile**
+### Gemfile
+
 - Flag unpinned gems (no version constraint specified).
 - Flag gems with no `source` specified.
 
-**pyproject.toml**
+### pyproject.toml
+
 - Apply the same checks as requirements.txt for any listed dependencies.
 
-**composer.json**
+### composer.json
+
 - Flag packages using `*` or `@dev` version constraints.
 
 ### Step 3 — Check for Lockfiles

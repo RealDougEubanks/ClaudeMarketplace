@@ -55,7 +55,7 @@ required_sections: [summary, attack_vector, blast_radius, evidence_preserved, re
 
 | Time (UTC) | Event | Who |
 |------------|-------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -95,7 +95,7 @@ required_sections: [summary, attack_vector, blast_radius, evidence_preserved, re
 
 | Time (UTC) | Action | Who |
 |------------|--------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -148,7 +148,7 @@ required_sections: [summary, attack_vector, blast_radius, evidence_preserved, re
 
 | # | Action | Owner | Due Date | Status |
 |---|--------|-------|----------|--------|
-{{action_items}}
+| {{action_items}} | | | | |
 
 ---
 

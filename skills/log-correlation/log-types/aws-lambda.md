@@ -83,7 +83,7 @@ Fields: `request_id`; level → `info`
 
 REPORT line:
 ```
-REPORT RequestId: <uuid>	Duration: 1234.56 ms	Billed Duration: 1235 ms	Memory Size: 512 MB	Max Memory Used: 234 MB	Init Duration: 456.78 ms
+REPORT RequestId: <uuid>    Duration: 1234.56 ms    Billed Duration: 1235 ms    Memory Size: 512 MB    Max Memory Used: 234 MB    Init Duration: 456.78 ms
 ```
 Fields: `request_id`, `duration_ms`, `billed_duration_ms`, `memory_size_mb`, `max_memory_used_mb`, `init_duration_ms` (cold start if present); level → `info`
 

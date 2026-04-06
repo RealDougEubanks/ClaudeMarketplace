@@ -14,7 +14,7 @@ The goal is not just compliance — it is building products that work for everyo
 **Step 1 — Discover UI code**
 Use Glob to find: `**/*.{jsx,tsx,vue,svelte,html,erb,blade.php}`, template files, CSS/SCSS files, any component library files.
 
-**Step 2 — Run automated pattern checks**
+### Step 2 — Run automated pattern checks
 
 Use Grep across all discovered files:
 
@@ -76,7 +76,7 @@ Use Grep across all discovered files:
 - HTML `<html>` tag missing `lang` attribute
 - Mixed-language content not wrapped with `lang` attribute on the element
 
-**Step 3 — Design review (read component logic)**
+### Step 3 — Design review (read component logic)
 
 For complex interactive components (modals, dropdowns, date pickers, comboboxes, tabs), use Read to examine the JavaScript/framework logic and check:
 - Focus management: where does focus go when a modal opens? When it closes?
@@ -85,7 +85,7 @@ For complex interactive components (modals, dropdowns, date pickers, comboboxes,
 - Announcement of dynamic content changes via `aria-live` or focus movement
 - State communicated to screen readers (selected, expanded, checked, disabled)
 
-**Step 4 — Colour contrast check**
+### Step 4 — Colour contrast check
 
 For each colour combination found in CSS (foreground + background), note it for manual contrast check. Flag common failures:
 - Light grey text on white background (very common)
@@ -95,7 +95,7 @@ For each colour combination found in CSS (foreground + background), note it for 
 
 Remind the user to verify using a contrast checker tool (WebAIM, Colour Contrast Analyser) since exact hex values must be checked at runtime.
 
-**Step 5 — Output findings**
+### Step 5 — Output findings
 
 Each finding includes:
 - **Severity**: Critical (blocks access entirely for some users), High (significantly impairs), Medium (causes friction), Low (best practice improvement)

@@ -79,7 +79,7 @@ required_sections: [summary, data_scope, recovery_options, data_integrity_verifi
 
 | Time (UTC) | Event | Who |
 |------------|-------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -106,7 +106,7 @@ required_sections: [summary, data_scope, recovery_options, data_integrity_verifi
 
 | Time (UTC) | Action | Who |
 |------------|--------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -156,7 +156,7 @@ required_sections: [summary, data_scope, recovery_options, data_integrity_verifi
 
 | # | Action | Owner | Due Date | Status |
 |---|--------|-------|----------|--------|
-{{action_items}}
+| {{action_items}} | | | | |
 
 ---
 

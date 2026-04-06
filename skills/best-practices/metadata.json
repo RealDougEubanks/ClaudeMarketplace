@@ -1,7 +1,7 @@
 {
   "name": "best-practices",
   "version": "1.0.0",
-  "description": "Holistic codebase audit that auto-detects the stack and checks against best practices for that language, framework, and architecture. Produces a prioritized improvement roadmap with level-of-effort estimates for each item.",
+  "description": "Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates.",
   "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
   "license": "MIT",
   "category": "standards",

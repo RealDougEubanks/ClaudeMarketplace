@@ -1,7 +1,7 @@
 {
   "name": "api-design",
   "version": "1.0.0",
-  "description": "Designs and reviews REST, GraphQL, and gRPC APIs. Design mode produces OpenAPI specs, GraphQL schemas, or proto files. Review mode audits existing APIs for consistency, best practices, and breaking change risks.",
+  "description": "Designs REST, GraphQL, and gRPC APIs (OpenAPI/schema/proto output) and reviews existing APIs for consistency, best practices, and breaking change risks.",
   "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
   "license": "MIT",
   "category": "workflow",

@@ -1,7 +1,7 @@
 {
   "name": "incident-report",
   "version": "1.0.0",
-  "description": "Generates professional incident reports using customizable templates and classification rules. Supports outage, security, performance, and data-loss incident types. Extensible via templates/ and rules/ directories.",
+  "description": "Generates professional incident reports using customizable templates. Supports outage, security, performance, and data-loss incident types. Extensible via templates/ and rules/.",
   "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
   "license": "MIT",
   "category": "workflow",

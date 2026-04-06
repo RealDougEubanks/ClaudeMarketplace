@@ -166,14 +166,14 @@ Read the entry point, main router, auth middleware, and data models. Assess:
 
 ### Phase 4 — Classify, Map, and Report
 
-5. For each finding:
+1. For each finding:
    - Assign severity (see Severity Definitions)
    - Map to OWASP Top 10 2021 category (see OWASP Reference)
    - Write a minimal before/after diff (≤ 10 lines). For architectural issues, describe the fix in prose.
 
-6. Check if `handoffs/reviews/` exists. If so, write a JSON artifact (see JSON Artifact Format).
+2. Check if `handoffs/reviews/` exists. If so, write a JSON artifact (see JSON Artifact Format).
 
-7. Produce the Security Review Report (see Output Format).
+3. Produce the Security Review Report (see Output Format).
 
 ---
 

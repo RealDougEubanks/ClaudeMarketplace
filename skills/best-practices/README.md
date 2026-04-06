@@ -20,6 +20,7 @@ Use `/best-practices` when you want a strategic picture of where the codebase st
 ## Supported stacks
 
 ### Languages
+
 | Language | Detection |
 |----------|-----------|
 | TypeScript | `tsconfig.json`, `**/*.ts` |
@@ -33,6 +34,7 @@ Use `/best-practices` when you want a strategic picture of where the codebase st
 | Rust | `Cargo.toml` |
 
 ### Frameworks
+
 | Layer | Supported |
 |-------|-----------|
 | Frontend | React, Vue, Angular, Svelte, Next.js, Nuxt, Remix, Astro |
@@ -42,6 +44,7 @@ Use `/best-practices` when you want a strategic picture of where the codebase st
 | State | Redux, Zustand, Pinia, MobX |
 
 ### Infrastructure
+
 | Layer | Supported |
 |-------|-----------|
 | Containers | Docker, docker-compose |

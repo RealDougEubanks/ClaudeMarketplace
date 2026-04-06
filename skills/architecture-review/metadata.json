@@ -1,7 +1,7 @@
 {
   "name": "architecture-review",
   "version": "1.0.0",
-  "description": "Audits an existing system's architecture for structural anti-patterns, scalability and reliability risks, and testability gaps. Produces graded findings with migration paths and a to-be architecture diagram.",
+  "description": "Audits existing architecture for anti-patterns, scalability and reliability risks, and testability gaps. Graded findings with migration paths and a to-be diagram.",
   "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
   "license": "MIT",
   "category": "standards",

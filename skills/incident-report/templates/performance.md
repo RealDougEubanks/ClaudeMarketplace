@@ -69,6 +69,7 @@ required_sections: [summary, metrics, timeline, root_cause, action_items]
 - [TODO: e.g., specific endpoint saw disproportionate load]
 
 **Recent deployments or configuration changes prior to incident:**
+
 | Change | Deployed At | By | Rolled Back? |
 |--------|------------|-----|-------------|
 | [TODO] | [TODO] | [TODO] | [TODO: Yes / No] |
@@ -79,7 +80,7 @@ required_sections: [summary, metrics, timeline, root_cause, action_items]
 
 | Time (UTC) | Event | Who |
 |------------|-------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -114,7 +115,7 @@ required_sections: [summary, metrics, timeline, root_cause, action_items]
 
 | Time (UTC) | Action | Who |
 |------------|--------|-----|
-{{timeline}}
+| {{timeline}} | | |
 
 ---
 
@@ -134,7 +135,7 @@ required_sections: [summary, metrics, timeline, root_cause, action_items]
 
 | # | Action | Owner | Due Date | Status |
 |---|--------|-------|----------|--------|
-{{action_items}}
+| {{action_items}} | | | | |
 
 ---
 

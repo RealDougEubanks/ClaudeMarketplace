@@ -1,0 +1,5 @@
+# git-workflow/skill.md is a Git workflow guidance skill.
+# It references "git push --force" in the context of documenting when force-push
+# is acceptable (specifically: use --force-with-lease on non-shared branches only).
+# This is explicit safety documentation, not an instruction to blindly force-push.
+git\s+push\s+--force

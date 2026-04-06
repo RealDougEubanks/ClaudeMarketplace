@@ -22,7 +22,7 @@ Run this command from the root of a git repository. The skill will prompt you fo
 
 ## Keep a Changelog Format
 
-This skill follows https://keepachangelog.com/en/1.1.0/ exactly. The generated output looks like:
+This skill follows <https://keepachangelog.com/en/1.1.0/> exactly. The generated output looks like:
 
 ```markdown
 ## [1.2.0] - 2026-04-06

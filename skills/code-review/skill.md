@@ -44,7 +44,7 @@ When invoked via `/code-review`:
 
 **If full mode (default)**, continue with the steps below:
 
-3. **Read and evaluate each changed file** using Read. For each file, assess:
+1. **Read and evaluate each changed file** using Read. For each file, assess:
 
    - **Readability**: Are function and variable names descriptive and unambiguous? Are there magic numbers (use named constants instead)? Is the logic self-evident, or does it require inline comments that are missing?
 
@@ -61,7 +61,7 @@ When invoked via `/code-review`:
 
    - **Naming conventions**: Check `CLAUDE.md` or `docs/assumptions.md` if present for project naming rules. Flag any deviation (e.g. snake_case in a camelCase project).
 
-4. **Write a review artifact (optional).** Check whether `handoffs/reviews/` exists. If it does, write a JSON file there using the ABD envelope schema:
+2. **Write a review artifact (optional).** Check whether `handoffs/reviews/` exists. If it does, write a JSON file there using the ABD envelope schema:
    ```json
    {
      "agent": "code-review",
@@ -71,7 +71,7 @@ When invoked via `/code-review`:
    }
    ```
 
-5. **Output a markdown report** with the structure below. Every finding must include a `file:line` citation where possible.
+3. **Output a markdown report** with the structure below. Every finding must include a `file:line` citation where possible.
 
 ## Output Format
 

@@ -1,7 +1,7 @@
 {
   "name": "requirements-generator",
   "version": "1.0.0",
-  "description": "Generates structured requirements documents from a project idea or feature description, including functional requirements, non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.",
+  "description": "Generates structured requirements documents with functional and non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.",
   "author": { "name": "Doug Eubanks", "github": "realdougeubanks" },
   "license": "MIT",
   "category": "workflow",
