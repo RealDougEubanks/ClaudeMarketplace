@@ -26,3 +26,6 @@ venv/
 
 # Logs
 *.log
+
+# Claude Code local settings (personal overrides — never commit)
+.claude/settings.local.json

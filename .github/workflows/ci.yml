@@ -17,6 +17,7 @@ jobs:
   validate:
     name: Validate skill structure
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -39,6 +40,7 @@ jobs:
   schema:
     name: Validate metadata schemas
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -48,7 +50,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install check-jsonschema
-        run: pip install check-jsonschema
+        run: pip install "check-jsonschema==0.29.3"
 
       - name: Validate metadata.json files
         run: |
@@ -72,6 +74,7 @@ jobs:
   registry:
     name: Check registry consistency
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -81,6 +84,7 @@ jobs:
   check-commands:
     name: Check for duplicate slash commands
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -107,6 +111,7 @@ jobs:
   validate-registry-metadata:
     name: Cross-validate registry vs metadata.json
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -160,6 +165,7 @@ jobs:
   prompt-safety:
     name: Scan prompts for safety
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -169,6 +175,7 @@ jobs:
   shellcheck:
     name: Lint shell scripts
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -190,6 +197,7 @@ jobs:
   secrets:
     name: Scan for leaked secrets
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -206,6 +214,7 @@ jobs:
   lint-markdown:
     name: Lint Markdown files
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -225,6 +234,7 @@ jobs:
   label-tools:
     name: Summarize tools in changed skills
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event_name == 'pull_request'
     needs: [validate, schema]
     steps:
@@ -285,6 +295,7 @@ jobs:
   version-bump:
     name: Enforce version bump on skill updates
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4

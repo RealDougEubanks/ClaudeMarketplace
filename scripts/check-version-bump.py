@@ -53,7 +53,8 @@ def get_current_version(skill_name):
     meta = Path("skills") / skill_name / "metadata.json"
     if not meta.exists():
         return None
-    return json.load(open(meta)).get("version")
+    with open(meta) as f:
+        return json.load(f).get("version")
 
 
 def is_readme_only(skill_name):
