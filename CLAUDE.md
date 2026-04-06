@@ -7,13 +7,23 @@ When working in this repo, your job is to help build, validate, and publish skil
 ## Contribution Conventions
 
 - Skill directory names must be **kebab-case** (e.g. `git-workflow`, `golden-rules`).
-- Each skill directory contains exactly **three files**: `skill.md`, `metadata.json`, `README.md`.
+- Each skill directory contains exactly **three files**: `commands/<skill-name>.md`, `metadata.json`, `README.md`.
+- The skill content lives at `commands/<skill-name>.md` with YAML frontmatter (`name`, `description`). This is what the Claude Code plugin system uses to register the slash command automatically on install.
 - `metadata.json` must validate against `schema/metadata.schema.json`.
 - After creating or editing a skill, run `./scripts/validate.sh skills/<skill-name>`.
 - After adding a skill directory, update `skills/registry.json` and run `./scripts/check-registry.sh`.
 - Use `./scripts/new-skill.sh <name>` to scaffold a new skill from templates.
 - Use `./scripts/install.sh skills/<name> [project-dir]` to install a skill into a project.
 - Do not modify `skills/example-skill/` — it is the canonical reference for contributors.
+
+## Versioning Rules (MANDATORY)
+
+Every change to a skill's content or structure **requires** both of the following before merging:
+
+1. **Bump the version** in `skills/<skill-name>/metadata.json` (semver patch for fixes/tweaks, minor for new behavior).
+2. **Sync `skills/registry.json`** — the `version` field for that skill must match `metadata.json` exactly.
+
+Run `./scripts/check-registry.sh` to catch mismatches. The CI pipeline enforces both via `scripts/check-version-bump.py` and the registry cross-validation check.
 
 ## Golden Rules
 

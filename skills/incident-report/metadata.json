@@ -1,6 +1,6 @@
 {
   "name": "incident-report",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generates professional incident reports using customizable templates. Supports outage, security, performance, and data-loss incident types. Extensible via templates/ and rules/.",
   "author": {
     "name": "Doug Eubanks",

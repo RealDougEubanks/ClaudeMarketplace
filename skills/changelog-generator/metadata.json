@@ -1,6 +1,6 @@
 {
   "name": "changelog-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts. Prepends new version sections to existing changelogs.",
   "author": {
     "name": "Doug Eubanks",

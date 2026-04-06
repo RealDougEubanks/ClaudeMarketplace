@@ -1,10 +1,15 @@
+---
+name: SKILL_NAME
+description: Short description of what this skill does (max 200 chars).
+---
+
 # Skill Name
 
 One-line description of what this skill does.
 
 ## Instructions
 
-<!-- 
+<!--
   Write clear, step-by-step instructions for Claude to follow.
   - Be specific about which tools to use (Read, Edit, Bash, etc.)
   - Define the expected output format
