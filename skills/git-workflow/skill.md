@@ -16,7 +16,8 @@ When invoked, ask the user what they want to do (if not already specified):
 > (a) View the Git workflow reference
 > (b) Start new work — scaffold a feature or fix branch
 > (c) Open a PR for the current branch
-> (d) Cut a release — merge release branch to main and tag"
+> (d) Cut a release — merge release branch to main and tag
+> (e) Resolve a merge conflict on the current branch"
 
 Then execute the appropriate action below.
 
@@ -34,6 +35,10 @@ Print the full Git Workflow Reference section below.
    ```bash
    git branch -r | grep release | sort -V | tail -1
    ```
+
+   **No-release-branch fallback:** If the command above returns no output (no `release/*` branch exists), fall back to branching from `main` and target `main` for the PR. Inform the user:
+   > "No release branch found. Branching from `main` and the PR will target `main` directly. This is normal for simple repos and early-stage projects that do not yet use the release-branch model."
+   In this case, replace `origin/<release-branch>` in step 4 with `origin/main`, and use `--base main` in the `gh pr create` call in Action (c).
 
 2. Ask the user:
    - Is this a new **feature** or a **bug fix**? (determines `feature/` vs `fix/` prefix)
@@ -101,6 +106,59 @@ Print the full Git Workflow Reference section below.
    ```
 
 5. Remind the user to invoke `/abd-docs` (or the Documentation agent) to create the changelog for this release in `docs/CHANGELOG.md` or `docs/changelogs/<version>.md`.
+
+---
+
+### Action (e) — Resolve a Merge Conflict
+
+1. Use Bash to identify all conflicted files:
+   ```bash
+   git status
+   ```
+   List each file that shows `both modified`, `deleted by us`, `deleted by them`, or any other conflict marker.
+
+2. Use Bash to fetch the latest remote state and show how far behind the current branch is:
+   ```bash
+   git fetch origin
+   git log --oneline HEAD..origin/$(git branch --show-current)
+   ```
+   Report how many commits the remote is ahead. If the remote branch no longer exists, note that and continue with local conflict resolution.
+
+3. Ask the user whether to **rebase** or **merge** to incorporate upstream changes, and explain the tradeoffs:
+   > - **Rebase** (`git rebase origin/<branch>`): rewrites your local commits on top of the upstream tip, producing a linear history. Best for feature branches that are not shared with others. Avoid rebasing branches that other people have checked out.
+   > - **Merge** (`git merge origin/<branch>`): creates a merge commit that preserves the full history of both sides. Safer for shared or long-lived branches where rewriting history would disrupt collaborators.
+
+   Wait for the user's choice before proceeding.
+
+4. For each conflicted file identified in step 1:
+   a. Use Read to display the file and locate the conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`).
+   b. Explain to the user what each side of the conflict contains:
+      - **HEAD (your changes):** the lines between `<<<<<<< HEAD` and `=======`.
+      - **Incoming (their changes):** the lines between `=======` and `>>>>>>> <ref>`.
+   c. Ask the user which resolution to apply (keep yours, keep theirs, or combine), or propose a resolution if the intent is clear from context.
+   d. Use Edit to apply the agreed resolution, removing all conflict markers so the file is valid.
+
+5. After all conflicted files are resolved, use Bash to stage changes and complete the rebase or merge:
+   - If **rebase** was chosen:
+     ```bash
+     git add .
+     git rebase --continue
+     ```
+     If additional conflict rounds occur, repeat steps 4–5 for each round until the rebase completes.
+   - If **merge** was chosen:
+     ```bash
+     git add .
+     git merge --continue
+     ```
+
+6. Use Bash to confirm the branch is clean and ready to push:
+   ```bash
+   git status
+   git log --oneline -5
+   ```
+   Verify there are no remaining conflict markers and the working tree is clean. Remind the user:
+   - If rebase was used, a force-push is required: `git push --force-with-lease origin <branch>`. Only do this if the branch is not shared.
+   - If merge was used, a regular push is safe: `git push origin <branch>`.
 
 ---
 

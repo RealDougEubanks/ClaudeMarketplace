@@ -57,6 +57,54 @@
       "tags": ["git", "workflow", "release", "branching", "pr"],
       "version": "1.0.0",
       "category": "workflow"
+    },
+    {
+      "name": "code-review",
+      "path": "skills/code-review",
+      "description": "Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency. Complements security-review with general code quality.",
+      "tags": ["code-review", "quality", "refactoring", "solid", "complexity", "standards"],
+      "version": "1.0.0",
+      "category": "standards"
+    },
+    {
+      "name": "test-writer",
+      "path": "skills/test-writer",
+      "description": "Generates comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching existing test style.",
+      "tags": ["testing", "unit-tests", "jest", "pytest", "quality", "tdd"],
+      "version": "1.0.0",
+      "category": "standards"
+    },
+    {
+      "name": "dependency-audit",
+      "path": "skills/dependency-audit",
+      "description": "Audits project dependencies across package.json, requirements.txt, go.mod, and Gemfile for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
+      "tags": ["dependencies", "audit", "security", "cve", "npm", "pip", "go", "ruby"],
+      "version": "1.0.0",
+      "category": "security"
+    },
+    {
+      "name": "changelog-generator",
+      "path": "skills/changelog-generator",
+      "description": "Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts. Prepends new version sections to existing changelogs.",
+      "tags": ["changelog", "release", "git", "documentation", "versioning"],
+      "version": "1.0.0",
+      "category": "workflow"
+    },
+    {
+      "name": "onboarding",
+      "path": "skills/onboarding",
+      "description": "Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview.",
+      "tags": ["onboarding", "documentation", "developer-experience", "getting-started", "architecture"],
+      "version": "1.0.0",
+      "category": "productivity"
+    },
+    {
+      "name": "requirements-generator",
+      "path": "skills/requirements-generator",
+      "description": "Generates structured requirements documents from a project idea or feature description, including functional requirements, non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.",
+      "tags": ["requirements", "specifications", "gherkin", "acceptance-criteria", "planning", "product"],
+      "version": "1.0.0",
+      "category": "workflow"
     }
   ]
 }

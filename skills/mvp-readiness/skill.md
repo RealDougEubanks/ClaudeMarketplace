@@ -20,9 +20,21 @@ Run a structured quality-gate audit before declaring any project an MVP. Check e
 
 5. Use Grep to search `README.md` for setup instructions (clone, install, run).
 
-6. For each checklist item below, determine: **PASS**, **FAIL**, or **N/A** (with written justification).
+6. Detect package manifests (`package.json`, `requirements.txt`, `go.mod`, `Gemfile`, `composer.json`) and inspect dependency versions:
+   - Flag any version set to `*`, `latest`, or an unbounded range such as `>=X` with no upper bound.
+   - Flag packages with no updates in 2+ years — look for deprecation notices in the package README or `description` field.
+   - Flag known abandoned or replaced packages (e.g. `request` → use `axios`/`fetch`; `moment` → use `date-fns`/`dayjs`).
+   - Confirm a lockfile is present and committed (`package-lock.json`, `yarn.lock`, `poetry.lock`, `go.sum`, `Gemfile.lock`, etc.).
 
-7. Produce the MVP Readiness Report (see Output Format).
+7. Check for performance red flags:
+   - If a `webpack.config.*` or `vite.config.*` exists, note whether bundle size budgets are configured; flag if estimated bundle likely exceeds 500 KB.
+   - Grep list/find/getAll endpoint handlers for array returns that lack `limit`, `offset`, or `page` parameters (missing pagination).
+   - Grep for `readFileSync` and `execSync` outside of config-loading or startup modules — flag any found in async request handlers.
+   - Scan schema files (`.sql`, `prisma/schema.prisma`, `**/models.*`) for foreign key columns that lack a corresponding index definition.
+
+8. For each checklist item below, determine: **PASS**, **FAIL**, or **N/A** (with written justification).
+
+9. Produce the MVP Readiness Report (see Output Format).
 
 ## MVP Checklist
 
@@ -55,6 +67,16 @@ Run a structured quality-gate audit before declaring any project an MVP. Check e
 - [ ] Naming follows camelCase (or the language convention documented in `docs/assumptions.md`).
 - [ ] README includes stack, license, and troubleshooting sections.
 
+### 7. Dependency Health
+- [ ] All dependency versions are pinned or range-constrained (no `*` or `latest`).
+- [ ] No obviously abandoned or deprecated packages in use.
+- [ ] A lockfile exists and is committed (`package-lock.json`, `yarn.lock`, `poetry.lock`, etc.).
+
+### 8. Performance Baseline
+- [ ] No obvious N+1 query patterns or unindexed foreign keys in schema.
+- [ ] List endpoints implement pagination.
+- [ ] No synchronous blocking calls in async request handlers.
+
 ## Output Format
 
 Produce a markdown report in this exact format:
@@ -70,15 +92,24 @@ Produce a markdown report in this exact format:
 
 ### Checklist Results
 
-| # | Item | Status | Evidence |
-|---|------|--------|----------|
-| 1 | Error boundaries on all external calls | PASS | All DB calls in src/db.ts wrapped in try/catch |
-| 2 | No crash on invalid input | FAIL | CLI crashes with TypeError on non-numeric --port (src/cli.ts:42) |
-| ... | | | |
+| # | Section | Item | Status | Evidence |
+|---|---------|------|--------|----------|
+| 1 | Stability & Error Handling | Error boundaries on all external calls | PASS | All DB calls in src/db.ts wrapped in try/catch |
+| 2 | Stability & Error Handling | No crash on invalid input | FAIL | CLI crashes with TypeError on non-numeric --port (src/cli.ts:42) |
+| 3 | Configuration & Environment | No hardcoded secrets | PASS | .gitignore covers .env; no secrets found by Grep |
+| 4 | Logging & Observability | Logs include timestamps and severity | PASS | Winston logger configured with level and timestamp |
+| 5 | Security | All user input validated | FAIL | HTTP query params in src/api/users.ts:18 passed to DB without validation |
+| 6 | Documentation & UX | README explains setup in <3 steps | PASS | README has clone/install/run in three numbered steps |
+| 7 | Implementation Integrity | No placeholder comments in prod paths | PASS | No TODOs found in src/ |
+| 8 | Dependency Health | All versions pinned, no abandoned packages, lockfile committed | FAIL | `moment` detected in package.json; package-lock.json not in repo |
+| 9 | Performance Baseline | Pagination on list endpoints, no sync blocking, no unindexed FKs | FAIL | GET /users returns full array without limit/offset (src/api/users.ts:34) |
+| ... | | | | |
 
 ### Blockers (must fix before MVP)
 
 - [#2] `src/cli.ts:42` — CLI crashes on non-numeric --port. Add input validation before parseInt.
+- [#8] Dependency Health — `moment` is abandoned; replace with `date-fns` or `dayjs`. Commit the lockfile.
+- [#9] Performance Baseline — GET /users (`src/api/users.ts:34`) returns unbounded array; add `limit`/`offset` query params.
 
 ### N/A Items
 

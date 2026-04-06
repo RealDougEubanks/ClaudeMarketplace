@@ -76,6 +76,78 @@
       },
       "keywords": ["example", "template"],
       "category": "productivity"
+    },
+    {
+      "name": "code-review",
+      "source": "./skills/code-review",
+      "description": "Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["code-review", "quality", "refactoring", "solid", "complexity", "standards"],
+      "category": "standards"
+    },
+    {
+      "name": "test-writer",
+      "source": "./skills/test-writer",
+      "description": "Generates comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching existing test style.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["testing", "unit-tests", "jest", "pytest", "quality", "tdd"],
+      "category": "standards"
+    },
+    {
+      "name": "dependency-audit",
+      "source": "./skills/dependency-audit",
+      "description": "Audits project dependencies for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["dependencies", "audit", "security", "cve", "npm", "pip", "go", "ruby"],
+      "category": "security"
+    },
+    {
+      "name": "changelog-generator",
+      "source": "./skills/changelog-generator",
+      "description": "Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["changelog", "release", "git", "documentation", "versioning"],
+      "category": "workflow"
+    },
+    {
+      "name": "onboarding",
+      "source": "./skills/onboarding",
+      "description": "Generates a comprehensive developer onboarding guide by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["onboarding", "documentation", "developer-experience", "getting-started", "architecture"],
+      "category": "productivity"
+    },
+    {
+      "name": "requirements-generator",
+      "source": "./skills/requirements-generator",
+      "description": "Generates structured requirements documents with functional requirements, non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": ["requirements", "specifications", "gherkin", "acceptance-criteria", "planning", "product"],
+      "category": "workflow"
     }
   ]
 }

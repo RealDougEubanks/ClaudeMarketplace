@@ -37,13 +37,21 @@ GOLDEN RULES (MANDATORY — ALL WORK IN THIS PROJECT MUST FOLLOW THESE)
 
 CODING & NAMING GUIDELINES (apply unless project explicitly overrides in docs/assumptions.md)
 
-- camelCase for variables, functions, and filenames.
-- Exceptions: snake_case or PascalCase only when the language or framework strictly requires it.
-- kebab-case for CSS class names.
+- camelCase for variables, functions, and filenames (see language-specific table below).
+- Language-specific naming conventions:
+
+  | Language | Variables/Functions | Files | Classes |
+  |----------|-------------------|-------|---------|
+  | JavaScript/TypeScript | camelCase | camelCase | PascalCase |
+  | Python | snake_case | snake_case | PascalCase |
+  | Go | camelCase (unexported) / PascalCase (exported) | snake_case | PascalCase |
+  | SQL | snake_case | snake_case | N/A |
+  | CSS classes | kebab-case | kebab-case | N/A |
 - Strict typing and schema validation (e.g. Zod, Pydantic, or language-equivalent) for all inputs and boundaries.
 - No hardcoded API keys, credentials, or secrets — use configuration or secrets management.
 - No placeholder or stub code in production paths — write complete, functional code.
 - Move task notes to docs/ToDo.md or docs/ — do not leave // TODO in the codebase for project tracking.
+- Remove dead code before committing — commented-out code blocks, unused imports, unreachable functions, and orphaned files are not acceptable in production paths.
 
 DESIGN & UX GUIDELINES (apply unless project explicitly overrides)
 
@@ -58,6 +66,7 @@ GIT HYGIENE (MANDATORY)
 - Never commit or push directly to `main`. All changes must go through a branch and PR, no exceptions.
 - Branch from the current release branch (or `main` if no release branch exists). Name branches `feature/`, `fix/`, `hotfix/`, or `claude/` as appropriate.
 - If you find yourself on `main` with uncommitted changes, stash or move them to a new branch before committing.
+- No PR may be merged without at least one approval from a reviewer other than the author. Self-merge is not permitted.
 
 ASSUMPTIONS TRACKING
 
