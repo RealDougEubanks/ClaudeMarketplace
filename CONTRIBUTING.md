@@ -10,11 +10,11 @@ Thanks for your interest in contributing a skill! Follow the steps below.
    ./scripts/new-skill.sh my-skill-name
    ```
 
-   This creates `skills/my-skill-name/` with pre-filled `skill.md`, `metadata.json`, and `README.md`, and validates the name is kebab-case. Alternatively, copy manually: `cp -r templates/ skills/my-skill-name`
+   This creates `skills/my-skill-name/` with pre-filled `commands/my-skill-name.md`, `metadata.json`, and `README.md`, and validates the name is kebab-case.
 
 2. **Edit the files**
 
-   - `skill.md` — The prompt/instructions Claude will follow when the skill is invoked.
+   - `commands/my-skill-name.md` — The prompt/instructions Claude will follow when the skill is invoked. Must have YAML frontmatter with `name` and `description`.
    - `metadata.json` — Name, version, description, author, tags, and other metadata.
    - `README.md` — Human-readable documentation for the skill.
 

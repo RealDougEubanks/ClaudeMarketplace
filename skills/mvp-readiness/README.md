@@ -75,10 +75,17 @@ Invoke in the root of your project. Claude audits the current working directory.
 
 ## Installation
 
-```bash
-./scripts/install.sh skills/mvp-readiness /path/to/your/project
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "enabledPlugins": {
+    "mvp-readiness@claude-skills-marketplace": true
+  }
+}
 ```
 
+Once enabled, invoke with `/mvp-readiness` in any Claude Code session.
 ## Related Skills
 
 - `/golden-rules` — install always-on security and coding standards

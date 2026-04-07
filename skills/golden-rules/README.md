@@ -12,7 +12,7 @@ When you run `/golden-rules`, Claude:
 
 Because Claude Code automatically loads `CLAUDE.md` at the start of every session, the rules become permanent project context — not just a one-time prompt.
 
-**This is a `base` skill.** Installing it via `install.sh` also appends the skill content to `CLAUDE.md` automatically.
+**This is a `base` skill.** When invoked via `/golden-rules` also appends the skill content to `CLAUDE.md` automatically.
 
 ## The Golden Rules
 
@@ -58,25 +58,17 @@ The installed block covers these areas:
 
 ## Installation
 
-### Using the install script (recommended)
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 
-```bash
-# From the ClaudeMarketplace repo root, targeting your project:
-./scripts/install.sh skills/golden-rules /path/to/your/project
+```json
+{
+  "enabledPlugins": {
+    "golden-rules@claude-skills-marketplace": true
+  }
+}
 ```
 
-This installs to `.claude/commands/golden-rules.md` **and** appends the Golden Rules to your project's `CLAUDE.md` (because this is a `base` category skill). The append is idempotent — running it twice will not duplicate the section.
-
-### Manual invocation
-
-In any Claude Code session inside a project:
-
-```
-/golden-rules
-```
-
-Claude will create or update `CLAUDE.md` in the current working directory.
-
+Once enabled, invoke with `/golden-rules` in any Claude Code session.
 ## Example CLAUDE.md Output
 
 After installation, your project's `CLAUDE.md` will contain:

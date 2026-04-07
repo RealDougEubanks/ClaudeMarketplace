@@ -75,6 +75,14 @@ The mock for `fs.readFileSync` uses jest.mock — update if you switch to a stre
 
 ## Installation
 
-```bash
-./scripts/install.sh skills/test-writer [your-project-dir]
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "enabledPlugins": {
+    "test-writer@claude-skills-marketplace": true
+  }
+}
 ```
+
+Once enabled, invoke with `/test-writer` in any Claude Code session.

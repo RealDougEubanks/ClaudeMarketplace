@@ -45,8 +45,14 @@ The skill writes a structured Markdown document to `docs/ONBOARDING.md` containi
 
 ## Installation
 
-Copy `skill.md` into your Claude Code skills directory, or install via:
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 
-```bash
-./scripts/install.sh skills/onboarding <your-project-dir>
+```json
+{
+  "enabledPlugins": {
+    "onboarding@claude-skills-marketplace": true
+  }
+}
 ```
+
+Once enabled, invoke with `/onboarding` in any Claude Code session.
