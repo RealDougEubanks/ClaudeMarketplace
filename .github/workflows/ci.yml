@@ -297,7 +297,11 @@ jobs:
             | grep '\.scan-exempt$' || true)
           if [ -n "$changed" ]; then
             echo "found=true" >> "$GITHUB_OUTPUT"
-            echo "files=$changed" >> "$GITHUB_OUTPUT"
+            {
+              echo "files<<SCAN_EXEMPT_EOF"
+              echo "$changed"
+              echo "SCAN_EXEMPT_EOF"
+            } >> "$GITHUB_OUTPUT"
             echo "Changed .scan-exempt files:"
             echo "$changed"
           else
