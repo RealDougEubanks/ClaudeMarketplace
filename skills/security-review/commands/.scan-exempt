@@ -1,0 +1,8 @@
+# Security review skill defines all the vulnerability patterns it scans for
+\.env\b
+credentials
+api[_-]?key
+secret[_-]?key
+access[_-]?token
+password
+AWS_SECRET

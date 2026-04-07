@@ -8,7 +8,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+*No unreleased changes.*
+
+---
+
+## [1.1.1] — 2026-04-05
+
 ### Changed
+
 - `scripts/validate.sh` — replaced brittle grep-based field detection with Python JSON parsing for reliable required-field validation
 - `scripts/install.sh` — added existence guard for project directory; fails fast with a clear error if `project-dir` does not exist
 - `scripts/new-skill.sh` — author name and GitHub handle now read from git config instead of being hardcoded, enabling community contributors to scaffold skills correctly

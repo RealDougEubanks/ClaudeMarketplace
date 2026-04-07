@@ -14,7 +14,7 @@ echo "Checking registry consistency..."
 echo "---"
 
 # 1. Validate registry.json is valid JSON
-if ! python3 -c "import json; json.load(open('$REGISTRY'))" 2>/dev/null; then
+if ! python3 -c "import json, sys; json.load(open(sys.argv[1]))" "$REGISTRY" 2>/dev/null; then
   echo "ERROR: registry.json is not valid JSON."
   exit 1
 fi
@@ -22,12 +22,12 @@ echo "  OK: registry.json is valid JSON"
 
 # 2. Get skill names from registry
 registry_skills=$(python3 -c "
-import json
-with open('$REGISTRY') as f:
+import json, sys
+with open(sys.argv[1]) as f:
     data = json.load(f)
 for s in data.get('skills', []):
     print(s['name'])
-" | sort)
+" "$REGISTRY" | sort)
 
 # 3. Get skill directories (exclude templates)
 dir_skills=$(find "$REPO_ROOT/skills" -mindepth 1 -maxdepth 1 -type d \
@@ -58,7 +58,7 @@ while IFS= read -r dir; do
   [ -z "$dir" ] && continue
   meta="$REPO_ROOT/skills/$dir/metadata.json"
   if [ -f "$meta" ]; then
-    meta_name=$(python3 -c "import json; print(json.load(open('$meta'))['name'])" 2>/dev/null || echo "")
+    meta_name=$(python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['name'])" "$meta" 2>/dev/null || echo "")
     if [ "$meta_name" != "$dir" ]; then
       echo "  ERROR: skills/$dir/metadata.json name is '$meta_name', expected '$dir'"
       errors=$((errors + 1))

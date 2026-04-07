@@ -1,0 +1,2 @@
+# Git workflow documents force-push-with-lease as a safe rebase pattern
+git\s+push\s+--force

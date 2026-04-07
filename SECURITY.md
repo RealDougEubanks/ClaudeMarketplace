@@ -4,7 +4,7 @@
 
 This security policy covers the **Claude Code Skills Marketplace** repository, including:
 
-- Skill content (`skills/*/skill.md`) — prompt instructions that execute with user-granted Claude Code permissions
+- Skill content (`skills/*/commands/<name>.md`) — prompt instructions that execute with user-granted Claude Code permissions
 - Tooling scripts (`scripts/`) — shell and Python scripts run locally and in CI
 - CI/CD workflows (`.github/workflows/`) — automated pipelines with repository write access
 
@@ -43,7 +43,9 @@ Also report vulnerabilities in the CI/CD pipeline, scripts, or any hardcoded cre
 
 Skills in this marketplace run inside Claude Code with permissions explicitly granted by the user. Each skill declares the tools it uses in `metadata.json`. Users should review tool declarations before installing a skill.
 
-The CI pipeline runs `scripts/scan-prompts.sh` on all skill content to flag potentially dangerous patterns before merge. This is a best-effort control, not a guarantee.
+The CI pipeline runs `scripts/scan-prompts.sh` on all skill prompt files (`commands/<name>.md` and legacy `skill.md`) to flag potentially dangerous patterns before merge. This is a best-effort control, not a guarantee.
+
+Skills may include a `.scan-exempt` file listing patterns (one per line) that are expected and have been reviewed. Lines starting with `#` are comments. Exemptions are used by skills that legitimately reference sensitive terms (e.g., security audit skills discussing credentials). Changes to `.scan-exempt` files receive heightened scrutiny during PR review.
 
 ## Out of Scope
 

@@ -4,7 +4,7 @@ check-version-bump.py — Verify that changed skills have bumped their version.
 
 Rules:
   - New skills (didn't exist on base): no version bump required.
-  - README.md-only changes: no version bump required.
+  - Changes only to exempt files (README.md, plugin.json, .scan-exempt): no version bump required.
   - Any change to skill.md or metadata.json: version must be strictly higher than on base.
 
 Usage: python3 scripts/check-version-bump.py
@@ -57,8 +57,12 @@ def get_current_version(skill_name):
         return json.load(f).get("version")
 
 
-def is_readme_only(skill_name):
-    """Return True if only README.md changed for this skill."""
+# Files that can change without requiring a version bump
+EXEMPT_FILES = {"README.md", "plugin.json", ".scan-exempt"}
+
+
+def is_exempt_only(skill_name):
+    """Return True if only exempt files changed for this skill."""
     base_ref = os.environ.get("BASE_REF", "main")
     try:
         changed = git("diff", "--name-only", f"origin/{base_ref}...HEAD",
@@ -66,7 +70,7 @@ def is_readme_only(skill_name):
     except subprocess.CalledProcessError:
         return False
     files = [Path(f).name for f in changed.splitlines() if f.strip()]
-    return len(files) > 0 and all(f == "README.md" for f in files)
+    return len(files) > 0 and all(f in EXEMPT_FILES for f in files)
 
 
 def version_tuple(v):
@@ -94,8 +98,8 @@ def main():
             print(f"  OK   {skill_name}: new skill at v{current}")
             continue
 
-        if is_readme_only(skill_name):
-            print(f"  OK   {skill_name}: README-only change, version bump not required")
+        if is_exempt_only(skill_name):
+            print(f"  OK   {skill_name}: only exempt files changed (README, plugin.json, .scan-exempt), version bump not required")
             continue
 
         checks += 1

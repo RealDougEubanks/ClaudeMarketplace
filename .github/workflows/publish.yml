@@ -3,11 +3,15 @@ name: Publish Registry
 # Only run after CI passes on a push to main.
 # workflow_run fires when the named workflow completes; the condition below
 # restricts to: (a) successful runs and (b) push events (not PRs).
+# Disabled: auto-tagging requires push access, which is blocked while the
+# repository is in a disabled state.  Re-enable by uncommenting the trigger.
+# on:
+#   workflow_run:
+#     workflows: ["Skills Marketplace CI"]
+#     types: [completed]
+#     branches: [main]
 on:
-  workflow_run:
-    workflows: ["Skills Marketplace CI"]
-    types: [completed]
-    branches: [main]
+  workflow_dispatch:  # manual-only until repo push access is restored
 
 permissions:
   contents: write
@@ -68,10 +72,11 @@ jobs:
           if [ -z "$latest" ]; then
             next="v0.1.0"
           else
-            major=$(echo "$latest" | cut -d. -f1)
-            minor=$(echo "$latest" | cut -d. -f2)
-            patch=$(echo "$latest" | cut -d. -f3)
-            next="${major}.${minor}.$((patch + 1))"
+            version="${latest#v}"
+            major=$(echo "$version" | cut -d. -f1)
+            minor=$(echo "$version" | cut -d. -f2)
+            patch=$(echo "$version" | cut -d. -f3)
+            next="v${major}.${minor}.$((patch + 1))"
           fi
           echo "Tagging $next (${{ steps.summary.outputs.count }} skills)"
           git tag -a "$next" -m "Registry update: ${{ steps.summary.outputs.count }} skills" \

@@ -19,8 +19,9 @@ if [ ! -d "$PROJECT_DIR" ]; then
   exit 1
 fi
 
-if [ ! -f "$SKILL_DIR/skill.md" ]; then
-  echo "Error: $SKILL_DIR/skill.md not found. Is this a valid skill directory?"
+COMMANDS_FILE="$SKILL_DIR/commands/$SKILL_NAME.md"
+if [ ! -f "$COMMANDS_FILE" ]; then
+  echo "Error: $COMMANDS_FILE not found. Is this a valid skill directory?"
   exit 1
 fi
 
@@ -29,9 +30,9 @@ if [ ! -f "$SKILL_DIR/metadata.json" ]; then
   exit 1
 fi
 
-# Install skill.md and metadata.json to .claude/commands/
+# Install commands/<skill-name>.md and metadata.json to .claude/commands/
 mkdir -p "$COMMANDS_DIR"
-cp "$SKILL_DIR/skill.md" "$COMMANDS_DIR/$SKILL_NAME.md"
+cp "$COMMANDS_FILE" "$COMMANDS_DIR/$SKILL_NAME.md"
 cp "$SKILL_DIR/metadata.json" "$COMMANDS_DIR/$SKILL_NAME.metadata.json"
 echo "Installed: $COMMANDS_DIR/$SKILL_NAME.md"
 echo "Installed: $COMMANDS_DIR/$SKILL_NAME.metadata.json"
@@ -40,19 +41,19 @@ echo "Installed: $COMMANDS_DIR/$SKILL_NAME.metadata.json"
 CATEGORY=$(python3 -c "
 import json, sys
 try:
-    d = json.load(open('$SKILL_DIR/metadata.json'))
+    d = json.load(open(sys.argv[1]))
     print(d.get('category', ''))
 except Exception:
     print('')
-" 2>/dev/null || echo "")
+" "$SKILL_DIR/metadata.json" 2>/dev/null || echo "")
 
 if [ "$CATEGORY" = "base" ]; then
   SKILL_DISPLAY_NAME=$(python3 -c "
-import json
-d = json.load(open('$SKILL_DIR/metadata.json'))
-name = d.get('name', '$SKILL_NAME')
+import json, sys
+d = json.load(open(sys.argv[1]))
+name = d.get('name', sys.argv[2])
 print(' '.join(w.capitalize() for w in name.split('-')))
-" 2>/dev/null || echo "$SKILL_NAME")
+" "$SKILL_DIR/metadata.json" "$SKILL_NAME" 2>/dev/null || echo "$SKILL_NAME")
 
   SECTION_HEADER="## $SKILL_DISPLAY_NAME"
 
@@ -61,7 +62,7 @@ print(' '.join(w.capitalize() for w in name.split('-')))
   else
     {
       printf '\n%s\n\n' "$SECTION_HEADER"
-      cat "$SKILL_DIR/skill.md"
+      cat "$COMMANDS_FILE"
       printf '\n'
     } >> "$CLAUDE_MD"
     echo "Appended to: $CLAUDE_MD  (section: $SECTION_HEADER)"

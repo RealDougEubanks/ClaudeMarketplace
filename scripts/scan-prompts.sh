@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# scan-prompts.sh — Scan skill.md files for potentially dangerous prompt patterns.
+# scan-prompts.sh — Scan skill prompt files for potentially dangerous patterns.
 #
-# Usage: ./scripts/scan-prompts.sh [skill-directory|skill.md]
+# Usage: ./scripts/scan-prompts.sh [skill-directory|prompt-file]
 #   No arguments: scans all skills in skills/
 #   With argument: scans a single skill directory or file
 #
@@ -198,19 +198,28 @@ if [ $# -gt 0 ]; then
   target="$1"
   if [ -f "$target" ]; then
     files=("$target")
-  elif [ -d "$target" ] && [ -f "$target/skill.md" ]; then
-    files=("$target/skill.md")
+  elif [ -d "$target" ]; then
+    files=()
+    skill_name=$(basename "$target")
+    # commands/<name>.md is the authoritative skill content file
+    if [ -f "$target/commands/$skill_name.md" ]; then
+      files+=("$target/commands/$skill_name.md")
+    fi
+    if [ ${#files[@]} -eq 0 ]; then
+      echo "Error: $target has no scannable prompt files (commands/<name>.md)."
+      exit 1
+    fi
   else
-    echo "Error: $target is not a valid skill.md file or skill directory."
+    echo "Error: $target is not a valid prompt file or skill directory."
     exit 1
   fi
 else
-  # Scan all skills
-  mapfile -t files < <(find "$REPO_ROOT/skills" -name "skill.md" -type f | sort)
+  # Scan all skills — commands/<name>.md files
+  mapfile -t files < <(find "$REPO_ROOT/skills" -path "*/commands/*.md" -type f | sort)
 fi
 
 if [ ${#files[@]} -eq 0 ]; then
-  echo "No skill.md files found."
+  echo "No prompt files found."
   exit 0
 fi
 
