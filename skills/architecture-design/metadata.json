@@ -1,6 +1,6 @@
 {
   "name": "architecture-design",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Designs new systems from requirements: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns.",
   "author": {
     "name": "Doug Eubanks",

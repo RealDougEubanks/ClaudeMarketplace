@@ -14,6 +14,18 @@ A sample skill that greets the user and gives a quick summary of the current pro
 2. Scans the top-level directory
 3. Returns a friendly summary with language/framework detection
 
+## Note
+
+This is a **contributor reference skill**, not a production skill. It exists to demonstrate the expected directory structure and file format. See [CONTRIBUTING.md](../../CONTRIBUTING.md) if you want to build your own skill based on this template.
+
 ## Installation
 
-Copy `skill.md` into your Claude Code skills directory, or add this repository as a skills source.
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "enabledPlugins": {
+    "example-skill@claude-skills-marketplace": true
+  }
+}
+```

@@ -1,10 +1,18 @@
 # Claude Code Skills Marketplace
 
-A community-driven collection of custom skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), Anthropic's CLI tool for software engineering with Claude.
+A community-driven collection of custom skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — Anthropic's CLI tool that lets you work with Claude directly in your terminal and editor.
+
+## Prerequisites
+
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated
+- Git with SSH configured (for the marketplace source URL), or use the HTTPS URL below
+- No other dependencies required
 
 ## What are Skills?
 
-Skills are reusable prompt templates that extend Claude Code's capabilities. They let you package expert instructions into shareable, versioned modules that anyone can install and invoke with a slash command.
+Skills are reusable prompt templates that extend Claude Code's capabilities. They let you package expert instructions into shareable, versioned modules that anyone can invoke with a slash command.
+
+> **Skills vs Plugins:** Internally, Claude Code calls these "plugins" — you'll see `enabledPlugins` in `settings.json` and `.claude-plugin/` directories in the repo. Skills are plugins implemented purely as prompt instructions, with no MCP server or external API required.
 
 Examples of what skills can do:
 
@@ -28,7 +36,7 @@ ClaudeMarketplace/
 │       ├── metadata.json           # Name, version, author, tags, etc.
 │       └── README.md               # Human-readable documentation
 ├── templates/                      # Starter templates for new skills
-│   ├── skill.md
+│   ├── skill.md                    # Used by new-skill.sh to scaffold commands/<name>.md
 │   └── metadata.json
 ├── schema/
 │   └── metadata.schema.json        # JSON Schema for metadata validation
@@ -141,6 +149,8 @@ Skills are distributed through the Claude Code marketplace system. Add this mark
 }
 ```
 
+> **No SSH?** Use the HTTPS URL instead: `"url": "https://github.com/RealDougEubanks/ClaudeMarketplace.git"`
+
 Then enable the skills you want under `enabledPlugins`. You can enable all of them, or just the ones relevant to your work:
 
 ```json
@@ -153,7 +163,13 @@ Then enable the skills you want under `enabledPlugins`. You can enable all of th
 }
 ```
 
-Once enabled, skills are available as slash commands (e.g. `/code-review`, `/security-review`) in any Claude Code session.
+Once enabled, skills are available as slash commands in any Claude Code session:
+
+```
+/code-review          ← runs a structured code review on the current file or selection
+/security-review      ← audits the codebase for security issues
+/test-writer          ← generates tests for a given file or function
+```
 
 ### Selective Installation
 

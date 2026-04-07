@@ -1,6 +1,6 @@
 {
   "name": "pre-commit",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Fast pre-commit quality gate: secrets, dead code, naming, conflict markers, and direct-to-main protection. Installs as a git hook.",
   "author": {
     "name": "Doug Eubanks",
