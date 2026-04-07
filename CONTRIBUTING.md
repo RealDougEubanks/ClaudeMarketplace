@@ -37,7 +37,7 @@ Thanks for your interest in contributing a skill! Follow the steps below.
 ## Skill Guidelines
 
 - **Keep skills focused** — each skill should do one thing well.
-- **Be explicit** — write clear, step-by-step instructions in `skill.md`. Claude performs better with specific guidance.
+- **Be explicit** — write clear, step-by-step instructions in `commands/<skill-name>.md`. Claude performs better with specific guidance.
 - **Declare your tools** — list the tools the skill uses in `metadata.json` so users know what permissions are needed.
 - **Tag appropriately** — use descriptive tags so users can discover your skill.
 - **Test locally** — try your skill with Claude Code before submitting.
