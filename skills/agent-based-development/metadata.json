@@ -1,6 +1,6 @@
 {
   "name": "agent-based-development",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Full async multi-agent development workflow: Planning \u2192 Design \u2192 Dev \u2192 Security/Tech Review loop with file-based handoffs and release-branch Git model.",
   "author": {
     "name": "Doug Eubanks",
