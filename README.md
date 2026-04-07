@@ -105,6 +105,18 @@ Because Claude Code loads `CLAUDE.md` automatically at the start of every sessio
 
 ---
 
+## Why Marketplace Format?
+
+Skills in this repo are distributed as a Claude Code marketplace rather than as individually installed files. This was a deliberate design decision:
+
+**Skills stay automatically up to date.** With `"autoUpdate": true`, Claude Code syncs with this repo whenever it pulls updates. Any improvement to a skill — better instructions, new capabilities, bug fixes — is available immediately without any action from the user. There is no "reinstall" step.
+
+**Skills are passive — there is no overhead to having them enabled.** A skill is just a slash command. It does nothing until you invoke it. Having 22 skills enabled globally costs nothing at runtime: no background processes, no memory usage, no effect on Claude's behavior unless you type the command. The only practical consideration is 22 extra entries in the slash command autocomplete list.
+
+**You control which skills are enabled.** You can enable all of them globally, a curated subset, or configure different skills per project. See [Selective Installation](#selective-installation) below.
+
+---
+
 ## Quick Start
 
 ### Browse Skills
@@ -129,7 +141,7 @@ Skills are distributed through the Claude Code marketplace system. Add this mark
 }
 ```
 
-Then enable individual skills under `enabledPlugins`:
+Then enable the skills you want under `enabledPlugins`. You can enable all of them, or just the ones relevant to your work:
 
 ```json
 {
@@ -142,6 +154,26 @@ Then enable individual skills under `enabledPlugins`:
 ```
 
 Once enabled, skills are available as slash commands (e.g. `/code-review`, `/security-review`) in any Claude Code session.
+
+### Selective Installation
+
+You don't have to enable everything. There are three common patterns:
+
+**Enable all skills globally** — add every skill to `~/.claude/settings.json`. All slash commands are available in every project, always up to date.
+
+**Enable a curated global set** — enable only the skills you use regularly (e.g. `golden-rules`, `code-review`, `security-review`) in `~/.claude/settings.json`, and skip the rest.
+
+**Per-project overrides** — add an `enabledPlugins` block to a project's `.claude/settings.json` to enable skills only for that project. Project settings layer on top of your global config.
+
+```json
+// .claude/settings.json in a specific project
+{
+  "enabledPlugins": {
+    "accessibility@claude-skills-marketplace": true,
+    "database-design@claude-skills-marketplace": true
+  }
+}
+```
 
 ### Create Your Own Skill
 
