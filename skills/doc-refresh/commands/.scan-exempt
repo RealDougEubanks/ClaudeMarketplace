@@ -1,0 +1,8 @@
+# doc-refresh is a documentation generation skill.
+# It references .env in the context of instructing Claude to read .env.example
+# for environment variable documentation — not to access or expose secrets.
+# It references "credentials" in the context of warning authors to add security
+# callouts before any step that involves credentials. Both are defensive guidance,
+# not exploitation instructions.
+\.env\b
+credentials
