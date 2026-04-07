@@ -426,6 +426,27 @@
         "inclusive-design"
       ],
       "category": "standards"
+    },
+    {
+      "name": "doc-refresh",
+      "source": "./skills/doc-refresh",
+      "description": "Complete documentation refresh — audits stale docs, creates missing docs, rewrites for a 2am on-call engineer with zero assumed context. Security callouts mandatory.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Doug Eubanks",
+        "url": "https://github.com/RealDougEubanks"
+      },
+      "keywords": [
+        "documentation",
+        "docs",
+        "refresh",
+        "on-call",
+        "runbook",
+        "security",
+        "stale",
+        "audit"
+      ],
+      "category": "productivity"
     }
   ]
 }

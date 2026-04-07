@@ -97,8 +97,68 @@ ClaudeMarketplace/
 
 | Skill | Command | Description |
 |-------|---------|-------------|
+| [doc-refresh](skills/doc-refresh/) | `/doc-refresh` | Complete documentation refresh — audits stale docs, creates missing docs, rewrites for a 2am on-call engineer with zero assumed context. Installs as a pre-commit hook via `/doc-refresh install` |
 | [log-correlation](skills/log-correlation/) | `/log-correlation` | Correlates and troubleshoots logs across OS (Linux/macOS), AWS (CloudWatch, CloudTrail, ALB, Lambda), application (JSON, logfmt), and web servers (Nginx, Apache) |
 | [onboarding](skills/onboarding/) | `/onboarding` | Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview |
+
+---
+
+## Git Hooks
+
+Two skills can install themselves as git hooks so they run automatically on every commit
+without you having to invoke them manually.
+
+| Skill | Hook type | Hook file | What it does automatically |
+|-------|-----------|-----------|----------------------------|
+| [pre-commit](skills/pre-commit/) | pre-commit | `.git/hooks/pre-commit` | Scans staged files for secrets, dead code, naming issues, conflict markers, and direct-to-main commits. Blocks the commit if a BLOCKER is found. |
+| [doc-refresh](skills/doc-refresh/) | pre-commit | `.git/hooks/pre-commit` | Refreshes all project documentation before the commit finalises and auto-stages any updated doc files so they land in the same commit as the code. |
+
+> **Note:** Both hooks use `.git/hooks/pre-commit`. If you want both to run, install
+> `pre-commit` first, then manually merge the two scripts, or run `/doc-refresh install`
+> which will warn you if a hook already exists.
+
+### Installing a hook
+
+```
+/pre-commit install
+```
+
+```
+/doc-refresh install
+```
+
+Each command writes a shell script to `.git/hooks/` and makes it executable. The hook
+runs automatically on every `git commit` from that point on. Both hooks fail gracefully —
+if Claude Code is unavailable the commit proceeds with a warning rather than being blocked.
+
+### Skipping a hook for one commit
+
+Both hooks respect an environment variable escape hatch:
+
+| Skill | Skip variable |
+|-------|--------------|
+| `pre-commit` | `git commit --no-verify` |
+| `doc-refresh` | `SKIP_DOC_REFRESH=1 git commit ...` |
+
+Use `--no-verify` sparingly — it bypasses all hooks including the secret scanner.
+Prefer the skill-specific skip variable when you only need to skip one hook.
+
+### Uninstalling a hook
+
+```
+/pre-commit uninstall
+```
+
+```
+/doc-refresh uninstall
+```
+
+### Hook scope
+
+Git hooks are stored in `.git/hooks/`, which is not committed to the repository.
+Each team member must run the install command in their own local clone.
+To automate this for the whole team, add the install command to your project's
+setup or bootstrap script.
 
 ---
 

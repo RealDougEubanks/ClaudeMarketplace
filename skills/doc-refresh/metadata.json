@@ -1,0 +1,33 @@
+{
+  "name": "doc-refresh",
+  "version": "1.0.0",
+  "description": "Complete documentation refresh — audits stale docs, creates missing docs, rewrites for a 2am on-call engineer with zero assumed context. Security callouts mandatory.",
+  "author": {
+    "name": "Doug Eubanks",
+    "github": "realdougeubanks"
+  },
+  "license": "MIT",
+  "category": "productivity",
+  "tags": [
+    "documentation",
+    "docs",
+    "refresh",
+    "on-call",
+    "runbook",
+    "security",
+    "stale",
+    "audit"
+  ],
+  "commands": [
+    "/doc-refresh"
+  ],
+  "triggers": [],
+  "tools": [
+    "Read",
+    "Write",
+    "Edit",
+    "Glob",
+    "Grep",
+    "Bash"
+  ]
+}
