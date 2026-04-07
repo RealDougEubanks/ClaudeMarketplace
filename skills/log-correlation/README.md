@@ -95,12 +95,14 @@ Minimum recommended policy: attach `CloudWatchLogsReadOnlyAccess` and a custom p
 
 ## Installation
 
-```bash
-# Install into current project
-./scripts/install.sh skills/log-correlation
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 
-# Install into a specific project
-./scripts/install.sh skills/log-correlation /path/to/my-project
+```json
+{
+  "enabledPlugins": {
+    "log-correlation@claude-skills-marketplace": true
+  }
+}
 ```
 
-After installation, the skill (including `log-types/`) will be available in `.claude/skills/log-correlation/`.
+Once enabled, invoke with `/log-correlation` in any Claude Code session.

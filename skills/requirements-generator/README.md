@@ -73,8 +73,14 @@ The requirements-generator skill fits naturally into the Agent-Based Development
 
 ## Installation
 
-Copy `skill.md` into your Claude Code skills directory, or install via:
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 
-```bash
-./scripts/install.sh skills/requirements-generator <your-project-dir>
+```json
+{
+  "enabledPlugins": {
+    "requirements-generator@claude-skills-marketplace": true
+  }
+}
 ```
+
+Once enabled, invoke with `/requirements-generator` in any Claude Code session.

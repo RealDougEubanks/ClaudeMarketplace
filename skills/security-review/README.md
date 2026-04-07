@@ -77,10 +77,17 @@ When used as part of the `/agent-based-development` workflow (`/abd-security`), 
 
 ## Installation
 
-```bash
-./scripts/install.sh skills/security-review /path/to/your/project
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "enabledPlugins": {
+    "security-review@claude-skills-marketplace": true
+  }
+}
 ```
 
+Once enabled, invoke with `/security-review` in any Claude Code session.
 ## Related Skills
 
 - `/golden-rules` — install always-on security standards

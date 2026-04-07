@@ -12,7 +12,7 @@ When working in this repo, your job is to help build, validate, and publish skil
 - After creating or editing a skill, run `./scripts/validate.sh skills/<skill-name>`.
 - After adding a skill directory, update `skills/registry.json` and run `./scripts/check-registry.sh`.
 - Use `./scripts/new-skill.sh <name>` to scaffold a new skill from templates.
-- Use `./scripts/install.sh skills/<name> [project-dir]` to install a skill into a project.
+- Skills are distributed via the Claude Code marketplace — there is no manual install script. Direct users to add this repo as a marketplace in `~/.claude/settings.json`.
 - Do not modify `skills/example-skill/` — it is the canonical reference for contributors.
 
 ## Pre-Commit Checklist (MANDATORY — run before every commit)

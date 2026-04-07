@@ -87,8 +87,14 @@ Describe what the skill does and when to use it.
 
 ## Installation
 
-\`\`\`bash
-./scripts/install.sh skills/$SKILL_NAME
+Enable via the Claude Code marketplace by adding to \`~/.claude/settings.json\`:
+
+\`\`\`json
+{
+  "enabledPlugins": {
+    "$SKILL_NAME@claude-skills-marketplace": true
+  }
+}
 \`\`\`
 
 ## Usage

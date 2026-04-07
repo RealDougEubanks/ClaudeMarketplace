@@ -107,10 +107,17 @@ Claude reads the latest plan and your assignment, then executes your role.
 
 ## Installation
 
-```bash
-./scripts/install.sh skills/agent-based-development /path/to/your/project
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "enabledPlugins": {
+    "agent-based-development@claude-skills-marketplace": true
+  }
+}
 ```
 
+Once enabled, invoke with `/agent-based-development` in any Claude Code session.
 ## Related Skills
 
 - `/golden-rules` — install always-on coding and security standards

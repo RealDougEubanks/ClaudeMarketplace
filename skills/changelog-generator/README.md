@@ -58,8 +58,14 @@ If your project uses the Agent-Based Development (ABD) workflow, place completed
 
 ## Installation
 
-Copy `skill.md` into your Claude Code skills directory, or install via the marketplace:
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 
-```bash
-./scripts/install.sh skills/changelog-generator /path/to/your/project
+```json
+{
+  "enabledPlugins": {
+    "changelog-generator@claude-skills-marketplace": true
+  }
+}
 ```
+
+Once enabled, invoke with `/changelog-generator` in any Claude Code session.

@@ -66,10 +66,17 @@ Claude will prompt you for the specific action. Or specify inline:
 
 ## Installation
 
-```bash
-./scripts/install.sh skills/git-workflow /path/to/your/project
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "enabledPlugins": {
+    "git-workflow@claude-skills-marketplace": true
+  }
+}
 ```
 
+Once enabled, invoke with `/git-workflow` in any Claude Code session.
 ## Related Skills
 
 - `/agent-based-development` — full workflow where git-workflow is embedded

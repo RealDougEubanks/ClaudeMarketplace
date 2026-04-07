@@ -68,6 +68,14 @@ Optionally specify scope:
 
 ## Installation
 
-```bash
-./scripts/install.sh skills/code-review [your-project-dir]
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "enabledPlugins": {
+    "code-review@claude-skills-marketplace": true
+  }
+}
 ```
+
+Once enabled, invoke with `/code-review` in any Claude Code session.

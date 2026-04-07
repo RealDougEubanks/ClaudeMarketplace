@@ -66,8 +66,14 @@ npm install lodash@latest
 
 ## Installation
 
-Copy `skill.md` into your Claude Code skills directory, or install via the marketplace:
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 
-```bash
-./scripts/install.sh skills/dependency-audit /path/to/your/project
+```json
+{
+  "enabledPlugins": {
+    "dependency-audit@claude-skills-marketplace": true
+  }
+}
 ```
+
+Once enabled, invoke with `/dependency-audit` in any Claude Code session.

@@ -34,7 +34,6 @@ ClaudeMarketplace/
 │   └── metadata.schema.json        # JSON Schema for metadata validation
 ├── scripts/
 │   ├── validate.sh                 # Validate a skill's structure
-│   ├── install.sh                  # Install a skill locally
 │   ├── new-skill.sh                # Scaffold a new skill from templates
 │   ├── check-registry.sh           # Verify registry.json consistency
 │   ├── validate-all.sh             # Run all validation checks
@@ -97,12 +96,12 @@ ClaudeMarketplace/
 
 ## How Base Skills Work
 
-Skills with `"category": "base"` (like `golden-rules`) do two things when installed:
+Skills with `"category": "base"` (like `golden-rules`) do two things when enabled via the marketplace:
 
-1. Copy `skill.md` to `.claude/commands/<skill-name>.md` so you can invoke it with a slash command.
-2. **Also append the skill content to `CLAUDE.md`** in your project root.
+1. Register as a slash command (e.g. `/golden-rules`) so you can invoke it on demand.
+2. **When invoked, append the skill content to `CLAUDE.md`** in your project root.
 
-Because Claude Code loads `CLAUDE.md` automatically at the start of every session, base skills become **always-on context** — no invocation required.
+Because Claude Code loads `CLAUDE.md` automatically at the start of every session, base skills become **always-on context** — no invocation required after the first run.
 
 ---
 
@@ -112,21 +111,37 @@ Because Claude Code loads `CLAUDE.md` automatically at the start of every sessio
 
 Look through the [`skills/`](skills/) directory or check [`skills/registry.json`](skills/registry.json) for a full index.
 
-### Install a Skill
+### Install via Claude Code Marketplace
 
-```bash
-# Clone the marketplace
-git clone https://github.com/realdougeubanks/claudemarketplace.git
-cd claudemarketplace
+Skills are distributed through the Claude Code marketplace system. Add this marketplace to your `~/.claude/settings.json`:
 
-# Install a skill into your project's .claude/commands/ directory
-./scripts/install.sh skills/golden-rules /path/to/your/project
-
-# Or install to the current directory
-./scripts/install.sh skills/mvp-readiness
+```json
+{
+  "extraKnownMarketplaces": {
+    "claude-skills-marketplace": {
+      "source": {
+        "source": "git",
+        "url": "git@github.com:RealDougEubanks/ClaudeMarketplace.git"
+      },
+      "autoUpdate": true
+    }
+  }
+}
 ```
 
-The script copies `skill.md` → `.claude/commands/<skill-name>.md` and `metadata.json` → `.claude/commands/<skill-name>.metadata.json`. For `base` skills, it also appends to `CLAUDE.md`.
+Then enable individual skills under `enabledPlugins`:
+
+```json
+{
+  "enabledPlugins": {
+    "golden-rules@claude-skills-marketplace": true,
+    "code-review@claude-skills-marketplace": true,
+    "security-review@claude-skills-marketplace": true
+  }
+}
+```
+
+Once enabled, skills are available as slash commands (e.g. `/code-review`, `/security-review`) in any Claude Code session.
 
 ### Create Your Own Skill
 
@@ -134,10 +149,10 @@ The script copies `skill.md` → `.claude/commands/<skill-name>.md` and `metadat
 # Scaffold from templates
 ./scripts/new-skill.sh my-new-skill
 
-# Edit the three files
-# - skills/my-new-skill/skill.md       → instructions Claude follows literally
-# - skills/my-new-skill/metadata.json  → name, version, category, tags, tools
-# - skills/my-new-skill/README.md      → human-readable docs
+# Edit the generated files:
+# - skills/my-new-skill/commands/my-new-skill.md  → instructions Claude follows
+# - skills/my-new-skill/metadata.json             → name, version, category, tags, tools
+# - skills/my-new-skill/README.md                 → human-readable docs
 
 # Validate structure
 ./scripts/validate.sh skills/my-new-skill
@@ -184,9 +199,9 @@ See [`schema/metadata.schema.json`](schema/metadata.schema.json) for the full va
 We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
 
 **TL;DR:**
-1. Copy the template into `skills/your-skill-name/`
-2. Write your `skill.md`, `metadata.json`, and `README.md`
-3. Validate with `./scripts/validate.sh`
+1. Run `./scripts/new-skill.sh your-skill-name` to scaffold
+2. Write your `commands/your-skill-name.md`, `metadata.json`, and `README.md`
+3. Validate with `./scripts/validate.sh skills/your-skill-name`
 4. Add to `skills/registry.json`
 5. Open a PR
 

@@ -100,10 +100,17 @@ The skill can generate a handoff artifact compatible with the `/agent-based-deve
 
 ## Installation
 
-```bash
-./scripts/install.sh skills/incident-report /path/to/your/project
+Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "enabledPlugins": {
+    "incident-report@claude-skills-marketplace": true
+  }
+}
 ```
 
+Once enabled, invoke with `/incident-report` in any Claude Code session.
 ## Related Skills
 
 - `/log-correlation` — correlate and analyze logs before writing an incident report
