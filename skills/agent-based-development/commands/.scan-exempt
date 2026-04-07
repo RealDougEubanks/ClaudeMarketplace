@@ -1,0 +1,2 @@
+# DevOps role references .env.example for environment variable validation
+\.env\b

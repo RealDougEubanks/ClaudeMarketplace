@@ -1,0 +1,4 @@
+# MVP readiness audit checks for hardcoded secrets — references the patterns it scans for
+\.env\b
+api[_-]?key
+password

@@ -1,0 +1,3 @@
+# Best practices checklist references .env and password security patterns
+\.env\b
+password

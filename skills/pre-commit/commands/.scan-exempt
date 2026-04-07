@@ -1,0 +1,6 @@
+# Pre-commit skill defines the secret patterns it scans for
+api[_-]?key
+secret[_-]?key
+access[_-]?token
+password
+AWS_SECRET
