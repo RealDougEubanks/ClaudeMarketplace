@@ -21,7 +21,7 @@ Always run these checks before committing. CI will fail if any are skipped.
 
 1. **Validate skill structure** — `./scripts/validate.sh skills/<name>` for each changed skill.
 2. **Sync registry versions** — `skills/registry.json` version must match `metadata.json` version for every skill. Update registry.json whenever you bump a skill version.
-3. **Bump versions** — Any skill whose `commands/<name>.md`, `metadata.json`, or `README.md` changed must have its version incremented in **both** `metadata.json` and `skills/registry.json` (and `marketplace.json` if present). Use semver patch bumps for fixes, minor bumps for new features or layout changes.
+3. **Bump versions** — Any skill whose `commands/<name>.md`, `metadata.json`, or `README.md` changed must have its version incremented in **all four places**: `metadata.json`, `skills/registry.json`, `.claude-plugin/marketplace.json`, and `skills/<name>/.claude-plugin/plugin.json`. Use semver patch bumps for fixes, minor bumps for new features or layout changes.
 4. **Run ShellCheck** — `shellcheck scripts/*.sh`. All scripts must pass with no errors.
 5. **Run markdownlint** — `npx markdownlint-cli2 "skills/**/*.md" "*.md"`. No bare URLs — wrap emails and URLs in backticks or angle brackets.
 6. **Check registry** — `./scripts/check-registry.sh` to confirm all three version fields agree.
