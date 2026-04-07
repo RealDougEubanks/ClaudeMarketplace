@@ -1,6 +1,6 @@
 # golden-rules
 
-Installs mandatory security, coding, and design standards into your project's `CLAUDE.md` so they are always-on context for every Claude Code session — no need to invoke a command on each session.
+Installs mandatory security, coding, design, testing, error handling, API contract, and performance standards into your project's `CLAUDE.md` so they are always-on context for every Claude Code session — no need to invoke a command on each session.
 
 ## What It Does
 
@@ -16,7 +16,7 @@ Because Claude Code automatically loads `CLAUDE.md` at the start of every sessio
 
 ## The Golden Rules
 
-The installed block covers three areas:
+The installed block covers these areas:
 
 ### Security (Non-Negotiable)
 - Security is paramount in every decision.
@@ -36,6 +36,25 @@ The installed block covers three areas:
 - Minimalist, clean visual design with clear hierarchy.
 - Responsive layouts for mobile, tablet, and desktop.
 - WCAG AA contrast minimum; never rely on color alone for meaning.
+
+### Testing Standards
+- Every module with logic must have tests. Name tests descriptively.
+- Test behavior, not implementation. Write the failing test first when fixing bugs.
+- No flaky tests. Integration tests for critical paths.
+
+### Error Handling
+- Never swallow exceptions. Use structured error objects with codes.
+- Log with severity, timestamp, and correlation ID. Fail fast on invalid state.
+
+### API & Data Contracts
+- Schema-validate all inputs at boundaries. Sanitize user input.
+- Version APIs explicitly. Maintain backward compatibility.
+- Document every public endpoint.
+
+### Performance Basics
+- No N+1 queries. All list endpoints must paginate.
+- Async I/O for network and file operations. Cache with defined TTLs.
+- Timeouts on every external call. No unbounded algorithms on unbounded inputs.
 
 ## Installation
 
