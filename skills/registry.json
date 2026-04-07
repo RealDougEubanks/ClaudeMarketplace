@@ -2,7 +2,7 @@
   "$schema": "../schema/metadata.schema.json",
   "description": "Registry of all skills in the Claude Code Skills Marketplace",
   "categories": {
-    "base": "Always-on context skills that install into CLAUDE.md \u2014 active for every Claude Code session",
+    "base": "Always-on context skills that install into CLAUDE.md — active for every Claude Code session",
     "workflow": "End-to-end development workflow skills",
     "agents": "Role-specific agent persona skills",
     "standards": "Quality gates, checklists, and coding standards",
@@ -24,20 +24,24 @@
     {
       "name": "golden-rules",
       "path": "skills/golden-rules",
-      "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
+      "description": "Installs mandatory security, coding, naming, design, testing, error handling, API contract, and performance standards into CLAUDE.md as always-on context for every Claude Code session.",
       "tags": [
         "base",
         "security",
         "standards",
-        "always-on"
+        "always-on",
+        "testing",
+        "error-handling",
+        "api-contracts",
+        "performance"
       ],
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "base"
     },
     {
       "name": "agent-based-development",
       "path": "skills/agent-based-development",
-      "description": "Full async multi-agent development workflow: Planning \u2192 Design \u2192 Dev \u2192 Security/Tech Review loop with file-based handoffs and release-branch Git model.",
+      "description": "Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model.",
       "tags": [
         "workflow",
         "agents",

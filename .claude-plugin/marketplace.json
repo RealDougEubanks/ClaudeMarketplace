@@ -9,7 +9,7 @@
       "name": "golden-rules",
       "source": "./skills/golden-rules",
       "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -25,7 +25,7 @@
     {
       "name": "agent-based-development",
       "source": "./skills/agent-based-development",
-      "description": "Full async multi-agent development workflow: Planning \u2192 Design \u2192 Dev \u2192 Security/Tech Review loop with file-based handoffs and release-branch Git model.",
+      "description": "Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model.",
       "version": "1.2.0",
       "author": {
         "name": "Doug Eubanks",

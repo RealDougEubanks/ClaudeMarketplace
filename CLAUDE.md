@@ -74,6 +74,43 @@ GIT HYGIENE (MANDATORY)
 - If you find yourself on `main` with uncommitted changes, stash or move them to a new branch before committing.
 - No PR may be merged without at least one approval from a reviewer other than the author. Self-merge is not permitted.
 
+TESTING STANDARDS (MANDATORY)
+
+- Every module with logic must have corresponding tests. No untested business logic in production.
+- Name tests descriptively: `test_<unit>_<scenario>_<expected>` or `describe/it` equivalents. A failing test name must explain what broke.
+- Test behavior, not implementation. Mock external dependencies; do not mock the unit under test.
+- Write the test first when fixing a bug — reproduce it as a failing test, then fix.
+- Do not test framework internals, trivial getters/setters, or auto-generated code.
+- Integration tests must cover critical paths: auth flows, payment flows, and data persistence boundaries.
+- Tests must be deterministic — no flaky tests. Remove or fix any test that fails intermittently.
+
+ERROR HANDLING (MANDATORY)
+
+- Never swallow exceptions silently. Every catch block must log, re-throw, or return a meaningful error.
+- Use structured error objects with a machine-readable code, human-readable message, and optional context. No bare string throws.
+- Log errors with severity level, timestamp, request/correlation ID, and enough context to reproduce. No PII in logs.
+- Distinguish client errors (4xx / validation) from server errors (5xx / unexpected). Return appropriate status codes.
+- Fail fast on invalid state. Validate preconditions at function entry; do not let bad data propagate.
+- Define and use a project-wide error hierarchy or error code enum. No ad-hoc error strings scattered across the codebase.
+
+API & DATA CONTRACTS (MANDATORY)
+
+- Validate all inputs at system boundaries with schema validation (Zod, Pydantic, JSON Schema, or equivalent). Reject invalid payloads before processing.
+- Sanitize all user-supplied strings before use in queries, templates, or downstream calls. Assume all external input is hostile.
+- Version APIs explicitly (URL path, header, or query param). Never introduce breaking changes to an existing version.
+- Backward compatibility is required for at least one prior version. Deprecate before removing — never drop fields or endpoints without notice.
+- Document every public endpoint or contract with request/response schemas. Undocumented APIs are not shippable.
+- Use consistent naming across all API surfaces: plural resource nouns, standard HTTP verbs, consistent date/enum formats.
+
+PERFORMANCE BASICS (MANDATORY)
+
+- No N+1 queries. Use eager loading, joins, or batch fetches. Profile queries on realistic data volumes before shipping.
+- All list endpoints must support pagination. No unbounded result sets. Default to reasonable page sizes.
+- Use async/non-blocking I/O for network calls, file I/O, and any operation that can block the event loop or thread pool.
+- Cache expensive computations and frequently-read data. Define TTLs and invalidation strategy — no stale-forever caches.
+- Set timeouts on every external call (HTTP, DB, queue). No indefinite waits. Define retry policy with backoff for transient failures.
+- Do not optimize prematurely, but do not ship known O(n^2) or worse algorithms on unbounded inputs. Document accepted performance trade-offs in docs/assumptions.md.
+
 PYTHON ENVIRONMENT (MANDATORY)
 
 - Never install Python packages into the OS Python install. Always use a virtual environment.
