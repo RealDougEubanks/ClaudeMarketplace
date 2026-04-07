@@ -18,22 +18,29 @@ Examples of what skills can do:
 
 ```
 ClaudeMarketplace/
-├── skills/                     # Published skills
-│   ├── registry.json           # Index of all available skills
-│   └── example-skill/          # One directory per skill
-│       ├── skill.md            # The skill prompt (what Claude executes)
-│       ├── metadata.json       # Name, version, author, tags, etc.
-│       └── README.md           # Human-readable documentation
-├── templates/                  # Starter templates for new skills
+├── skills/                         # Published skills
+│   ├── registry.json               # Index of all available skills
+│   └── example-skill/              # One directory per skill
+│       ├── commands/
+│       │   └── example-skill.md    # Skill prompt with YAML frontmatter
+│       ├── .claude-plugin/
+│       │   └── plugin.json         # Claude Code plugin manifest
+│       ├── metadata.json           # Name, version, author, tags, etc.
+│       └── README.md               # Human-readable documentation
+├── templates/                      # Starter templates for new skills
 │   ├── skill.md
 │   └── metadata.json
 ├── schema/
-│   └── metadata.schema.json    # JSON Schema for metadata validation
+│   └── metadata.schema.json        # JSON Schema for metadata validation
 ├── scripts/
-│   ├── validate.sh             # Validate a skill's structure
-│   └── install.sh              # Install a skill locally
-├── CONTRIBUTING.md             # How to submit a skill
-└── LICENSE                     # MIT
+│   ├── validate.sh                 # Validate a skill's structure
+│   ├── install.sh                  # Install a skill locally
+│   ├── new-skill.sh                # Scaffold a new skill from templates
+│   ├── check-registry.sh           # Verify registry.json consistency
+│   ├── validate-all.sh             # Run all validation checks
+│   └── scan-prompts.sh             # Prompt safety scanner
+├── CONTRIBUTING.md                 # How to submit a skill
+└── LICENSE                         # MIT
 ```
 
 ## Available Skills
@@ -145,11 +152,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full submission guide.
 
 Every skill has three files:
 
-| File              | Purpose                                                    |
-|-------------------|------------------------------------------------------------|
-| `skill.md`        | The prompt — step-by-step instructions Claude will follow  |
-| `metadata.json`   | Machine-readable metadata (name, version, tags, tools)     |
-| `README.md`       | Human-readable docs (usage, examples, installation notes)  |
+| File                          | Purpose                                                    |
+|-------------------------------|------------------------------------------------------------|
+| `commands/<name>.md`          | The prompt with YAML frontmatter — what Claude executes    |
+| `metadata.json`               | Machine-readable metadata (name, version, tags, tools)     |
+| `.claude-plugin/plugin.json`  | Claude Code plugin manifest for discovery                  |
+| `README.md`                   | Human-readable docs (usage, examples, installation notes)  |
 
 ### metadata.json
 

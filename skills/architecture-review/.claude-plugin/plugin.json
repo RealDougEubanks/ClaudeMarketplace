@@ -1,6 +1,6 @@
 {
   "name": "architecture-review",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Audits existing system architecture for anti-patterns, scalability risks, and reliability gaps. Produces graded findings with migration roadmap.",
   "author": {
     "name": "Doug Eubanks",

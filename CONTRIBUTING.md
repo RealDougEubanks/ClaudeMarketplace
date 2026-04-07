@@ -54,6 +54,20 @@ See `schema/metadata.schema.json` for the full schema. Required fields:
 | `author`      | object   | `{ name, github?, url? }`         |
 | `tags`        | string[] | At least one categorization tag    |
 
+## Prompt Safety Scanner
+
+All skill prompt files are scanned by `scripts/scan-prompts.sh` for potentially dangerous patterns (data exfiltration, credential access, destructive commands, prompt injection). The scanner runs in CI on every PR.
+
+If your skill legitimately references a flagged pattern (e.g., a security-review skill that discusses credentials), you can exempt specific patterns by creating a `.scan-exempt` file in your skill directory:
+
+```text
+# Each line is an exact pattern string to exempt (comments start with #)
+password
+api[_-]?key
+```
+
+**Important:** `.scan-exempt` additions are reviewed carefully during PR review. Only exempt patterns that are genuinely necessary for the skill's purpose.
+
 ## Code of Conduct
 
 Be respectful. Don't submit skills that are malicious, deceptive, or designed to circumvent safety measures.

@@ -7,7 +7,7 @@
     "github": "your-github-username"
   },
   "license": "MIT",
-  "tags": [],
+  "tags": ["my-skill"],
   "commands": ["/my-skill"],
   "triggers": [],
   "tools": []

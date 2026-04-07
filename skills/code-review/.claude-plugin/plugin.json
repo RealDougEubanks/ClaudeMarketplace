@@ -1,6 +1,6 @@
 {
   "name": "code-review",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency.",
   "author": {
     "name": "Doug Eubanks",
