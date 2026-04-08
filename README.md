@@ -1,3 +1,9 @@
+<!--
+doc: README
+last-refreshed: 2026-04-07
+generated-by: doc-refresh skill
+-->
+
 # Claude Code Skills Marketplace
 
 A community-driven collection of custom skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — Anthropic's CLI tool that lets you work with Claude directly in your terminal and editor.
@@ -45,7 +51,9 @@ ClaudeMarketplace/
 │   ├── new-skill.sh                # Scaffold a new skill from templates
 │   ├── check-registry.sh           # Verify registry.json consistency
 │   ├── validate-all.sh             # Run all validation checks
-│   └── scan-prompts.sh             # Prompt safety scanner
+│   ├── scan-prompts.sh             # Prompt safety scanner
+│   ├── sync-versions.sh            # Sync versions across metadata files
+│   └── generate-changelog-entry.sh # Generate a changelog entry from git log
 ├── CONTRIBUTING.md                 # How to submit a skill
 └── LICENSE                         # MIT
 ```
@@ -273,7 +281,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full submission guide.
 
 ## Skill Anatomy
 
-Every skill has three files:
+Every skill has four files:
 
 | File                          | Purpose                                                    |
 |-------------------------------|------------------------------------------------------------|

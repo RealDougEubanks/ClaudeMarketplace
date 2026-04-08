@@ -1,3 +1,9 @@
+<!--
+doc: CONTRIBUTING
+last-refreshed: 2026-04-07
+generated-by: doc-refresh skill
+-->
+
 # Contributing to Claude Code Skills Marketplace
 
 Thanks for your interest in contributing a skill! Follow the steps below.
@@ -58,7 +64,7 @@ See `schema/metadata.schema.json` for the full schema. Required fields:
 
 All skill prompt files are scanned by `scripts/scan-prompts.sh` for potentially dangerous patterns (data exfiltration, credential access, destructive commands, prompt injection). The scanner runs in CI on every PR.
 
-If your skill legitimately references a flagged pattern (e.g., a security-review skill that discusses credentials), you can exempt specific patterns by creating a `.scan-exempt` file in your skill directory:
+If your skill legitimately references a flagged pattern (e.g., a security-review skill that discusses credentials), you can exempt specific patterns by creating a `.scan-exempt` file in your skill's `commands/` directory (same directory as the scanned `commands/<name>.md` file):
 
 ```text
 # Each line is an exact pattern string to exempt (comments start with #)

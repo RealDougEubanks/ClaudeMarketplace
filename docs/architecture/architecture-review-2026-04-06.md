@@ -1,6 +1,17 @@
+<!--
+doc: ARCHITECTURE_REVIEW
+last-refreshed: 2026-04-07
+generated-by: doc-refresh skill
+-->
+
 # Architecture Review — Claude Code Skills Marketplace — 2026-04-06
 
 > Post-fix review. Original findings identified and remediated in this session.
+
+> **Note (2026-04-07):** `scripts/install.sh` was removed after this review was written.
+> Skills are now distributed exclusively via the Claude Code marketplace mechanism
+> (`~/.claude/settings.json`). References to `install.sh` in the C4 diagram and
+> test coverage list below reflect the state at time of writing.
 
 ## As-Is Architecture (Post-Fix)
 
