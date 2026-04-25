@@ -1,3 +1,9 @@
+<!--
+doc: ASSUMPTIONS
+last-refreshed: 2026-04-07
+generated-by: doc-refresh skill
+-->
+
 # Assumptions
 
 Non-obvious decisions made during development. Each entry records the assumption, rationale, author, and date.
