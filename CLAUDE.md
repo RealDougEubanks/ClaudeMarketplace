@@ -72,7 +72,7 @@ GIT HYGIENE (MANDATORY)
 - Never commit or push directly to `main`. All changes must go through a branch and PR, no exceptions.
 - Branch from the current release branch (or `main` if no release branch exists). Name branches `feature/`, `fix/`, `hotfix/`, or `claude/` as appropriate.
 - If you find yourself on `main` with uncommitted changes, stash or move them to a new branch before committing.
-- No PR may be merged without at least one approval from a reviewer other than the author. Self-merge is not permitted.
+- PRs targeting shared or release branches require at least one approval from a reviewer other than the author. For solo-maintainer repositories, self-merge is permitted — but CI must pass and the author must self-review the diff before merging.
 
 TESTING STANDARDS (MANDATORY)
 
@@ -110,6 +110,22 @@ PERFORMANCE BASICS (MANDATORY)
 - Cache expensive computations and frequently-read data. Define TTLs and invalidation strategy — no stale-forever caches.
 - Set timeouts on every external call (HTTP, DB, queue). No indefinite waits. Define retry policy with backoff for transient failures.
 - Do not optimize prematurely, but do not ship known O(n^2) or worse algorithms on unbounded inputs. Document accepted performance trade-offs in docs/assumptions.md.
+
+CODE EFFICIENCY & DEPENDENCY HYGIENE (MANDATORY)
+
+- Every line of code must have a clear purpose. No speculative abstractions, no dead branches, no unused exports, no "just in case" features.
+- Minimize dependencies. Before adding a new package (npm, pip, cargo, NuGet, gem, go module), justify it: does the value outweigh the size, security surface, and maintenance cost? Prefer the standard library or a small focused implementation.
+- Minimize binary and bundle size. Avoid heavyweight libraries when a small utility will do. Watch for dependency explosions — transitive bloat counts.
+- Prefer clarity over cleverness. Avoid deep inheritance or abstraction layers that obscure what the runtime is actually doing — assume 80% of effort is debugging, so write code that is easy to step through.
+
+RESOURCE STEWARDSHIP (MANDATORY)
+
+- Treat RAM and CPU cycles as valuable commodities. Don't poll when you can subscribe; don't refresh when nothing changed; don't recompute what you can cache.
+- Prefer async / non-blocking calls over sync calls when there is no added complexity penalty. Never block the UI thread on I/O (disk, network, IPC) — move it to a worker.
+- Be cache- and allocation-aware in hot paths. Respect locality, batch work, and avoid unnecessary allocations or memory fragmentation, especially in native code (C/C++/Rust).
+- Support a degraded or "lean" mode when the application could run on resource-constrained hardware. Failing to start is worse than degraded operation.
+- Truthful telemetry: performance metrics must reflect actual system state. Do not smooth, round, or fabricate numbers for UI aesthetics.
+- Apply language- and platform-specific best practices. The rules above describe intent; idiomatic implementation is contextual to the stack and the goals of the project.
 
 PYTHON ENVIRONMENT (MANDATORY)
 
