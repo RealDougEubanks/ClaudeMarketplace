@@ -9,7 +9,7 @@
       "name": "golden-rules",
       "source": "./skills/golden-rules",
       "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
