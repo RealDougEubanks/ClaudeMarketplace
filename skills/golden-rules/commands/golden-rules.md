@@ -127,6 +127,14 @@ RESOURCE STEWARDSHIP (MANDATORY)
 - Truthful telemetry: performance metrics must reflect actual system state. Do not smooth, round, or fabricate numbers for UI aesthetics.
 - Apply language- and platform-specific best practices. The rules above describe intent; idiomatic implementation is contextual to the stack and the goals of the project.
 
+PLATFORM-SPECIFIC GUIDELINES (MANDATORY)
+
+- Apple platforms (iOS, iPadOS, macOS, watchOS, tvOS, visionOS): Follow the Apple Human Interface Guidelines (HIG) for UX, layout, typography, motion, accessibility, and platform conventions. Prefer native frameworks (SwiftUI, UIKit, AppKit) and idiomatic Swift; respect Apple's review and entitlement rules where relevant.
+- Android: Follow Google's Material Design and the Android Developer guidelines for UX, navigation, and architecture (e.g. Architecture Components, Jetpack). Use Kotlin idioms and follow Google's Kotlin / Java style guides.
+- Linux applications and scripts: Follow Red Hat's documented best practices (Fedora Packaging Guidelines, RHEL system design guidance, systemd conventions) where they apply. Otherwise follow the most widely accepted conventions for the language and ecosystem — POSIX shell guidelines, the Linux Filesystem Hierarchy Standard, freedesktop.org specs, and the relevant distro packaging norms.
+- Windows: Follow Microsoft's official guidance for the target stack — Fluent Design / WinUI for modern UI, Windows App SDK / .NET conventions, and Microsoft Learn documentation for APIs, security, and packaging (MSIX).
+- Cross-platform code: When shared UI or behavior spans platforms, branch to honor each host's conventions rather than picking a lowest common denominator. Document any deliberate deviations from a platform's guidelines in `docs/assumptions.md`.
+
 ASSUMPTIONS TRACKING
 
 Any time a non-obvious decision is made, record it in docs/assumptions.md:
