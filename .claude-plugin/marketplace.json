@@ -9,7 +9,7 @@
       "name": "golden-rules",
       "source": "./skills/golden-rules",
       "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -290,7 +290,7 @@
       "name": "best-practices",
       "source": "./skills/best-practices",
       "description": "Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates.",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
