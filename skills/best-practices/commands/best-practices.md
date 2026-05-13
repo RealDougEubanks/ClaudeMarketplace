@@ -129,6 +129,50 @@ Run ALL checks below. Apply language/framework-specific checks only when that st
 - [ ] Missing caching for expensive repeated computations
 - [ ] Unnecessary sequential awaits that could be parallelized (`await a; await b` → `Promise.all`)
 
+**Memory & Concurrency:**
+- [ ] Memory leaks: event listeners / subscriptions / timers / observers added without matching teardown
+- [ ] Long-lived caches or maps with no eviction policy (unbounded growth)
+- [ ] Connection / file-handle leaks (missing `defer`, `finally`, `using`, `with`, or pool release)
+- [ ] Race conditions: shared mutable state accessed from concurrent paths without locks, atomics, transactions, or message passing
+- [ ] Double-write / check-then-act patterns on shared resources (TOCTOU)
+- [ ] Goroutines / threads / workers spawned without lifecycle management or backpressure
+
+**Input Bounds & Memory Safety:**
+- [ ] Inputs accepted without explicit length / size limits (request body, headers, query params, file uploads)
+- [ ] In C/C++/unsafe Rust/cgo: use of `strcpy`, `strcat`, `gets`, `sprintf`, or unbounded `memcpy`
+- [ ] Fixed-size buffers written without bounds checks
+- [ ] Tests do not cover oversized / boundary input cases
+
+**Logging & Observability:**
+- [ ] No structured logging (raw `print` / `console.log` in production paths)
+- [ ] Security events not logged: failed logins, password resets, permission changes, MFA challenges, account lockouts, rate-limit trips
+- [ ] Outbound integration events not logged: email sends (Resend, SES, etc.), SMS, payments, webhooks — no provider, message ID, or status captured
+- [ ] Secrets, passwords, tokens, or raw PII present in log output
+- [ ] No metrics for request rate, error rate, p95/p99 latency, queue depth, or job success/failure
+- [ ] Alerts without an owner, runbook, or actionable threshold
+
+**Health Checks & Monitoring:**
+- [ ] No `/healthz` (liveness) endpoint
+- [ ] No `/readyz` (readiness) endpoint that fails when dependencies are unhealthy
+- [ ] No deep `/health` endpoint that checks DB, cache, queue, and third-party APIs (Resend, Stripe, auth provider, etc.)
+- [ ] Health endpoint does not verify credential validity for upstream APIs (expired keys silently break in prod)
+- [ ] Health endpoint leaks secrets, connection strings, or internal hostnames
+- [ ] No external uptime monitor (NodePing / UptimeRobot / Pingdom / CloudFlare health checks) configured against public URL and deep health endpoint
+
+**Caching & CDN:**
+- [ ] Routes return responses with no explicit `Cache-Control` header (relying on framework defaults)
+- [ ] Static / immutable assets not served with long `max-age` + `immutable`
+- [ ] Authenticated or PII-bearing responses missing `Cache-Control: private, no-store` — risk of public cache poisoning
+- [ ] Missing `Vary` headers on responses that vary by `Authorization`, `Cookie`, or `Accept-Encoding`
+- [ ] No cache-purge mechanism for cacheable content that can change
+- [ ] On CloudFlare: still using deprecated Page Rules instead of Cache Rules; no Origin Rules to strip cookies on static paths; WAF / Bot Fight Mode / rate-limiting not configured at the edge; `CF-Cache-Status` not monitored for hit ratio
+
+**Content & Copy Quality:**
+- [ ] AI'isms in user-facing copy, READMEs, docs, or comments: "delve into", "in today's fast-paced world", "leverage" as a verb, "tapestry", "embark on a journey", "game-changer", "revolutionize", "seamlessly", "robust solution", "cutting-edge", "boasts", "testament to"
+- [ ] Hedging openers ("Certainly!", "Absolutely!") or closing summaries that restate the obvious
+- [ ] "Not only… but also…" constructions, em-dash sandwiches in every paragraph, emoji bullets in serious copy
+- [ ] Raw, unedited model output pasted into customer-facing surfaces
+
 **Architecture:**
 - [ ] No clear separation of concerns (business logic in route handlers, DB queries in controllers)
 - [ ] Circular dependencies between modules

@@ -40,6 +40,18 @@ GOLDEN RULES (MANDATORY — ALL WORK IN THIS PROJECT MUST FOLLOW THESE)
 
 3. Always assume the application could be the target of exploitation. Design for untrusted input, defense in depth, least privilege, and secure defaults. Document any accepted risks in docs/assumptions.md.
 
+4. All inputs must be sanitized, length-checked, typed (where the language supports it), and exercised by unit tests. All exceptions must be trapped and handled — never allow an unhandled exception to propagate to the user or crash a process silently.
+   - Sanitize: strip, escape, or reject untrusted input before use in queries, templates, file paths, shell commands, or downstream calls.
+   - Bound: enforce explicit maximum lengths/sizes on every input. In memory-unsafe languages, check buffer sizes before every copy/read/write — no `strcpy`, `gets`, `sprintf`, or unbounded `memcpy`.
+   - Type: use static types or runtime schema validation (Zod, Pydantic, JSON Schema, or language equivalent) at every boundary.
+   - Test: every input handler and parser must have unit tests covering valid input, invalid input, boundary/oversized input, and the exception path.
+   - Handle: every thrown or returned error must be caught, logged with context, and converted to a meaningful response or recovery action. No empty catch blocks. No bare `except:` that hides the failure.
+
+5. AI-generated copy must be free of AI'isms and other telltale signs of machine-written content. Applies to user-facing text, docs, READMEs, commit messages, and comments produced with AI assistance.
+   - Forbidden phrases (non-exhaustive): "delve into", "in today's fast-paced world", "it's important to note", "leverage" (as a verb), "tapestry", "embark on a journey", "game-changer", "revolutionize", "seamlessly", "robust solution", "cutting-edge", "boasts", "testament to".
+   - Forbidden patterns: "Not only… but also…", hedging openers ("Certainly!", "Absolutely!"), closing summaries that restate the obvious, emoji bullets in serious copy.
+   - Edit AI output before shipping — never paste raw model output into customer-facing surfaces.
+
 CODING & NAMING GUIDELINES (apply unless project explicitly overrides in docs/assumptions.md)
 
 - camelCase for variables, functions, and filenames (see language-specific table below).
@@ -110,6 +122,31 @@ PERFORMANCE BASICS (MANDATORY)
 - Cache expensive computations and frequently-read data. Define TTLs and invalidation strategy — no stale-forever caches.
 - Set timeouts on every external call (HTTP, DB, queue). No indefinite waits. Define retry policy with backoff for transient failures.
 - Do not optimize prematurely, but do not ship known O(n^2) or worse algorithms on unbounded inputs. Document accepted performance trade-offs in docs/assumptions.md.
+- Watch for memory leaks and race conditions. Release listeners, timers, subscriptions, and pools. Guard shared state with locks, atomics, transactions, or message passing.
+
+LOGGING & OBSERVABILITY (MANDATORY)
+
+- Emit structured logs (JSON or logfmt) with timestamp, level, message, correlation ID, and context. No `print` / `console.log` in production paths.
+- Log security-relevant events: failed logins, successful logins from new IPs, password resets, permission changes, MFA challenges, account lockouts, rate-limit trips, suspicious input rejections.
+- Log outbound integration events: email sends (provider, message ID, status), SMS, payments, webhooks, third-party API failures and retries. Include upstream response codes.
+- Never log secrets, passwords, full tokens, or raw PII. Hash, redact, or omit.
+- Emit metrics for request/error rates, p50/p95/p99 latency, queue depth, job success/failure, and the events above. Alerts must have an owner and a runbook.
+
+HEALTH CHECKS & UPTIME MONITORING (MANDATORY)
+
+- Every deployable service must expose `/healthz` (liveness) and `/readyz` (readiness) endpoints.
+- Provide a deeper `/health` endpoint that checks each critical dependency (DB, cache, queue, object storage, third-party APIs like Resend/Stripe/auth) and reports `ok` / `degraded` / `fail` with last-check timestamp and latency. Verify credential validity where supported so expired keys are caught early.
+- Liveness/readiness require no auth; the detailed health endpoint must not leak secrets or internal hostnames. Return 200 when healthy, 503 when not, so external monitors (NodePing, UptimeRobot, Pingdom) alert correctly.
+- Configure an external uptime monitor against the public URL and the deep health endpoint with on-call alerting. A service without an external monitor is unmonitored.
+
+CACHING & CDN (MANDATORY)
+
+- Cacheability is a per-route design decision. Set explicit `Cache-Control`, `ETag`/`Last-Modified`, and `Vary` headers — never rely on framework defaults.
+- Immutable static/versioned assets: `Cache-Control: public, max-age=31536000, immutable`, served through the CDN.
+- Cacheable HTML/API: deliberate `s-maxage` for the CDN and shorter `max-age` for browsers. Use `stale-while-revalidate` for low-risk content.
+- Non-cacheable responses (authenticated pages, dashboards, anything with PII): `Cache-Control: private, no-store`. Audit user-specific routes to confirm they are not cached publicly.
+- Provide a cache-purge path (deploy hook, admin action, webhook → CDN purge API). Stale-forever caches are a bug.
+- On CloudFlare: use Cache Rules (not deprecated Page Rules), configure Tiered Cache / Cache Reserve where justified, set Origin Rules to strip cookies on static paths, enable WAF / Bot Fight Mode / rate limiting at the edge, monitor `CF-Cache-Status` for hit ratio, and follow CloudFlare's framework-specific guidance (Workers, Pages) for SPA/SSR apps.
 
 CODE EFFICIENCY & DEPENDENCY HYGIENE (MANDATORY)
 
