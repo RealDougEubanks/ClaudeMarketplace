@@ -69,8 +69,8 @@
       "category": "standards"
     },
     {
-      "name": "security-review",
-      "path": "skills/security-review",
+      "name": "full-security-review",
+      "path": "skills/full-security-review",
       "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
       "tags": [
         "security",

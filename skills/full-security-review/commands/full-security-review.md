@@ -1,5 +1,5 @@
 ---
-name: security-review
+name: full-security-review
 description: Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.
 ---
 
