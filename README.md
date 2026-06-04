@@ -1,6 +1,6 @@
 <!--
 doc: README
-last-refreshed: 2026-04-07
+last-refreshed: 2026-06-04
 generated-by: doc-refresh skill
 -->
 
@@ -99,7 +99,7 @@ ClaudeMarketplace/
 | Skill | Command | Description |
 |-------|---------|-------------|
 | [dependency-audit](skills/dependency-audit/) | `/dependency-audit` | Audits project dependencies across package.json, requirements.txt, go.mod, and Gemfile for unpinned versions, deprecated packages, missing lockfiles, and known CVEs |
-| [security-review](skills/security-review/) | `/security-review` | Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings |
+| [full-security-review](skills/full-security-review/) | `/full-security-review` | Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings |
 
 ### Productivity
 
@@ -226,7 +226,7 @@ Then enable the skills you want under `enabledPlugins`. You can enable all of th
   "enabledPlugins": {
     "golden-rules@claude-skills-marketplace": true,
     "code-review@claude-skills-marketplace": true,
-    "security-review@claude-skills-marketplace": true
+    "full-security-review@claude-skills-marketplace": true
   }
 }
 ```
@@ -235,7 +235,7 @@ Once enabled, skills are available as slash commands in any Claude Code session:
 
 ```
 /code-review          ← runs a structured code review on the current file or selection
-/security-review      ← audits the codebase for security issues
+/full-security-review ← audits the codebase for security issues
 /test-writer          ← generates tests for a given file or function
 ```
 
@@ -245,7 +245,7 @@ You don't have to enable everything. There are three common patterns:
 
 **Enable all skills globally** — add every skill to `~/.claude/settings.json`. All slash commands are available in every project, always up to date.
 
-**Enable a curated global set** — enable only the skills you use regularly (e.g. `golden-rules`, `code-review`, `security-review`) in `~/.claude/settings.json`, and skip the rest.
+**Enable a curated global set** — enable only the skills you use regularly (e.g. `golden-rules`, `code-review`, `full-security-review`) in `~/.claude/settings.json`, and skip the rest.
 
 **Per-project overrides** — add an `enabledPlugins` block to a project's `.claude/settings.json` to enable skills only for that project. Project settings layer on top of your global config.
 
