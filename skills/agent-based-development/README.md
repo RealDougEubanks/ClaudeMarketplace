@@ -32,7 +32,27 @@ All coordination is file-based — agents write JSON artifacts to a `handoffs/` 
 | `/abd-devops` | DevOps | Scaffold/verify CI/CD, env vars, Docker hygiene, releases |
 | `/abd-status` | Status | Show project-wide task and finding status dashboard |
 
-You can also invoke `/abd` or `/agent-based-development` to be prompted for a role.
+You can also invoke `/agent-based-development` to be prompted for a role.
+
+Each role is a separate skill in this plugin. Commands are namespaced by the plugin (e.g. `/agent-based-development:abd-plan`); where your Claude Code resolves unambiguous bare names, the short forms shown above also work.
+
+## Plugin Structure
+
+```
+agent-based-development/
+├── skills/
+│   ├── agent-based-development/SKILL.md   Orchestrator — role dispatch and overview
+│   ├── abd-plan/SKILL.md                  One skill per agent role
+│   ├── abd-design/SKILL.md
+│   ├── ... (dev-senior, dev-junior, security, review, docs, triage, test, devops, status)
+└── shared/
+    ├── envelope.md        Handoff schema, artifact rules, injection guard, output format
+    ├── git-rules.md       Release-branch Git model
+    ├── mvp-gate.md        Completion checks
+    └── project-start.md   Bootstrap procedure and prompt examples
+```
+
+Role skills load the shared references on demand, so each invocation carries only its own role's instructions plus the shared rules it links.
 
 ## Directory Structure Created
 

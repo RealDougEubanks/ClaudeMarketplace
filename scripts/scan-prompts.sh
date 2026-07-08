@@ -6,17 +6,19 @@
 #   With argument: scans a single skill directory or file
 #
 # Coverage:
-#   Every .md file inside a skill directory is scanned (commands/, log-types/,
-#   templates/, rules/, etc.), not just commands/<name>.md — skills load and
-#   execute content from supporting files at runtime, so they are prompt surface.
+#   Every .md file inside a skill plugin is scanned (SKILL.md at the plugin
+#   root, nested skills/*/SKILL.md in multi-skill plugins, and supporting
+#   files: log-types/, templates/, rules/, etc.) — skills load and execute
+#   content from supporting files at runtime, so they are prompt surface.
 #   README.md files are skipped (documentation, not executed prompt content).
 #
 # Exemptions:
 #   Skills may contain a .scan-exempt file listing patterns (one per line) that
 #   are expected and reviewed. Lines starting with # are comments. Exemption
-#   files are honored at the skill root, in commands/, and in the scanned
-#   file's own directory. Use this for security or base skills that
-#   legitimately reference vulnerability patterns.
+#   files are honored in the scanned file's own directory and every directory
+#   up to the plugin root (the directory containing .claude-plugin/). Use this
+#   for security or base skills that legitimately reference vulnerability
+#   patterns.
 #
 # Code fences:
 #   Prose outside triple-backtick (```) code blocks is scanned with the full
@@ -172,34 +174,62 @@ extract_fences() {
   awk '/^[[:space:]]*```/{in_fence=!in_fence; next} in_fence' "$file"
 }
 
-# Load exempted patterns for a scanned file. Honors .scan-exempt in:
-#   - the scanned file's own directory
-#   - the skill root (skills/<name>/.scan-exempt)
-#   - the skill's commands/ directory
-# Duplicates are removed. If none exist, outputs nothing.
+# Load exempted patterns for a scanned file. Honors .scan-exempt in the
+# scanned file's own directory and every ancestor directory up to and
+# including the plugin root (identified by a .claude-plugin/ directory).
+# In a nested multi-skill plugin (skills/<plugin>/skills/<sub>/SKILL.md) this
+# finds both the sub-skill's and the plugin root's exemptions. The walk is
+# bounded at 8 levels; for fixtures without .claude-plugin/ it also stops at
+# a directory whose parent is named "skills". Duplicates are removed.
 load_exemptions() {
   local file="$1"
-  local file_dir skill_root
+  local file_dir plugin_root dir depth
   file_dir=$(dirname "$file")
 
-  # Walk up from the file's directory until we hit the skills/ parent to find
-  # the skill root; fall back to the file's own directory outside skills/.
-  skill_root="$file_dir"
-  while [ "$(basename "$(dirname "$skill_root")")" != "skills" ] \
-        && [ "$skill_root" != "/" ] && [ -n "$skill_root" ]; do
-    skill_root=$(dirname "$skill_root")
+  # Pass 1: locate the plugin root — the nearest ancestor containing
+  # .claude-plugin/. A nested sub-skill dir also has an ancestor whose parent
+  # is named "skills" (the inner skills/ dir), so .claude-plugin is the only
+  # reliable marker. Fixtures without .claude-plugin/ fall back to the first
+  # ancestor whose parent is named "skills", else the file's own directory.
+  plugin_root=""
+  dir="$file_dir"
+  depth=0
+  while [ "$dir" != "/" ] && [ -n "$dir" ] && [ "$depth" -lt 8 ]; do
+    if [ -d "$dir/.claude-plugin" ]; then
+      plugin_root="$dir"
+      break
+    fi
+    dir=$(dirname "$dir")
+    depth=$((depth + 1))
   done
-  if [ "$skill_root" = "/" ] || [ -z "$skill_root" ]; then
-    skill_root="$file_dir"
+  if [ -z "$plugin_root" ]; then
+    dir="$file_dir"
+    depth=0
+    while [ "$(basename "$(dirname "$dir")")" != "skills" ] \
+          && [ "$dir" != "/" ] && [ -n "$dir" ] && [ "$depth" -lt 8 ]; do
+      dir=$(dirname "$dir")
+      depth=$((depth + 1))
+    done
+    if [ "$dir" = "/" ] || [ -z "$dir" ]; then
+      plugin_root="$file_dir"
+    else
+      plugin_root="$dir"
+    fi
   fi
 
+  # Pass 2: collect .scan-exempt from the file's directory up to and
+  # including the plugin root.
   {
-    for exempt_file in "$file_dir/.scan-exempt" \
-                       "$skill_root/.scan-exempt" \
-                       "$skill_root/commands/.scan-exempt"; do
-      if [ -f "$exempt_file" ]; then
-        grep -v '^\s*#' "$exempt_file" | grep -v '^\s*$' || true
+    dir="$file_dir"
+    depth=0
+    while [ -n "$dir" ] && [ "$depth" -lt 8 ]; do
+      if [ -f "$dir/.scan-exempt" ]; then
+        grep -v '^\s*#' "$dir/.scan-exempt" | grep -v '^\s*$' || true
       fi
+      [ "$dir" = "$plugin_root" ] && break
+      [ "$dir" = "/" ] && break
+      dir=$(dirname "$dir")
+      depth=$((depth + 1))
     done
   } | sort -u
 }

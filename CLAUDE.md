@@ -1,13 +1,13 @@
 # Claude Code Skills Marketplace — Project Context
 
-This is the **Claude Code Skills Marketplace** repository. It is a collection of reusable prompt skills for Claude Code — each skill is a directory under `skills/` containing a `commands/` subdirectory with the skill instruction file, `metadata.json` (machine-readable metadata), and `README.md` (human docs).
+This is the **Claude Code Skills Marketplace** repository. It is a collection of reusable prompt skills for Claude Code — each skill is a plugin directory under `skills/` containing a `SKILL.md` instruction file at its root, `metadata.json` (machine-readable metadata), and `README.md` (human docs).
 
 When working in this repo, your job is to help build, validate, and publish skills. Always follow the contribution conventions below.
 
 ## Contribution Conventions
 
 - Skill directory names must be **kebab-case** (e.g. `git-workflow`, `golden-rules`).
-- Each skill directory has this structure: `commands/<skill-name>.md` (with YAML frontmatter), `metadata.json`, `README.md`. There is NO `skill.md` at the root.
+- Each skill directory has this structure: `SKILL.md` at the plugin root (with YAML frontmatter), `metadata.json`, `README.md`, `.claude-plugin/plugin.json`. There is NO `commands/` directory (legacy layout, removed — see `docs/decisions/0001-migrate-to-skill-md-layout.md`). Multi-skill plugins (agent-based-development) use `skills/<sub-skill>/SKILL.md` instead of a root `SKILL.md`.
 - `metadata.json` must validate against `schema/metadata.schema.json`.
 - After creating or editing a skill, run `./scripts/validate.sh skills/<skill-name>`.
 - After adding a skill directory, update `skills/registry.json` and run `./scripts/check-registry.sh`.
@@ -21,7 +21,7 @@ Always run these checks before committing. CI will fail if any are skipped.
 
 1. **Validate skill structure** — `./scripts/validate.sh skills/<name>` for each changed skill.
 2. **Sync registry versions** — `skills/registry.json` version must match `metadata.json` version for every skill. Update registry.json whenever you bump a skill version.
-3. **Bump versions** — Any skill whose `commands/<name>.md`, `metadata.json`, or `README.md` changed must have its version incremented in **all four places**: `metadata.json`, `skills/registry.json`, `.claude-plugin/marketplace.json`, and `skills/<name>/.claude-plugin/plugin.json`. Use semver patch bumps for fixes, minor bumps for new features or layout changes.
+3. **Bump versions** — Any skill whose `SKILL.md`, supporting files, `metadata.json`, or `README.md` changed must have its version incremented in **all four places**: `metadata.json`, `skills/registry.json`, `.claude-plugin/marketplace.json`, and `skills/<name>/.claude-plugin/plugin.json`. Use semver patch bumps for fixes, minor bumps for new features or layout changes.
 4. **Run ShellCheck** — `shellcheck scripts/*.sh tests/*.sh`. All scripts must pass with no errors.
 5. **Run markdownlint** — `npx markdownlint-cli2 "skills/**/*.md" "*.md"`. No bare URLs — wrap emails and URLs in backticks or angle brackets.
 6. **Check registration and version sync** — `./scripts/check-registry.sh` to confirm every skill directory is registered, and `./scripts/sync-versions.sh --check` to confirm versions agree across `metadata.json`, `registry.json`, `marketplace.json`, and `plugin.json`.
@@ -185,15 +185,20 @@ CLAUDE CODE PLUGIN & SKILL LAYOUT (MANDATORY)
 Skills and plugins installed via the Claude Code plugin system must follow this layout so they are discovered automatically as slash commands:
 
 ```
-skills/<skill-name>/
-  commands/
-    <skill-name>.md     ← skill content with YAML frontmatter (name, description)
+skills/<skill-name>/            ← plugin root
+  SKILL.md                      ← skill content with YAML frontmatter (name, description)
   metadata.json
   README.md
+  .claude-plugin/
+    plugin.json
+  templates/ rules/ ...         ← optional supporting files, loaded on demand
+  .scan-exempt                  ← optional reviewed scanner exemptions
 ```
 
-- The command file must be at `commands/<skill-name>.md` — NOT at `skill.md` in the plugin root.
-- The YAML frontmatter in `commands/<skill-name>.md` must include `name` and `description` fields.
+- The skill file must be `SKILL.md` at the plugin root — NOT `commands/<name>.md` (legacy) and NOT `skill.md`.
+- The YAML frontmatter in `SKILL.md` must include `name` (matching the directory) and `description`. Optional fields: `model`, `effort`, `allowed-tools`, `argument-hint`, `disable-model-invocation`, `paths`.
+- A plugin shipping more than one skill uses `skills/<sub-skill>/SKILL.md` inside the plugin instead of a root `SKILL.md` (each frontmatter `name` matches its `<sub-skill>` directory). Only agent-based-development does this today.
+- Reference supporting files from `SKILL.md` with markdown links so they load on demand; resolve bundled assets via `${CLAUDE_PLUGIN_ROOT}` with a cwd fallback for local checkouts.
 - Run `./scripts/validate.sh skills/<skill-name>` after creating or editing a skill.
 - Use `./scripts/new-skill.sh <name>` to scaffold; it generates the correct structure automatically.
 

@@ -1,6 +1,6 @@
 {
   "name": "full-security-review",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, cryptography, and AI/LLM risks. Produces severity-graded findings.",
   "author": {
     "name": "Doug Eubanks",

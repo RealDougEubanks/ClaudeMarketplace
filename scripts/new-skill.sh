@@ -21,14 +21,15 @@ if [ -d "$SKILL_DIR" ]; then
   exit 1
 fi
 
-mkdir -p "$SKILL_DIR/commands" "$SKILL_DIR/.claude-plugin"
+mkdir -p "$SKILL_DIR/.claude-plugin"
 
 # Detect author info from git config
 AUTHOR_NAME=$(git config user.name 2>/dev/null || echo "Your Name")
 AUTHOR_GITHUB=$(git config user.email 2>/dev/null | sed 's/@.*//' || echo "your-username")
 
-# Write commands/<skill-name>.md with YAML frontmatter
-cat > "$SKILL_DIR/commands/$SKILL_NAME.md" << SKILLEOF
+# Write SKILL.md at the plugin root with YAML frontmatter (single-skill layout,
+# see docs/decisions/0001-migrate-to-skill-md-layout.md)
+cat > "$SKILL_DIR/SKILL.md" << SKILLEOF
 ---
 name: $SKILL_NAME
 description: Short description of what this skill does (max 200 chars).
@@ -181,7 +182,7 @@ fi
 echo "Scaffolded: $SKILL_DIR"
 echo ""
 echo "Next steps:"
-echo "  1. Edit skills/$SKILL_NAME/commands/$SKILL_NAME.md — update name, description frontmatter and instructions"
+echo "  1. Edit skills/$SKILL_NAME/SKILL.md — update name, description frontmatter and instructions"
 echo "  2. Edit skills/$SKILL_NAME/metadata.json           — set description, category, tags, tools"
 echo "  3. Edit skills/$SKILL_NAME/.claude-plugin/plugin.json — set description"
 echo "  4. Edit skills/$SKILL_NAME/README.md               — human-readable docs"

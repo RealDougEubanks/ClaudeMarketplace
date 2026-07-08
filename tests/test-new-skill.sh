@@ -76,7 +76,7 @@ else
 fi
 
 # Test 2: Verify directory structure was created
-assert_file_exists "commands/test-skill.md created" "$FAKE_ROOT/skills/test-skill/commands/test-skill.md"
+assert_file_exists "SKILL.md created at plugin root" "$FAKE_ROOT/skills/test-skill/SKILL.md"
 assert_file_exists "metadata.json created" "$FAKE_ROOT/skills/test-skill/metadata.json"
 assert_file_exists "README.md created" "$FAKE_ROOT/skills/test-skill/README.md"
 assert_file_exists ".claude-plugin/plugin.json created" "$FAKE_ROOT/skills/test-skill/.claude-plugin/plugin.json"
@@ -110,13 +110,23 @@ else
   fail=$((fail + 1))
 fi
 
-# Test 4: Verify commands file has YAML frontmatter
+# Test 4: Verify SKILL.md has YAML frontmatter
 total=$((total + 1))
-if head -1 "$FAKE_ROOT/skills/test-skill/commands/test-skill.md" | grep -q '^---$'; then
-  echo "  PASS: commands file has YAML frontmatter"
+if head -1 "$FAKE_ROOT/skills/test-skill/SKILL.md" | grep -q '^---$'; then
+  echo "  PASS: SKILL.md has YAML frontmatter"
   pass=$((pass + 1))
 else
-  echo "  FAIL: commands file missing YAML frontmatter"
+  echo "  FAIL: SKILL.md missing YAML frontmatter"
+  fail=$((fail + 1))
+fi
+
+# Test 4b: Scaffolded skill passes validate.sh (new layout end-to-end)
+total=$((total + 1))
+if bash "$REPO_ROOT/scripts/validate.sh" "$FAKE_ROOT/skills/test-skill" > /dev/null 2>&1; then
+  echo "  PASS: scaffolded skill passes validate.sh"
+  pass=$((pass + 1))
+else
+  echo "  FAIL: scaffolded skill does not pass validate.sh"
   fail=$((fail + 1))
 fi
 

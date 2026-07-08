@@ -16,11 +16,11 @@ Thanks for your interest in contributing a skill! Follow the steps below.
    ./scripts/new-skill.sh my-skill-name
    ```
 
-   This creates `skills/my-skill-name/` with pre-filled `commands/my-skill-name.md`, `metadata.json`, and `README.md`, and validates the name is kebab-case.
+   This creates `skills/my-skill-name/` with pre-filled `SKILL.md`, `metadata.json`, `README.md`, and `.claude-plugin/plugin.json`, registers the skill, and validates the name is kebab-case.
 
 2. **Edit the files**
 
-   - `commands/my-skill-name.md` — The prompt/instructions Claude will follow when the skill is invoked. Must have YAML frontmatter with `name` and `description`.
+   - `SKILL.md` — The prompt/instructions Claude will follow when the skill is invoked. Must have YAML frontmatter with `name` and `description`.
    - `metadata.json` — Name, version, description, author, tags, and other metadata.
    - `README.md` — Human-readable documentation for the skill.
 
@@ -43,7 +43,8 @@ Thanks for your interest in contributing a skill! Follow the steps below.
 ## Skill Guidelines
 
 - **Keep skills focused** — each skill should do one thing well.
-- **Be explicit** — write clear, step-by-step instructions in `commands/<skill-name>.md`. Claude performs better with specific guidance.
+- **Be explicit** — write clear, step-by-step instructions in `SKILL.md`. Claude performs better with specific guidance.
+- **Load big reference material on demand** — put templates, checklists, and rules in supporting directories next to `SKILL.md` and reference them with markdown links so they only load when needed.
 - **Declare your tools** — list the tools the skill uses in `metadata.json` so users know what permissions are needed.
 - **Tag appropriately** — use descriptive tags so users can discover your skill.
 - **Test locally** — try your skill with Claude Code before submitting.
@@ -64,7 +65,7 @@ See `schema/metadata.schema.json` for the full schema. Required fields:
 
 All skill prompt files are scanned by `scripts/scan-prompts.sh` for potentially dangerous patterns (data exfiltration, credential access, destructive commands, prompt injection). The scanner runs in CI on every PR.
 
-If your skill legitimately references a flagged pattern (e.g., a security-review skill that discusses credentials), you can exempt specific patterns by creating a `.scan-exempt` file in your skill's `commands/` directory (same directory as the scanned `commands/<name>.md` file):
+If your skill legitimately references a flagged pattern (e.g., a security-review skill that discusses credentials), you can exempt specific patterns by creating a `.scan-exempt` file at your skill's plugin root (next to `SKILL.md`):
 
 ```text
 # Each line is an exact pattern string to exempt (comments start with #)

@@ -35,3 +35,10 @@ Non-obvious decisions made during development. Each entry records the assumption
 - **Why:** Skills legitimately document git/install commands inside fences; applying the full pattern set there drowns the scan in false positives, while skipping fences entirely (the old behavior) hid the highest-risk content. The narrow set catches pipe-to-shell, filesystem destruction, and reverse shells.
 - **Recorded by:** Claude (skills audit fixes)
 - **Date:** 2026-06-04
+
+---
+
+- **Assumption:** Single-skill plugins place `SKILL.md` at the plugin root rather than nesting `skills/<name>/SKILL.md`; only multi-skill plugins (agent-based-development) use the nested layout. The legacy `commands/` layout is removed, not dual-shipped.
+- **Why:** Docs permit root `SKILL.md` for plugins shipping exactly one skill; it avoids a redundant `skills/<name>/skills/<name>/` nesting and keeps supporting directories reachable by relative links. Dual layouts are a known drift failure mode in this repo. See `docs/decisions/0001-migrate-to-skill-md-layout.md`.
+- **Recorded by:** Claude (SKILL.md migration)
+- **Date:** 2026-07-08

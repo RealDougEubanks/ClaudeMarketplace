@@ -1,11 +1,12 @@
 {
   "name": "golden-rules",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
   "author": {
     "name": "Doug Eubanks",
     "url": "https://github.com/RealDougEubanks"
   },
   "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "homepage": "https://github.com/RealDougEubanks/ClaudeMarketplace",
   "license": "MIT"
 }
