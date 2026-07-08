@@ -5,7 +5,7 @@ check-version-bump.py — Verify that changed skills have bumped their version.
 Rules:
   - New skills (didn't exist on base): no version bump required.
   - Changes only to exempt files (README.md, plugin.json, .scan-exempt): no version bump required.
-  - Any change to skill.md or metadata.json: version must be strictly higher than on base.
+  - Any change to commands/<name>.md or metadata.json: version must be strictly higher than on base.
 
 Usage: python3 scripts/check-version-bump.py
 Environment: BASE_REF (default: main)

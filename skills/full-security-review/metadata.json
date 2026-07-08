@@ -1,7 +1,7 @@
 {
   "name": "full-security-review",
-  "version": "1.2.1",
-  "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
+  "version": "1.3.0",
+  "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, cryptography, and AI/LLM risks. Produces severity-graded findings.",
   "author": {
     "name": "Doug Eubanks",
     "github": "realdougeubanks"
@@ -24,6 +24,7 @@
     "Read",
     "Glob",
     "Grep",
-    "Write"
+    "Write",
+    "Bash"
   ]
 }

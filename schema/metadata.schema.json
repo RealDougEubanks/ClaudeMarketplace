@@ -3,7 +3,7 @@
   "title": "Skill Metadata",
   "description": "Schema for Claude Code skill metadata",
   "type": "object",
-  "required": ["name", "version", "description", "author", "tags"],
+  "required": ["name", "version", "description", "author", "tags", "commands"],
   "properties": {
     "name": {
       "type": "string",
@@ -41,18 +41,22 @@
     },
     "triggers": {
       "type": "array",
-      "items": { "type": "string" },
-      "description": "Conditions that should activate this skill"
+      "items": { "type": "string", "enum": ["always"] },
+      "description": "Activation conditions. Only 'always' is defined: base skills whose content becomes always-on context after install."
     },
     "commands": {
       "type": "array",
-      "items": { "type": "string" },
-      "description": "Slash commands this skill responds to (e.g., '/my-skill')"
+      "items": { "type": "string", "pattern": "^/[a-z0-9]+(-[a-z0-9]+)*$" },
+      "minItems": 1,
+      "description": "Slash commands this skill responds to (e.g., '/my-skill'). Must include /<skill-directory-name>."
     },
     "tools": {
       "type": "array",
-      "items": { "type": "string" },
-      "description": "Tools the skill expects to use (e.g., 'Bash', 'Read', 'Edit')"
+      "items": {
+        "type": "string",
+        "enum": ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "WebFetch", "WebSearch", "Task", "NotebookEdit"]
+      },
+      "description": "Claude Code tools the skill expects to use"
     },
     "compatibility": {
       "type": "object",

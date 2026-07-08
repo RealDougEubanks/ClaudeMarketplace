@@ -11,7 +11,10 @@ set -euo pipefail
 BASE_REF="${1:-main}"
 
 # Get commits between base and HEAD
-commits=$(git log --oneline "origin/${BASE_REF}...HEAD" 2>/dev/null || git log --oneline -20)
+if ! commits=$(git log --oneline "origin/${BASE_REF}...HEAD" 2>/dev/null); then
+  echo "WARNING: origin/${BASE_REF} not found — falling back to the last 20 commits. The preview may include unrelated history." >&2
+  commits=$(git log --oneline -20)
+fi
 
 if [ -z "$commits" ]; then
   echo "No new commits found."

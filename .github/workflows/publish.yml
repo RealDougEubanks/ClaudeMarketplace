@@ -21,17 +21,21 @@ jobs:
     name: Validate and tag release
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Gate on CI success and push event (not PR runs)
+    # Manual dispatch always runs. If the workflow_run trigger is re-enabled,
+    # gate those runs on CI success and push event (not PR runs).
     if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push'
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # Check out the exact commit that triggered CI, not whatever HEAD is now
-          ref: ${{ github.event.workflow_run.head_sha }}
+          # workflow_run: check out the exact commit that triggered CI.
+          # workflow_dispatch: head_sha is empty, so fall back to the ref
+          # the workflow was dispatched on.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -80,5 +84,5 @@ jobs:
           fi
           echo "Tagging $next (${{ steps.summary.outputs.count }} skills)"
           git tag -a "$next" -m "Registry update: ${{ steps.summary.outputs.count }} skills" \
-            "${{ github.event.workflow_run.head_sha }}"
+            "${{ github.event.workflow_run.head_sha || github.sha }}"
           git push origin "$next"

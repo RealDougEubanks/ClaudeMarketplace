@@ -11,7 +11,9 @@ When you run `/git-workflow`, Claude asks what you're trying to do and then exec
 | **View docs** | Prints the full release-branch workflow reference |
 | **Start new work** | Detects the release branch, asks for task info, creates `feature/` or `fix/` branch |
 | **Open a PR** | Checks for unresolved `critical/severe/moderate` findings first, then generates PR with `gh pr create` |
-| **Cut a release** | Merges release branch to `main`, creates version tag, prompts to push |
+| **Cut a release** | Opens a release PR into `main`, then tags `main` after the merge |
+| **Resolve a merge conflict** | Walks through each conflicted file, explains both sides, applies the agreed resolution, completes the rebase or merge |
+| **Manage stashes** | Lists, inspects, applies, pops, or drops stashes (with confirmation before destructive drops) |
 
 ## Branch Model
 
@@ -80,5 +82,5 @@ Once enabled, invoke with `/git-workflow` in any Claude Code session.
 ## Related Skills
 
 - `/agent-based-development` — full workflow where git-workflow is embedded
-- `/security-review` — run a security audit before opening PRs
+- `/full-security-review` — run a security audit before opening PRs
 - `/mvp-readiness` — quality gate to run before cutting a release

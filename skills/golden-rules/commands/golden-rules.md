@@ -1,24 +1,32 @@
 ---
 name: golden-rules
 description: Installs mandatory security, coding, naming, design, testing, error handling, API contract, and performance standards into CLAUDE.md as always-on context for every Claude Code session.
+argument-hint: "[--update | --force]"
+allowed-tools: Read, Grep, Write, Edit
 ---
 
 # Golden Rules — Always-On Project Standards
 
 Install mandatory security, coding, design, testing, error handling, API contract, and performance standards into this project's CLAUDE.md so they are active for every Claude Code session automatically.
 
+This skill's version: **1.7.0** (also stamped in the marker comment inside the Golden Rules Block below).
+
 ## Instructions
 
 1. Use Read to check if `./CLAUDE.md` exists in the current working directory.
 
 2. Use Grep to search `./CLAUDE.md` for the string `## Golden Rules` (if the file exists).
-   - If the section header is found: inform the user the Golden Rules are already installed and stop.
-   - If not found: proceed to step 3.
+   - **Not found:** proceed to step 3 (fresh install).
+   - **Found, no argument given:** check for the version marker comment `<!-- golden-rules vX.Y.Z -->` inside the section.
+     - Marker version equals this skill's version: inform the user the Golden Rules are current and stop.
+     - Marker is missing or older: inform the user an older install was found and that `/golden-rules --update` will replace it with the current version. Stop without modifying anything.
+   - **Found, `--update` given:** if the marker is missing or older than this skill's version, replace the entire existing `## Golden Rules` section (from the `## Golden Rules` header up to the next level-2 (`##`) header, or end of file) with the Golden Rules Block below. If already current, say so and stop.
+   - **Found, `--force` given:** replace the existing section unconditionally.
 
 3. If `CLAUDE.md` does not exist, use Write to create it with the Golden Rules Block below as the full content.
    If `CLAUDE.md` exists but lacks the section, use Edit to append the Golden Rules Block to the end of the file.
 
-4. Confirm to the user what was written and that the Golden Rules are now active for every Claude Code session in this project.
+4. Confirm to the user what was written (installed fresh, updated from vX.Y.Z, or already current) and that the Golden Rules are now active for every Claude Code session in this project.
 
 ## Golden Rules Block
 
@@ -27,6 +35,8 @@ Write or append the following content verbatim:
 ---
 
 ## Golden Rules
+
+<!-- golden-rules v1.7.0 — do not remove; used by /golden-rules --update -->
 
 GOLDEN RULES (MANDATORY — ALL WORK IN THIS PROJECT MUST FOLLOW THESE)
 

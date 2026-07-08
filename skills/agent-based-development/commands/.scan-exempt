@@ -1,2 +1,6 @@
 # DevOps role references .env.example for environment variable validation
 \.env\b
+# DevOps role guard instructs never copying real API keys into .env.example
+api[_-]?key
+# Prompt-injection guard quotes the attack phrase it defends against
+ignore\s+(all\s+)?previous\s+instructions

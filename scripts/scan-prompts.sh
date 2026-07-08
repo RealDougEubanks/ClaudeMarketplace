@@ -2,17 +2,29 @@
 # scan-prompts.sh — Scan skill prompt files for potentially dangerous patterns.
 #
 # Usage: ./scripts/scan-prompts.sh [skill-directory|prompt-file]
-#   No arguments: scans all skills in skills/
+#   No arguments: scans all non-README .md files under skills/
 #   With argument: scans a single skill directory or file
+#
+# Coverage:
+#   Every .md file inside a skill directory is scanned (commands/, log-types/,
+#   templates/, rules/, etc.), not just commands/<name>.md — skills load and
+#   execute content from supporting files at runtime, so they are prompt surface.
+#   README.md files are skipped (documentation, not executed prompt content).
 #
 # Exemptions:
 #   Skills may contain a .scan-exempt file listing patterns (one per line) that
-#   are expected and reviewed. Lines starting with # are comments. Use this for
-#   security or base skills that legitimately reference vulnerability patterns.
+#   are expected and reviewed. Lines starting with # are comments. Exemption
+#   files are honored at the skill root, in commands/, and in the scanned
+#   file's own directory. Use this for security or base skills that
+#   legitimately reference vulnerability patterns.
 #
 # Code fences:
-#   Content inside triple-backtick (```) code blocks is stripped before scanning,
-#   since code examples are not executable prompt instructions.
+#   Prose outside triple-backtick (```) code blocks is scanned with the full
+#   HIGH + MEDIUM pattern sets. Fenced code blocks are ALSO scanned, with a
+#   focused set of destructive/exfiltration patterns (FENCE_HIGH_PATTERNS) —
+#   skills put their executable bash inside fences, so fences cannot be
+#   skipped, but documented workflow commands (git, install steps) would drown
+#   the scan in false positives if the full prose pattern set applied there.
 
 set -euo pipefail
 
@@ -104,23 +116,92 @@ MEDIUM_PATTERNS=(
   '--no-verify'
 )
 
-# Strip content inside triple-backtick code fences.
-# Output: cleaned text (code block bodies removed, fence markers removed).
-preprocess_file() {
+# Destructive/exfiltration patterns scanned INSIDE fenced code blocks.
+# Narrower than HIGH_PATTERNS: fenced git/install commands are legitimate in
+# workflow skills, but nothing inside a fence should ever pipe downloads to a
+# shell or destroy the filesystem.
+FENCE_HIGH_PATTERNS=(
+  'curl\s[^\n]*\|\s*(ba|z)?sh'
+  'wget\s[^\n]*\|\s*(ba|z)?sh'
+  'base64\s[^\n]*\|\s*(ba|z)?sh'
+  'nc\s+-e'
+  'rm\s+-rf\s+/'
+  'rm\s+-rf\s+~'
+  'mkfs\.'
+  'dd\s+if=/dev'
+  ':\(\)\{.*\};'
+  'chmod\s+777'
+)
+
+# --- PCRE matching (portable) ---
+# The pattern lists above are PCRE. BSD grep on macOS does not support -P and
+# fails with a usage error, which `2>/dev/null` used to hide — making the
+# scanner a silent no-op on macOS. Detect a PCRE-capable matcher up front and
+# fail loudly if none exists.
+if echo x | grep -qP 'x' 2>/dev/null; then
+  pcre_match() { grep -qiP "$1" "$2" 2>/dev/null; }
+  pcre_show()  { grep -niP "$1" "$2" 2>/dev/null | head -3; }
+elif command -v ggrep >/dev/null 2>&1 && echo x | ggrep -qP 'x' 2>/dev/null; then
+  pcre_match() { ggrep -qiP "$1" "$2" 2>/dev/null; }
+  pcre_show()  { ggrep -niP "$1" "$2" 2>/dev/null | head -3; }
+elif command -v perl >/dev/null 2>&1; then
+  # The `--` stops perl from parsing patterns like '--no-verify' as switches.
+  pcre_match() {
+    perl -e 'my ($p, $f) = @ARGV; open my $fh, "<", $f or exit 1;
+             while (<$fh>) { exit 0 if /$p/i } exit 1' -- "$1" "$2"
+  }
+  pcre_show() {
+    perl -e 'my ($p, $f) = @ARGV; open my $fh, "<", $f or exit 1;
+             while (<$fh>) { print "$.:$_" if /$p/i }' -- "$1" "$2" | head -3
+  }
+else
+  echo "Error: scan-prompts.sh needs a PCRE-capable grep (GNU grep -P, ggrep) or perl." >&2
+  echo "On macOS: brew install grep" >&2
+  exit 1
+fi
+
+# Emit the prose portion of a file (fenced code block bodies removed).
+extract_prose() {
   local file="$1"
   awk '/^[[:space:]]*```/{in_fence=!in_fence; next} !in_fence' "$file"
 }
 
-# Load exempted patterns from .scan-exempt in the skill directory.
-# If the file doesn't exist, outputs nothing.
+# Emit only the fenced code block bodies of a file.
+extract_fences() {
+  local file="$1"
+  awk '/^[[:space:]]*```/{in_fence=!in_fence; next} in_fence' "$file"
+}
+
+# Load exempted patterns for a scanned file. Honors .scan-exempt in:
+#   - the scanned file's own directory
+#   - the skill root (skills/<name>/.scan-exempt)
+#   - the skill's commands/ directory
+# Duplicates are removed. If none exist, outputs nothing.
 load_exemptions() {
   local file="$1"
-  local skill_dir
-  skill_dir=$(dirname "$file")
-  local exempt_file="$skill_dir/.scan-exempt"
-  if [ -f "$exempt_file" ]; then
-    grep -v '^\s*#' "$exempt_file" | grep -v '^\s*$' || true
+  local file_dir skill_root
+  file_dir=$(dirname "$file")
+
+  # Walk up from the file's directory until we hit the skills/ parent to find
+  # the skill root; fall back to the file's own directory outside skills/.
+  skill_root="$file_dir"
+  while [ "$(basename "$(dirname "$skill_root")")" != "skills" ] \
+        && [ "$skill_root" != "/" ] && [ -n "$skill_root" ]; do
+    skill_root=$(dirname "$skill_root")
+  done
+  if [ "$skill_root" = "/" ] || [ -z "$skill_root" ]; then
+    skill_root="$file_dir"
   fi
+
+  {
+    for exempt_file in "$file_dir/.scan-exempt" \
+                       "$skill_root/.scan-exempt" \
+                       "$skill_root/commands/.scan-exempt"; do
+      if [ -f "$exempt_file" ]; then
+        grep -v '^\s*#' "$exempt_file" | grep -v '^\s*$' || true
+      fi
+    done
+  } | sort -u
 }
 
 scan_file() {
@@ -129,26 +210,28 @@ scan_file() {
   local file_warnings=0
   local file_exemptions=0
 
-  # Pre-process: strip code fence content into a temp file
-  local tmpfile
-  tmpfile=$(mktemp)
-  preprocess_file "$file" > "$tmpfile"
+  # Split the file into prose and fenced-code temp files
+  local prose_file fence_file
+  prose_file=$(mktemp)
+  fence_file=$(mktemp)
+  extract_prose "$file" > "$prose_file"
+  extract_fences "$file" > "$fence_file"
 
   # Load exemptions for this skill
   local exemptions
   exemptions=$(load_exemptions "$file")
 
-  # HIGH severity checks
+  # HIGH severity checks (prose)
   for pattern in "${HIGH_PATTERNS[@]}"; do
     # Skip if this pattern is listed in .scan-exempt
-    if echo "$exemptions" | grep -qxF "$pattern" 2>/dev/null; then
+    if echo "$exemptions" | grep -qxF -- "$pattern" 2>/dev/null; then
       echo -e "  ${CYAN}EXEMPT${NC} [$pattern] (see .scan-exempt)"
       file_exemptions=$((file_exemptions + 1))
       continue
     fi
-    if grep -qiP "$pattern" "$tmpfile" 2>/dev/null; then
+    if pcre_match "$pattern" "$prose_file"; then
       local match
-      match=$(grep -niP "$pattern" "$tmpfile" | head -3)
+      match=$(pcre_show "$pattern" "$prose_file")
       echo -e "  ${RED}HIGH${NC}  [$pattern]"
       # shellcheck disable=SC2001  # Multi-line prefix; ${var//search/replace} only works on first line
       echo "$match" | sed 's/^/         /'
@@ -156,17 +239,34 @@ scan_file() {
     fi
   done
 
-  # MEDIUM severity checks
-  for pattern in "${MEDIUM_PATTERNS[@]}"; do
-    # Skip if this pattern is listed in .scan-exempt
-    if echo "$exemptions" | grep -qxF "$pattern" 2>/dev/null; then
+  # HIGH severity checks (fenced code blocks — destructive/exfil subset)
+  for pattern in "${FENCE_HIGH_PATTERNS[@]}"; do
+    if echo "$exemptions" | grep -qxF -- "$pattern" 2>/dev/null; then
       echo -e "  ${CYAN}EXEMPT${NC} [$pattern] (see .scan-exempt)"
       file_exemptions=$((file_exemptions + 1))
       continue
     fi
-    if grep -qiP "$pattern" "$tmpfile" 2>/dev/null; then
+    if pcre_match "$pattern" "$fence_file"; then
       local match
-      match=$(grep -niP "$pattern" "$tmpfile" | head -3)
+      match=$(pcre_show "$pattern" "$fence_file")
+      echo -e "  ${RED}HIGH${NC}  [$pattern] (inside code fence)"
+      # shellcheck disable=SC2001  # Multi-line prefix; ${var//search/replace} only works on first line
+      echo "$match" | sed 's/^/         /'
+      file_errors=$((file_errors + 1))
+    fi
+  done
+
+  # MEDIUM severity checks (prose)
+  for pattern in "${MEDIUM_PATTERNS[@]}"; do
+    # Skip if this pattern is listed in .scan-exempt
+    if echo "$exemptions" | grep -qxF -- "$pattern" 2>/dev/null; then
+      echo -e "  ${CYAN}EXEMPT${NC} [$pattern] (see .scan-exempt)"
+      file_exemptions=$((file_exemptions + 1))
+      continue
+    fi
+    if pcre_match "$pattern" "$prose_file"; then
+      local match
+      match=$(pcre_show "$pattern" "$prose_file")
       echo -e "  ${YELLOW}MEDIUM${NC} [$pattern]"
       # shellcheck disable=SC2001  # Multi-line prefix; ${var//search/replace} only works on first line
       echo "$match" | sed 's/^/         /'
@@ -174,7 +274,7 @@ scan_file() {
     fi
   done
 
-  rm -f "$tmpfile"
+  rm -f "$prose_file" "$fence_file"
 
   errors=$((errors + file_errors))
   warnings=$((warnings + file_warnings))
@@ -199,14 +299,11 @@ if [ $# -gt 0 ]; then
   if [ -f "$target" ]; then
     files=("$target")
   elif [ -d "$target" ]; then
-    files=()
-    skill_name=$(basename "$target")
-    # commands/<name>.md is the authoritative skill content file
-    if [ -f "$target/commands/$skill_name.md" ]; then
-      files+=("$target/commands/$skill_name.md")
-    fi
+    # All .md files in the skill directory except README.md — supporting
+    # files (log-types/, templates/, rules/) are runtime prompt surface too.
+    mapfile -t files < <(find "$target" -name '*.md' -not -name 'README.md' -type f | sort)
     if [ ${#files[@]} -eq 0 ]; then
-      echo "Error: $target has no scannable prompt files (commands/<name>.md)."
+      echo "Error: $target has no scannable prompt files (*.md)."
       exit 1
     fi
   else
@@ -214,8 +311,8 @@ if [ $# -gt 0 ]; then
     exit 1
   fi
 else
-  # Scan all skills — commands/<name>.md files
-  mapfile -t files < <(find "$REPO_ROOT/skills" -path "*/commands/*.md" -type f | sort)
+  # Scan all skills — every non-README .md file under skills/
+  mapfile -t files < <(find "$REPO_ROOT/skills" -name '*.md' -not -name 'README.md' -type f | sort)
 fi
 
 if [ ${#files[@]} -eq 0 ]; then

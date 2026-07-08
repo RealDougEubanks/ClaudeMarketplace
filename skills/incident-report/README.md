@@ -115,4 +115,4 @@ Once enabled, invoke with `/incident-report` in any Claude Code session.
 
 - `/log-correlation` — correlate and analyze logs before writing an incident report
 - `/agent-based-development` — multi-agent workflow for resolving and tracking action items
-- `/security-review` — standalone security audit to run before filing a security incident report
+- `/full-security-review` — standalone security audit to run before filing a security incident report

@@ -27,6 +27,8 @@ Invoke this skill at the start of any feature or project. Claude will prompt you
 5. **Writes the document** to `docs/requirements/<feature-name>-requirements.md`.
 6. **Offers Jira/Confluence integration** if Atlassian MCP tools are available in the session.
 
+> **Note:** The Jira/Confluence steps use Atlassian MCP tools, which are provided by your session's MCP configuration — they are not part of this skill's declared tool list in `metadata.json` (the metadata schema has no MCP field). Without an Atlassian MCP connection, those steps are skipped gracefully.
+
 ## Output Format
 
 Documents follow this structure:

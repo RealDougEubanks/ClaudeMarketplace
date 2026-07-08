@@ -91,25 +91,15 @@ jobs:
       - name: Detect duplicate commands across skills
         run: python3 scripts/check-commands.py
 
-  validate-registry-metadata:
-    name: Cross-validate registry vs metadata.json
+  version-sync:
+    name: Cross-validate versions across manifests
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify registry entries match metadata.json
-        run: python3 scripts/check-registry-metadata.py
-
-  validate-plugin-versions:
-    name: Cross-validate plugin.json and marketplace.json versions
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Verify plugin.json and marketplace.json match metadata.json
-        run: python3 scripts/check-plugin-versions.py
+      - name: Verify registry.json, marketplace.json, and plugin.json match metadata.json
+        run: ./scripts/sync-versions.sh --check
 
   # ──────────────────────────────────────────────
   # Stage 2: Security & quality scanning
@@ -134,7 +124,8 @@ jobs:
       - name: Run ShellCheck
         run: |
           errors=0
-          for script in scripts/*.sh; do
+          for script in scripts/*.sh tests/*.sh; do
+            [ -f "$script" ] || continue
             echo "::group::ShellCheck: $script"
             if ! shellcheck "$script"; then
               errors=$((errors + 1))
@@ -254,7 +245,7 @@ jobs:
             body += tools.map(t => `- \`${t}\``).join('\n');
             if (flagged.length > 0) {
               body += '\n\n⚠️ **High-risk tools detected:** ' + flagged.map(t => `\`${t}\``).join(', ');
-              body += '\nPlease review the `skill.md` carefully for safe usage of these tools.';
+              body += '\nPlease review the skill\'s `commands/<name>.md` carefully for safe usage of these tools.';
             }
             github.rest.issues.createComment({
               issue_number: context.issue.number,

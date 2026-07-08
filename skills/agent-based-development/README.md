@@ -28,6 +28,9 @@ All coordination is file-based — agents write JSON artifacts to a `handoffs/` 
 | `/abd-review` | Tech Review | Review code quality and architecture |
 | `/abd-docs` | Documentation | Update README, ToDo, assumptions, changelogs |
 | `/abd-triage` | Planning (Triage) | Process open critical/severe/moderate findings |
+| `/abd-test` | Testing | Write and run tests for completed dev work |
+| `/abd-devops` | DevOps | Scaffold/verify CI/CD, env vars, Docker hygiene, releases |
+| `/abd-status` | Status | Show project-wide task and finding status dashboard |
 
 You can also invoke `/abd` or `/agent-based-development` to be prompted for a role.
 
@@ -122,5 +125,5 @@ Once enabled, invoke with `/agent-based-development` in any Claude Code session.
 
 - `/golden-rules` — install always-on coding and security standards
 - `/mvp-readiness` — run the MVP quality-gate checklist before declaring done
-- `/security-review` — standalone security audit (no ABD workflow required)
+- `/full-security-review` — standalone security audit (no ABD workflow required)
 - `/git-workflow` — git release-branch reference and branch scaffolding

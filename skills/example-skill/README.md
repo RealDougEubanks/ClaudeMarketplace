@@ -1,11 +1,11 @@
-# Example Skill — Hello Project
+# Example Skill
 
 A sample skill that greets the user and gives a quick summary of the current project.
 
 ## Usage
 
 ```
-/hello-project
+/example-skill
 ```
 
 ## What it does

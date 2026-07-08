@@ -24,7 +24,7 @@ This skill covers **engineering code quality only**. It does not audit for:
 - Dependency vulnerabilities
 - Secrets or credentials in source
 
-For security audits, use `/security-review`.
+For security audits, use `/full-security-review`.
 
 ## How to invoke
 

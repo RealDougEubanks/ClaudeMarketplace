@@ -5,34 +5,44 @@ A Claude Code skill that audits project dependencies for staleness, vulnerabilit
 ## Usage
 
 ```
-/dependency-audit
+/dependency-audit          # report only
+/dependency-audit --fix    # report, then apply safe minor/patch upgrades and run tests
 ```
 
 Run this command from the root of any project. The skill will auto-detect which package manifests are present and audit each one.
 
+`--fix` requires a clean working tree (commit or stash first). CVE-critical findings are never auto-fixed — they always require manual review.
+
 ## What It Does
 
-1. **Detects manifests** — Scans for `package.json`, `requirements.txt`, `Pipfile`, `pyproject.toml`, `go.mod`, `Gemfile`, and `composer.json`.
+1. **Detects manifests** — Scans for `package.json`, `requirements.txt`, `Pipfile`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `Gemfile`, `composer.json`, and `.csproj` files.
 2. **Analyzes each manifest** — Flags unpinned versions, deprecated packages, devDependencies misplaced in production dependencies, and known problematic packages.
-3. **Checks for lockfiles** — Warns if a manifest exists without a corresponding lockfile (`package-lock.json`, `yarn.lock`, `poetry.lock`, `go.sum`, `Gemfile.lock`, etc.).
-4. **Runs audit tools** — Executes `npm audit`, `pip-audit`, or `go list` if available to surface known CVEs.
+3. **Checks for lockfiles** — Warns if a manifest exists without a corresponding lockfile (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `poetry.lock`, `go.sum`, `Cargo.lock`, `Gemfile.lock`, etc.).
+4. **Runs audit tools** — Executes `npm audit`/`pnpm audit`/`yarn npm audit`, `pip-audit`, `govulncheck`, `cargo audit`, `composer audit`, or `dotnet list package --vulnerable` if available to surface known CVEs.
 5. **Produces a structured report** — Summarizes findings by severity (CRITICAL, HIGH, MEDIUM, INFO) with actionable upgrade commands.
 
 ## Supported Ecosystems
 
 | Ecosystem | Manifest | Audit Tool |
 |-----------|----------|------------|
-| Node.js | `package.json` | `npm audit` |
+| Node.js | `package.json` | `npm audit` / `pnpm audit` / `yarn npm audit` |
 | Python | `requirements.txt`, `Pipfile`, `pyproject.toml` | `pip-audit` |
-| Go | `go.mod` | `go list` |
+| Go | `go.mod` | `govulncheck` |
+| Rust | `Cargo.toml` | `cargo audit` |
 | Ruby | `Gemfile` | Static analysis only |
-| PHP | `composer.json` | Static analysis only |
+| PHP | `composer.json` | `composer audit` |
+| .NET | `*.csproj` | `dotnet list package --vulnerable` |
 
 ## Audit Tools Wrapped
 
-- **npm audit** — Built into npm; surfaces CVEs from the npm advisory database.
+- **npm/pnpm/yarn audit** — Built into the package manager; surfaces CVEs from the npm advisory database. The skill picks the tool matching your lockfile.
 - **pip-audit** — Must be installed separately (`pip install pip-audit`). Surfaces CVEs from PyPI and OSV databases. The skill skips this step gracefully if `pip-audit` is not installed.
-- **go list** — Built into the Go toolchain; lists all module dependencies for analysis.
+- **govulncheck** — Install with `go install golang.org/x/vuln/cmd/govulncheck@latest`. Surfaces CVEs from the Go vulnerability database with call-graph analysis.
+- **cargo audit** — Install with `cargo install cargo-audit`. Surfaces CVEs from the RustSec advisory database.
+- **composer audit** — Built into Composer 2.4+.
+- **dotnet list package --vulnerable** — Built into the .NET SDK.
+
+Any tool that is missing is skipped gracefully and noted in the report with install instructions.
 
 ## Example Output
 

@@ -11,7 +11,7 @@ When working in this repo, your job is to help build, validate, and publish skil
 - `metadata.json` must validate against `schema/metadata.schema.json`.
 - After creating or editing a skill, run `./scripts/validate.sh skills/<skill-name>`.
 - After adding a skill directory, update `skills/registry.json` and run `./scripts/check-registry.sh`.
-- Use `./scripts/new-skill.sh <name>` to scaffold a new skill from templates.
+- Use `./scripts/new-skill.sh <name>` to scaffold a new skill. It creates the full directory structure (including `.claude-plugin/plugin.json`) and registers the skill in `registry.json` and `marketplace.json`.
 - Skills are distributed via the Claude Code marketplace — there is no manual install script. Direct users to add this repo as a marketplace in `~/.claude/settings.json`.
 - Do not modify `skills/example-skill/` — it is the canonical reference for contributors.
 
@@ -22,9 +22,9 @@ Always run these checks before committing. CI will fail if any are skipped.
 1. **Validate skill structure** — `./scripts/validate.sh skills/<name>` for each changed skill.
 2. **Sync registry versions** — `skills/registry.json` version must match `metadata.json` version for every skill. Update registry.json whenever you bump a skill version.
 3. **Bump versions** — Any skill whose `commands/<name>.md`, `metadata.json`, or `README.md` changed must have its version incremented in **all four places**: `metadata.json`, `skills/registry.json`, `.claude-plugin/marketplace.json`, and `skills/<name>/.claude-plugin/plugin.json`. Use semver patch bumps for fixes, minor bumps for new features or layout changes.
-4. **Run ShellCheck** — `shellcheck scripts/*.sh`. All scripts must pass with no errors.
+4. **Run ShellCheck** — `shellcheck scripts/*.sh tests/*.sh`. All scripts must pass with no errors.
 5. **Run markdownlint** — `npx markdownlint-cli2 "skills/**/*.md" "*.md"`. No bare URLs — wrap emails and URLs in backticks or angle brackets.
-6. **Check registry** — `./scripts/check-registry.sh` to confirm all three version fields agree.
+6. **Check registration and version sync** — `./scripts/check-registry.sh` to confirm every skill directory is registered, and `./scripts/sync-versions.sh --check` to confirm versions agree across `metadata.json`, `registry.json`, `marketplace.json`, and `plugin.json`.
 
 ## Golden Rules
 

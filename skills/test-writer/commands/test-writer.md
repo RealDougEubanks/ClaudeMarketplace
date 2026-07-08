@@ -1,6 +1,8 @@
 ---
 name: test-writer
 description: Generates comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching existing test style.
+argument-hint: "[file-or-function]"
+allowed-tools: Read, Write, Edit, Glob, Bash
 ---
 
 # Test Writer
@@ -26,6 +28,10 @@ When invoked via `/test-writer`:
    - **pytest**: look for `pytest.ini`, `pyproject.toml` containing `[tool.pytest.ini_options]`, or `conftest.py`
    - **Go test**: look for `go.mod` and any existing `*_test.go` files
    - **PHPUnit**: look for `phpunit.xml` or `phpunit.xml.dist`, or `phpunit/phpunit` in `composer.json`
+   - **Mocha**: look for `.mocharc.*`, or `"mocha"` in `package.json` devDependencies
+   - **RSpec**: look for `.rspec`, `spec/spec_helper.rb`, or `rspec` in `Gemfile`
+   - **JUnit**: look for `junit` in `pom.xml` or `build.gradle`/`build.gradle.kts`
+   - **xUnit / NUnit / MSTest**: look for `xunit`, `NUnit`, or `MSTest` package references in `*.csproj`
    - If multiple are present, ask the user which to use.
 
 4. **Match existing test style.** Use Glob to find existing test files matching `**/*.test.*`, `**/*.spec.*`, `**/*_test.*`, or `tests/**/*`. Read 1–2 representative test files to capture:
@@ -52,11 +58,14 @@ When invoked via `/test-writer`:
    - If the test file does not exist, use Write to create it.
    - If the test file already exists, use Read to review it, then use Edit to append new test cases — never overwrite existing tests.
 
-8. **Run the tests** using Bash:
-   - Jest/Vitest: `npx jest <testfile>` or `npx vitest run <testfile>`
+8. **Run the tests** using Bash. For JS/TS frameworks, prefer the project's own test script or local binary — do not use `npx`, which can download and execute a package from the network if it isn't installed locally:
+   - Jest/Vitest/Mocha: `npm test -- <testfile>` if `package.json` defines a test script; otherwise `node_modules/.bin/jest <testfile>` (or `vitest run` / `mocha`). If neither exists, ask the user before falling back to `npx`.
    - pytest: `python -m pytest <testfile> -v`
    - Go: `go test ./... -run <TestName>`
    - PHPUnit: `vendor/bin/phpunit <testfile>`
+   - RSpec: `bundle exec rspec <testfile>`
+   - JUnit: `mvn test -Dtest=<TestClass>` or `gradle test --tests <TestClass>`
+   - xUnit/NUnit/MSTest: `dotnet test --filter <TestClass>`
    - Report pass/fail counts and any error output.
    - If tests fail, diagnose the root cause (missing mock, wrong import path, API mismatch) and fix before finishing. Do not leave the user with a broken test file.
 

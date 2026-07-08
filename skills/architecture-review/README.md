@@ -70,7 +70,7 @@ Use both for a complete quality picture.
 
 - **`/architecture-design`** — Use this skill to understand an existing system before designing a replacement or major new feature with `/architecture-design`.
 - **`/adr`** — After completing the review, record the agreed migration decisions as Architecture Decision Records.
-- **`/security-review`** — For a deeper security-specific audit complementing the security posture section of this review.
+- **`/full-security-review`** — For a deeper security-specific audit complementing the security posture section of this review.
 
 ## Requirements
 

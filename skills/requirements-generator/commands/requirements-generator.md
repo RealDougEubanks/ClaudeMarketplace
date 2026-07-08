@@ -1,6 +1,8 @@
 ---
 name: requirements-generator
 description: Generates structured requirements documents with functional and non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items.
+argument-hint: "[--interview] [feature description]"
+allowed-tools: Read, Write, Glob, Grep
 ---
 
 # Requirements Generator
@@ -22,7 +24,7 @@ Take a project idea, feature description, or user story and generate a structure
 
    If the user invoked with `--interview`, skip this prompt and proceed to the **Interview Mode** section below instead.
 
-2. **Understand the existing codebase** (if one exists). Use Glob on `*` to detect the project structure. Read `package.json`, `pyproject.toml`, or `go.mod` to identify the tech stack. Read any files in `src/` or `app/` to understand patterns and conventions. This ensures requirements fit what already exists.
+2. **Understand the existing codebase** (if one exists). Use Glob on `*` to detect the project structure. Read `package.json`, `pyproject.toml`, or `go.mod` to identify the tech stack. Read 3–5 representative files from `src/` or `app/` — entry points first (`index.*`, `main.*`, `app.*`), then one route/handler file and one model/schema file — to understand patterns and conventions. Do not read the whole source tree. This ensures requirements fit what already exists.
 
 3. **Check for existing requirements.** Use Glob on `docs/requirements/**/*.md`. If matching files exist, read them to avoid duplicating requirements already captured. Note any related requirements in the new document.
 
