@@ -130,7 +130,7 @@
     {
       "name": "dependency-audit",
       "path": "skills/dependency-audit",
-      "description": "Audits project dependencies across package.json, requirements.txt, go.mod, Cargo.toml, Gemfile, composer.json, and .NET projects for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
+      "description": "Audits dependencies across npm, pip, Go, Cargo, Composer, .NET, and Ruby manifests for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
       "tags": [
         "dependencies",
         "audit",
