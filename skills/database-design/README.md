@@ -70,7 +70,7 @@ Produces a severity-graded report (Critical/High/Medium/Low) with specific fix r
 ## Integration with Other Skills
 
 - `/architecture-design` — use after `/database-design` to document the full system architecture
-- `/security-review` — run after schema design to review for security vulnerabilities
+- `/full-security-review` — run after schema design to review for security vulnerabilities
 - `/api-design` — design REST or GraphQL APIs on top of the schema
 
 ## ERD Format

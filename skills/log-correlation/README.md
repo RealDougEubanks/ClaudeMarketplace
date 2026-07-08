@@ -76,7 +76,7 @@ See `log-types/README.md` for the full template. In short:
 
 1. Create a new file: `log-types/<id>.md` (kebab-case, e.g., `log-types/haproxy.md`)
 2. Fill in the required sections: Metadata, File Paths, Time Extraction Command, Parsing Pattern, Error Patterns, Known Correlations
-3. Drop the file into `log-types/` — no changes to `skill.md` needed
+3. Drop the file into `log-types/` — no changes to `commands/log-correlation.md` needed
 4. The next invocation of `/log-correlation` will automatically discover and use the new log type
 
 ## AWS Permissions Required

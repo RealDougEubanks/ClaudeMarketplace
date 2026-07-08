@@ -1,9 +1,11 @@
 ---
 name: example-skill
-description: Greet the user and provide a brief summary of the current project.
+description: A sample skill that greets the user and summarizes the current project
+model: haiku
+allowed-tools: Read, Glob
 ---
 
-# Hello Project
+# Example Skill
 
 Greet the user and provide a brief summary of the current project.
 

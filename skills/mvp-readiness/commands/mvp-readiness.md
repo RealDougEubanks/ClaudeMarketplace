@@ -1,6 +1,8 @@
 ---
 name: mvp-readiness
 description: Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.
+argument-hint: "[--quick]"
+allowed-tools: Bash, Read, Glob, Grep
 ---
 
 # MVP Readiness Audit
@@ -36,7 +38,7 @@ Check that `README.md` or `readme.md` exists and is greater than 100 bytes. **FA
 ### Check 3 — External Call Error Handling
 
 ```bash
-grep -rn "fetch(\|axios\.\|\.query(\|\.connect(" --include="*.js" --include="*.ts" . | grep -v "try\|catch\|then\|catch"
+grep -rn "fetch(\|axios\.\|\.query(\|\.connect(" --include="*.js" --include="*.ts" . | grep -v "try\|catch\|then\|rescue"
 ```
 
 This is a rough heuristic. **FAIL** if more than 5 uncovered calls are found.
@@ -76,6 +78,10 @@ Status: NOT READY — 1 blocker. Run /mvp-readiness for full audit.
 Use `✓` for PASSED, `✗` for FAILED (blocker), and `⚠` for WARNING (non-blocking). The status line must say `READY` only if all 5 checks pass.
 
 ---
+
+## Full Audit
+
+Run all steps below, then evaluate every item in the MVP Checklist.
 
 1. Use Read to load `README.md` and any files found in `docs/`.
 

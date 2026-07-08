@@ -1,29 +1,33 @@
-# security-review
+# full-security-review
 
 Adopt the Security Agent persona and run a structured security audit of any codebase. Produces severity-graded findings in both markdown and (when the ABD workflow is active) JSON artifact format.
 
+> Named `full-security-review` to distinguish it from Claude Code's built-in `/security-review` command, which reviews only the pending changes on the current branch. This skill audits the whole codebase — code, design, secrets, infrastructure, CI/CD, and AI/LLM integrations.
+
 ## What It Does
 
-When you run `/security-review`, Claude:
+When you run `/full-security-review`, Claude:
 
 1. Asks for audit scope (or defaults to the whole project).
-2. Uses Glob and Read to examine all source files.
-3. Uses Grep to detect common vulnerability patterns.
-4. Checks each vulnerability category in a structured checklist.
-5. Assigns severity to every finding: `critical | severe | moderate | low | info`.
-6. Produces a markdown Security Review Report.
-7. If `handoffs/reviews/` exists (ABD workflow active), also writes a JSON artifact.
+2. Uses Glob and prioritized Read batches to examine source files (auth, config, and entry points first).
+3. Uses Grep to detect common vulnerability patterns, including modern secret token formats and AI/LLM risks.
+4. Uses Bash to scan git history for committed secrets.
+5. Checks each vulnerability category in a structured checklist.
+6. Assigns severity to every finding: `critical | severe | moderate | low | info`.
+7. Produces a markdown Security Review Report with OWASP mappings.
+8. If `handoffs/reviews/` exists (ABD workflow active), also writes a JSON artifact.
 
 ## Vulnerability Categories Covered
 
 | Category | Examples |
 |----------|---------|
-| Injection | SQL, command, XSS, template injection |
+| Injection | SQL, command, XSS, template, prompt injection |
 | Auth & Authorization | Hardcoded credentials, missing auth, broken access control, insecure sessions |
-| Secrets & Sensitive Data | Secrets in code/logs, weak password hashing, data in transit without TLS |
+| Secrets & Sensitive Data | Secrets in code/logs/git history, weak password hashing, data in transit without TLS |
 | Input Validation | Missing sanitization, path traversal, insecure deserialization |
-| Dependencies & Config | Outdated packages, debug mode in production, permissive CORS/CSP |
+| Dependencies & Config | Outdated packages, supply-chain risks, debug mode in production, permissive CORS/CSP |
 | Cryptography | MD5/SHA1, hardcoded IVs, short keys |
+| AI/LLM Integration | Prompt injection, insecure LLM output handling, excessive agency, PII leakage into prompts |
 
 ## Severity Scale
 
@@ -38,15 +42,15 @@ When you run `/security-review`, Claude:
 ## Usage
 
 ```
-/security-review
+/full-security-review
 ```
 
 Invoke in the project root. Claude will audit the current working directory.
 
-To scope to a specific directory or file:
+Quick scoped scan (pattern scanning only, no design review):
 
 ```
-/security-review — audit src/auth/ only
+/full-security-review --quick src/auth/
 ```
 
 ## Example Output
@@ -82,14 +86,16 @@ Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 ```json
 {
   "enabledPlugins": {
-    "security-review@claude-skills-marketplace": true
+    "full-security-review@claude-skills-marketplace": true
   }
 }
 ```
 
-Once enabled, invoke with `/security-review` in any Claude Code session.
+Once enabled, invoke with `/full-security-review` in any Claude Code session.
+
 ## Related Skills
 
 - `/golden-rules` — install always-on security standards
+- `/dependency-audit` — dedicated dependency CVE audit
 - `/mvp-readiness` — broad MVP quality gate including security checks
 - `/agent-based-development` — full workflow with Security Agent role built in

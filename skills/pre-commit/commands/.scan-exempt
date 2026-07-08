@@ -4,3 +4,6 @@ secret[_-]?key
 access[_-]?token
 password
 AWS_SECRET
+# Skill documents the --no-verify bypass and steers users away from it
+no-verify
+--no-verify

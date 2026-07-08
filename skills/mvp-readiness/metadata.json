@@ -1,6 +1,6 @@
 {
   "name": "mvp-readiness",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.",
   "author": {
     "name": "Doug Eubanks",
@@ -20,6 +20,7 @@
   ],
   "triggers": [],
   "tools": [
+    "Bash",
     "Read",
     "Glob",
     "Grep"

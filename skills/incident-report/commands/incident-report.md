@@ -1,6 +1,9 @@
 ---
 name: incident-report
 description: Generates professional incident reports using customizable templates. Supports outage, security, performance, and data-loss incident types. Extensible via templates/ and rules/.
+argument-hint: "[incident description]"
+allowed-tools: Read, Write, Glob, Bash(mkdir:*)
+model: haiku
 ---
 
 # Incident Report
@@ -11,7 +14,7 @@ Generate professional incident reports from symptoms, log data, and timeline inf
 
 ## Extensibility
 
-This skill loads templates from `templates/` and rules from `rules/` at runtime. To add a new incident type, create a template file in `templates/`. To customize severity thresholds or escalation contacts, edit the files in `rules/`. No changes to `skill.md` are needed.
+This skill loads templates from `templates/` and rules from `rules/` at runtime. To add a new incident type, create a template file in `templates/`. To customize severity thresholds or escalation contacts, edit the files in `rules/`. No changes to `commands/incident-report.md` are needed.
 
 New templates are auto-discovered via Glob — they must have a `.md` extension and valid frontmatter. New rule files are also auto-discovered and applied in filename-alphabetical order.
 
@@ -21,7 +24,7 @@ New templates are auto-discovered via Glob — they must have a `.md` extension 
 
 ### Step 1 — Load Templates and Rules
 
-Use Glob to find all `.md` files in `templates/` and `rules/` relative to the skill install path. Use Read to load each file. Build an in-memory registry:
+Use Glob to find all `.md` files in `${CLAUDE_PLUGIN_ROOT}/templates/` and `${CLAUDE_PLUGIN_ROOT}/rules/` (the plugin's install directory). If `${CLAUDE_PLUGIN_ROOT}` is not set (e.g. running from a local checkout of the marketplace repo), fall back to `skills/incident-report/templates/` and `skills/incident-report/rules/` relative to the current working directory. Use Read to load each file. Build an in-memory registry:
 
 - **Templates registry:** keyed by `id` from frontmatter; store `name`, `incident_types`, `required_sections`, and the full template body.
 - **Rules registry:** keyed by filename; store the full rule content for interpretation.
@@ -107,6 +110,8 @@ Read `rules/sla.md`. Based on the confirmed severity and the incident duration, 
 Mark each metric as `MET` or `BREACHED`. If breached, state by how much. Populate the report's "SLA Status" section.
 
 ### Step 8 — Save the Report
+
+> **Data handling:** Never include live credentials, tokens, session IDs, or victim PII in the report body — redact them (`[REDACTED]`) even if they appear in the logs or evidence the user provided. For **security-type incidents**, warn the user before saving: the report is stamped CONFIDENTIAL, and committing it to a shared repository may expose incident details to everyone with repo access. Offer to save outside the repo or to a restricted location instead.
 
 1. Use Bash to create `docs/incidents/` if it does not exist: `mkdir -p docs/incidents`
 2. Generate the filename: `INC-<YYYYMMDD>-<kebab-case-short-title>.md` (max 40 chars for the title slug).

@@ -1,0 +1,5 @@
+# Redaction guidance masks credentials/passwords in reports; the CloudTrail
+# log-type documents AWS credential-related event fields (skill root: covers
+# commands/ and log-types/)
+credentials
+password

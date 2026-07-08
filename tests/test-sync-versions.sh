@@ -48,7 +48,7 @@ fi
 
 # Test 4: Detect out-of-sync by temporarily modifying a plugin.json
 # Save original, modify, check, restore
-FIRST_SKILL=$(ls -d "$REPO_ROOT"/skills/*/  | head -1)
+FIRST_SKILL=$(find "$REPO_ROOT/skills" -mindepth 1 -maxdepth 1 -type d | sort | head -1)
 PLUGIN_JSON="$FIRST_SKILL/.claude-plugin/plugin.json"
 if [ -f "$PLUGIN_JSON" ]; then
   ORIGINAL=$(cat "$PLUGIN_JSON")

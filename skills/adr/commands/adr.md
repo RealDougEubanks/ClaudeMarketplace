@@ -1,13 +1,22 @@
 ---
 name: adr
 description: Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR format. Supports creating, listing, updating, superseding, and searching ADRs.
+argument-hint: "[create <title> | list | update <n> <status> | supersede <n> | search <keyword>]"
+model: haiku
+allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
 # adr
 
 ## Purpose
 
-Create, list, update, and supersede Architecture Decision Records (ADRs) following the Markdown Architectural Decision Records (MADR) format. Maintains a `docs/decisions/` directory. Works standalone or as a companion to `/architecture-design`.
+Create, list, update, and supersede Architecture Decision Records (ADRs) following the Markdown Architectural Decision Records (MADR) format. Maintains an ADR directory (see Directory Convention below). Works standalone or as a companion to `/architecture-design`.
+
+---
+
+## Directory Convention
+
+Before creating anything, detect where this project keeps ADRs. Use Glob to check, in order: `docs/decisions/ADR-*.md`, `docs/adr/*.md`, `adr/*.md`, `docs/architecture/decisions/*.md`. Use the first directory that already contains ADRs. Only if none exists, default to `docs/decisions/`. All paths below refer to this detected directory.
 
 ---
 
@@ -70,7 +79,17 @@ Every ADR uses this structure:
 
 ### Step 1 — Determine the action
 
-Ask the user what they want to do:
+Parse `$ARGUMENTS` first and dispatch directly — do not ask if the action is given:
+
+| Invocation | Action |
+|------------|--------|
+| `/adr create <title>` | Step 2a, using `<title>` as the decision title |
+| `/adr list` | Step 2b |
+| `/adr update <n> <status>` | Step 2c on ADR-`<n>`, setting `<status>` |
+| `/adr supersede <n>` | Step 2d replacing ADR-`<n>` |
+| `/adr search <keyword>` | Step 2e with `<keyword>` |
+
+If no arguments were given, ask the user what they want to do:
 - **(a) Create a new ADR** — document a new architectural decision
 - **(b) List existing ADRs** — show all ADRs with status and one-line summary
 - **(c) Update an ADR's status** — mark as Accepted, Deprecated, or Superseded
@@ -81,23 +100,23 @@ Ask the user what they want to do:
 
 ### Step 2a — Create a new ADR
 
-1. Use Glob to find all existing ADRs in `docs/decisions/ADR-*.md`. Determine the next number.
+1. Use Glob to find all existing ADRs in the detected ADR directory. Determine the next number.
 2. Use Read on any related existing ADRs mentioned.
-3. Ask the user:
+3. Ask the user (skip the title question if it was passed as an argument):
    - What is the decision being made? (one sentence title)
    - What is the context / problem? (what forced this decision)
    - Who are the deciders?
    - What options were considered?
    - What was chosen and why?
 4. Generate the full ADR using the MADR format above.
-5. Use Write to save to `docs/decisions/ADR-<NNN>-<kebab-case-title>.md`. Create `docs/decisions/` if it doesn't exist.
+5. Use Write to save to `<adr-dir>/ADR-<NNN>-<kebab-case-title>.md`. Create the directory if it doesn't exist.
 6. Update the ADR index (see Step 3).
 
 ---
 
 ### Step 2b — List existing ADRs
 
-Use Glob to find all `docs/decisions/ADR-*.md`. Use Read on each to extract: number, title, status, date, tags. Output a sorted table:
+Use Glob to find all ADRs in the detected ADR directory. Use Read on each to extract: number, title, status, date, tags. Output a sorted table:
 
 ```
 ## Architecture Decision Records
@@ -131,10 +150,10 @@ Use Read to load the ADR. Use Edit to update the Status field. Valid transitions
 
 ### Step 2e — Search
 
-Use Grep across `docs/decisions/` for the keyword or tag. Return matching ADRs with context.
+Use Grep across the detected ADR directory for the keyword or tag. Return matching ADRs with context.
 
 ---
 
 ### Step 3 — Maintain ADR Index
 
-After any create/update operation, regenerate `docs/decisions/README.md` — an index of all ADRs sorted by number, showing status with colour-coded emoji: ✅ Accepted, 🔄 Proposed, ⚠️ Deprecated, 🔁 Superseded.
+After any create/update operation, regenerate `<adr-dir>/README.md` — an index of all ADRs sorted by number, showing status as a text badge: `[ACCEPTED]`, `[PROPOSED]`, `[DEPRECATED]`, `[SUPERSEDED]`.

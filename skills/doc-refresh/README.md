@@ -39,8 +39,8 @@ Add this repo as a marketplace in `~/.claude/settings.json`:
 | `/doc-refresh` | Full refresh: audit, purge stale, fill gaps |
 | `/doc-refresh runbook` | Generate `docs/RUNBOOK.md` only |
 | `/doc-refresh check` | Audit only — no writes. Good for CI. |
-| `/doc-refresh install` | Install as a post-commit git hook |
-| `/doc-refresh uninstall` | Remove the post-commit hook |
+| `/doc-refresh install` | Install as a pre-commit git hook (backs up and chains any existing hook) |
+| `/doc-refresh uninstall` | Remove the pre-commit hook (offers to restore the backup) |
 
 ## Example Output
 

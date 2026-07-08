@@ -1,6 +1,8 @@
 ---
 name: git-workflow
-description: Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference.
+description: "Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference."
+argument-hint: "[start | pr | release | conflict | stash]"
+allowed-tools: Read, Glob, Edit, Bash
 ---
 
 # Git Workflow — Release-Branch Model
@@ -52,10 +54,12 @@ Print the full Git Workflow Reference section below.
 
 3. Construct the branch name: `feature/task-XXX-short-description` or `fix/task-XXX-short-description`.
 
-4. Use Bash to create and check out the branch from the release branch:
+4. Use Bash to fetch the latest remote state, then create and check out the branch from the release branch:
    ```bash
+   git fetch origin
    git checkout -b <branch-name> origin/<release-branch>
    ```
+   Without the fetch, a stale remote-tracking ref would create the branch off an old tip.
 
 5. Confirm the branch was created and remind the user:
    - Never commit directly to `main` or the release branch.
@@ -98,16 +102,17 @@ Print the full Git Workflow Reference section below.
 
 2. Ask the user for the version tag (e.g. `1.0.0`).
 
-3. Use Bash to merge the release branch to main and tag:
+3. Open a release PR from the release branch into `main` — all changes reach `main` via PR, including releases:
+   ```bash
+   gh pr create --base main --head release/<version> --title "Release v<version>" --body "<release summary>"
+   ```
+   If `gh` is not available, print the PR body and ask the user to open the PR manually.
+
+4. After the PR is approved and merged, tag the release on `main`. Confirm before pushing the tag:
    ```bash
    git checkout main
-   git merge --no-ff origin/release/<version> -m "Release v<version>"
+   git pull origin main
    git tag v<version>
-   ```
-
-4. Confirm before pushing and tagging remotely. Print the commands for the user to review and approve:
-   ```bash
-   git push origin main
    git push origin v<version>
    ```
 
@@ -144,16 +149,16 @@ Print the full Git Workflow Reference section below.
    c. Ask the user which resolution to apply (keep yours, keep theirs, or combine), or propose a resolution if the intent is clear from context.
    d. Use Edit to apply the agreed resolution, removing all conflict markers so the file is valid.
 
-5. After all conflicted files are resolved, use Bash to stage changes and complete the rebase or merge:
+5. After all conflicted files are resolved, use Bash to stage **only the resolved files by name** (never `git add .`, which would sweep untracked files like build output or `.env` into the commit) and complete the rebase or merge:
    - If **rebase** was chosen:
      ```bash
-     git add .
+     git add <resolved-file-1> <resolved-file-2> ...
      git rebase --continue
      ```
      If additional conflict rounds occur, repeat steps 4–5 for each round until the rebase completes.
    - If **merge** was chosen:
      ```bash
-     git add .
+     git add <resolved-file-1> <resolved-file-2> ...
      git merge --continue
      ```
 

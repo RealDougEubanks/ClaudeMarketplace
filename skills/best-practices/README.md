@@ -9,7 +9,7 @@ A holistic codebase audit skill for Claude Code. Auto-detects your technology st
 | Skill | What it does |
 |-------|-------------|
 | `/code-review` | Reviews a PR diff — focused on what changed in this pull request |
-| `/security-review` | Security vulnerabilities only — injection, auth, secrets, cryptography |
+| `/full-security-review` | Security vulnerabilities only — injection, auth, secrets, cryptography |
 | `/mvp-readiness` | Binary pass/fail launch checklist — is this ready to ship? |
 | `/best-practices` | **Holistic audit of the entire codebase** — stack-aware, produces a prioritized improvement roadmap |
 
@@ -106,7 +106,7 @@ Recommended workflow:
 
 ```
 /best-practices          → get the full roadmap
-/security-review         → dedicated security deep-dive (complements this report)
+/full-security-review         → dedicated security deep-dive (complements this report)
 /test-writer             → generate tests for untested files identified in the report
 /dependency-audit        → CVE scan and outdated package check
 ```

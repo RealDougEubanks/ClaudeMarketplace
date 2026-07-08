@@ -1,0 +1,5 @@
+# Data-handling guidance and the security incident template instruct
+# redacting credentials/passwords from report bodies (skill root: covers
+# commands/ and templates/security.md)
+credentials
+password

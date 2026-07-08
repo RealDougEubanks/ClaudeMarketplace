@@ -1,6 +1,7 @@
 ---
 name: onboarding
-description: Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview.
+description: "Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview."
+allowed-tools: Read, Write, Glob, Grep, Bash
 ---
 
 # Onboarding
@@ -18,6 +19,8 @@ Generate a comprehensive developer onboarding guide for an unfamiliar codebase a
 4. Use Read on any Makefile, `package.json` (scripts section), or `Taskfile.yml` to identify key commands: install, run, test, build, lint.
 
 5. Use Glob to find `.env.example` or any env var documentation files. List all required environment variables with their descriptions.
+
+   > **SECURITY:** Read `.env.example` only — never read `.env` or any file containing real credential values, and never include actual secret values in the generated guide. Document variable names and descriptions only.
 
 6. Use Bash to count files by detected language type. Adapt the command to the language detected:
    - TypeScript/JavaScript: `find . -name "*.ts" -o -name "*.js" | grep -v node_modules | wc -l`
@@ -124,9 +127,9 @@ npm run dev
 <include only if docs/agentRoster.md exists>
 
 ## How to Contribute
-1. Branch from `main` using `feature/` or `fix/` prefix
-2. Open a PR — see git-workflow skill for details
-3. PRs require at least one approval before merge
+<derive from the target project's own conventions — see note below>
 ```
+
+For the "How to Contribute" section: read the target project's `CONTRIBUTING.md`, `CLAUDE.md`, or `.github/PULL_REQUEST_TEMPLATE.md` and summarize *that project's* branching, review, and merge rules. Do not assume any particular branch-prefix or approval policy. If no convention docs exist, fall back to generic guidance: "Create a branch, open a PR, and request review — confirm the team's specific conventions with a maintainer."
 
 After writing the file, confirm to the user that `docs/ONBOARDING.md` has been created and summarize the key sections included.

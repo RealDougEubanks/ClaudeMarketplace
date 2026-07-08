@@ -41,14 +41,11 @@ ClaudeMarketplace/
 │       │   └── plugin.json         # Claude Code plugin manifest
 │       ├── metadata.json           # Name, version, author, tags, etc.
 │       └── README.md               # Human-readable documentation
-├── templates/                      # Starter templates for new skills
-│   ├── skill.md                    # Used by new-skill.sh to scaffold commands/<name>.md
-│   └── metadata.json
 ├── schema/
 │   └── metadata.schema.json        # JSON Schema for metadata validation
 ├── scripts/
 │   ├── validate.sh                 # Validate a skill's structure
-│   ├── new-skill.sh                # Scaffold a new skill from templates
+│   ├── new-skill.sh                # Scaffold a new skill (creates all files, registers it)
 │   ├── check-registry.sh           # Verify registry.json consistency
 │   ├── validate-all.sh             # Run all validation checks
 │   ├── scan-prompts.sh             # Prompt safety scanner
@@ -262,7 +259,7 @@ You don't have to enable everything. There are three common patterns:
 ### Create Your Own Skill
 
 ```bash
-# Scaffold from templates
+# Scaffold a new skill
 ./scripts/new-skill.sh my-new-skill
 
 # Edit the generated files:

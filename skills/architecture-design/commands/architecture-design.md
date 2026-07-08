@@ -1,6 +1,9 @@
 ---
 name: architecture-design
-description: Designs new systems from requirements: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns.
+description: "Designs new systems from requirements: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns."
+argument-hint: "[--quick]"
+effort: high
+allowed-tools: Read, Write, Glob, Grep
 ---
 
 # architecture-design
@@ -8,6 +11,10 @@ description: Designs new systems from requirements: C4 model diagrams, service b
 ## Purpose
 
 Guide the design of a system or feature from requirements to a documented architecture. Produces C4-model diagrams (Context → Container → Component), service boundary definitions, API contracts, data flow diagrams, failure mode analysis, and an ADR for the key decisions made. Works standalone or as the `/abd-design` agent in the ABD workflow.
+
+**Quick mode** (`/architecture-design --quick`): for single-feature or small-scope designs. Skip Step 5 (C4 Level 3), make the Step 8 failure-mode table optional (include only externally-dependent paths), and keep Steps 1–2 to a single confirmation exchange.
+
+**Emit as you go:** output each step's section immediately as you complete it rather than composing the whole document at the end. Step 10 assembles the already-emitted sections into the saved file. This keeps quality even across sections.
 
 ---
 

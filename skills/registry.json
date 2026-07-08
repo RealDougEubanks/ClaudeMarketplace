@@ -18,7 +18,7 @@
         "example",
         "template"
       ],
-      "version": "1.1.2",
+      "version": "1.2.0",
       "category": "productivity"
     },
     {
@@ -35,7 +35,7 @@
         "api-contracts",
         "performance"
       ],
-      "version": "1.6.0",
+      "version": "1.7.1",
       "category": "base"
     },
     {
@@ -51,7 +51,7 @@
         "review",
         "handoffs"
       ],
-      "version": "1.2.1",
+      "version": "1.3.0",
       "category": "workflow"
     },
     {
@@ -65,13 +65,13 @@
         "checklist",
         "standards"
       ],
-      "version": "1.2.1",
+      "version": "1.3.0",
       "category": "standards"
     },
     {
       "name": "full-security-review",
       "path": "skills/full-security-review",
-      "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
+      "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, cryptography, and AI/LLM risks. Produces severity-graded findings.",
       "tags": [
         "security",
         "audit",
@@ -80,7 +80,7 @@
         "vulnerability",
         "injection"
       ],
-      "version": "1.2.1",
+      "version": "1.3.0",
       "category": "security"
     },
     {
@@ -94,13 +94,13 @@
         "branching",
         "pr"
       ],
-      "version": "1.2.1",
+      "version": "1.3.0",
       "category": "workflow"
     },
     {
       "name": "code-review",
       "path": "skills/code-review",
-      "description": "Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency. Complements security-review with general code quality.",
+      "description": "Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency. Complements full-security-review with general code quality.",
       "tags": [
         "code-review",
         "quality",
@@ -109,7 +109,7 @@
         "complexity",
         "standards"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "standards"
     },
     {
@@ -124,13 +124,13 @@
         "quality",
         "tdd"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "standards"
     },
     {
       "name": "dependency-audit",
       "path": "skills/dependency-audit",
-      "description": "Audits project dependencies across package.json, requirements.txt, go.mod, and Gemfile for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
+      "description": "Audits dependencies across npm, pip, Go, Cargo, Composer, .NET, and Ruby manifests for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
       "tags": [
         "dependencies",
         "audit",
@@ -141,7 +141,7 @@
         "go",
         "ruby"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "security"
     },
     {
@@ -155,7 +155,7 @@
         "documentation",
         "versioning"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "workflow"
     },
     {
@@ -169,7 +169,7 @@
         "getting-started",
         "architecture"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "productivity"
     },
     {
@@ -184,7 +184,7 @@
         "planning",
         "product"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "workflow"
     },
     {
@@ -201,7 +201,7 @@
         "cloudwatch",
         "incident"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "productivity"
     },
     {
@@ -218,7 +218,7 @@
         "devops",
         "templates"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "workflow"
     },
     {
@@ -234,7 +234,7 @@
         "gate",
         "standards"
       ],
-      "version": "1.1.1",
+      "version": "1.2.1",
       "category": "standards"
     },
     {
@@ -250,7 +250,7 @@
         "improvement",
         "architecture"
       ],
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "standards"
     },
     {
@@ -266,7 +266,7 @@
         "diagrams",
         "planning"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "workflow"
     },
     {
@@ -282,7 +282,7 @@
         "refactoring",
         "technical-debt"
       ],
-      "version": "1.1.1",
+      "version": "1.2.1",
       "category": "standards"
     },
     {
@@ -297,7 +297,7 @@
         "design",
         "knowledge-management"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "workflow"
     },
     {
@@ -314,7 +314,7 @@
         "review",
         "contracts"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "workflow"
     },
     {
@@ -331,7 +331,7 @@
         "design",
         "review"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "workflow"
     },
     {
@@ -347,7 +347,7 @@
         "keyboard",
         "inclusive-design"
       ],
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "standards"
     },
     {
@@ -364,7 +364,7 @@
         "stale",
         "audit"
       ],
-      "version": "1.0.0",
+      "version": "1.2.0",
       "category": "productivity"
     }
   ]

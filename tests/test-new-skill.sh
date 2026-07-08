@@ -59,8 +59,10 @@ trap 'rm -rf "$TMPDIR"' EXIT
 
 # We need to run new-skill.sh from a fake repo root so it creates under skills/
 FAKE_ROOT="$TMPDIR/repo"
-mkdir -p "$FAKE_ROOT/skills" "$FAKE_ROOT/scripts"
+mkdir -p "$FAKE_ROOT/skills" "$FAKE_ROOT/scripts" "$FAKE_ROOT/.claude-plugin"
 cp "$NEW_SKILL" "$FAKE_ROOT/scripts/new-skill.sh"
+echo '{"skills": []}' > "$FAKE_ROOT/skills/registry.json"
+echo '{"name": "test-marketplace", "plugins": []}' > "$FAKE_ROOT/.claude-plugin/marketplace.json"
 
 # Test 1: Scaffold a new skill
 total=$((total + 1))
@@ -77,6 +79,25 @@ fi
 assert_file_exists "commands/test-skill.md created" "$FAKE_ROOT/skills/test-skill/commands/test-skill.md"
 assert_file_exists "metadata.json created" "$FAKE_ROOT/skills/test-skill/metadata.json"
 assert_file_exists "README.md created" "$FAKE_ROOT/skills/test-skill/README.md"
+assert_file_exists ".claude-plugin/plugin.json created" "$FAKE_ROOT/skills/test-skill/.claude-plugin/plugin.json"
+
+# Test 2b: Verify auto-registration in registry.json and marketplace.json
+total=$((total + 1))
+reg_ok=$(python3 -c "
+import json, sys
+reg = json.load(open(sys.argv[1]))
+mp = json.load(open(sys.argv[2]))
+in_reg = any(s.get('name') == 'test-skill' for s in reg.get('skills', []))
+in_mp = any(p.get('name') == 'test-skill' for p in mp.get('plugins', []))
+print('yes' if in_reg and in_mp else 'no')
+" "$FAKE_ROOT/skills/registry.json" "$FAKE_ROOT/.claude-plugin/marketplace.json" 2>/dev/null || echo "no")
+if [ "$reg_ok" = "yes" ]; then
+  echo "  PASS: skill auto-registered in registry.json and marketplace.json"
+  pass=$((pass + 1))
+else
+  echo "  FAIL: skill not registered in registry.json and/or marketplace.json"
+  fail=$((fail + 1))
+fi
 
 # Test 3: Verify metadata.json has correct name
 total=$((total + 1))

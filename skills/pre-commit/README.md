@@ -106,6 +106,10 @@ Run once per repository clone:
 
 This creates `.git/hooks/pre-commit`. From that point on, every `git commit` in that repository will trigger the checks automatically before the commit is recorded.
 
+The installed hook enforces its blockers with deterministic shell checks (secret patterns, conflict markers, direct-to-main) — it works and blocks even when Claude Code is unavailable. If the `claude` CLI is present, the hook additionally runs an advisory review, capped at 60 seconds, whose output can only warn and never blocks or approves a commit.
+
+If a pre-commit hook already exists (for example one installed by the doc-refresh skill), the installer backs it up to `.git/hooks/pre-commit.backup` and tells you, rather than silently overwriting it.
+
 To remove the hook:
 
 ```
@@ -116,12 +120,14 @@ To remove the hook:
 
 ## Skipping in Emergencies
 
-If you need to bypass the hook in a genuine emergency (e.g., reverting a broken deploy), you can use:
+If you need to bypass the hook in a genuine emergency (e.g., reverting a broken deploy), prefer the hook-specific escape hatch, which skips only this hook:
 
 ```bash
-git commit --no-verify
+SKIP_PRE_COMMIT=1 git commit ...
 ```
 
-**Use this sparingly and deliberately.** Bypassing the hook means none of the quality checks run. Only use `--no-verify` when you have a clear, time-critical reason — for example, reverting a production incident. After the emergency is resolved, review the bypassed commit and address any issues that would have been caught.
+`git commit --no-verify` also works, but it skips **all** hooks — including the secret scan — so reserve it for cases where every hook must be bypassed.
+
+**Use either bypass sparingly and deliberately.** Bypassing the hook means none of the quality checks run. Only use `--no-verify` when you have a clear, time-critical reason — for example, reverting a production incident. After the emergency is resolved, review the bypassed commit and address any issues that would have been caught.
 
 Never make `--no-verify` part of a routine workflow.
