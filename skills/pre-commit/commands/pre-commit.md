@@ -4,6 +4,7 @@ description: "Fast pre-commit quality gate: scans staged files for secrets, dead
 argument-hint: "[install|uninstall]"
 model: haiku
 allowed-tools: Bash, Grep, Read, Write, Glob
+disable-model-invocation: true
 ---
 
 # pre-commit

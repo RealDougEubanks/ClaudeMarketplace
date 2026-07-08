@@ -9,7 +9,7 @@
       "name": "golden-rules",
       "source": "./skills/golden-rules",
       "description": "Installs mandatory security, coding, naming, and design standards into CLAUDE.md as always-on context for every Claude Code session.",
-      "version": "1.7.0",
+      "version": "1.7.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -270,7 +270,7 @@
       "name": "pre-commit",
       "source": "./skills/pre-commit",
       "description": "Fast pre-commit quality gate: secrets, dead code, naming, conflict markers, and direct-to-main protection. Installs as a git hook.",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -330,7 +330,7 @@
       "name": "architecture-review",
       "source": "./skills/architecture-review",
       "description": "Audits an existing system's architecture for structural anti-patterns, scalability and reliability risks, and testability gaps. Produces graded findings with migration paths and a to-be architecture diagram.",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -431,7 +431,7 @@
       "name": "doc-refresh",
       "source": "./skills/doc-refresh",
       "description": "Complete documentation refresh — audits stale docs, creates missing docs, rewrites for a 2am on-call engineer with zero assumed context. Security callouts mandatory.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"

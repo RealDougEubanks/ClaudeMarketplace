@@ -3,6 +3,7 @@ name: architecture-review
 description: Audits existing architecture for anti-patterns, scalability and reliability risks, and testability gaps. Graded findings with migration paths and a to-be diagram.
 argument-hint: "[directory]"
 allowed-tools: Read, Glob, Grep, Write, Bash(find:*), Bash(wc:*), Bash(sort:*), Bash(head:*)
+effort: high
 ---
 
 # architecture-review
