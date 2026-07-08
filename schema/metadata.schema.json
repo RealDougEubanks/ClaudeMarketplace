@@ -3,7 +3,14 @@
   "title": "Skill Metadata",
   "description": "Schema for Claude Code skill metadata",
   "type": "object",
-  "required": ["name", "version", "description", "author", "tags", "commands"],
+  "required": [
+    "name",
+    "version",
+    "description",
+    "author",
+    "tags",
+    "commands"
+  ],
   "properties": {
     "name": {
       "type": "string",
@@ -22,11 +29,20 @@
     },
     "author": {
       "type": "object",
-      "required": ["name"],
+      "required": [
+        "name"
+      ],
       "properties": {
-        "name": { "type": "string" },
-        "github": { "type": "string" },
-        "url": { "type": "string", "format": "uri" }
+        "name": {
+          "type": "string"
+        },
+        "github": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
       }
     },
     "license": {
@@ -35,39 +51,69 @@
     },
     "tags": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "minItems": 1,
       "description": "Categorization tags (e.g., 'git', 'testing', 'documentation')"
     },
     "triggers": {
       "type": "array",
-      "items": { "type": "string", "enum": ["always"] },
+      "items": {
+        "type": "string",
+        "enum": [
+          "always"
+        ]
+      },
       "description": "Activation conditions. Only 'always' is defined: base skills whose content becomes always-on context after install."
     },
     "commands": {
       "type": "array",
-      "items": { "type": "string", "pattern": "^/[a-z0-9]+(-[a-z0-9]+)*$" },
+      "items": {
+        "type": "string",
+        "pattern": "^/[a-z0-9]+(-[a-z0-9]+)*$"
+      },
       "minItems": 1,
-      "description": "Slash commands this skill responds to (e.g., '/my-skill'). Must include /<skill-directory-name>."
+      "description": "Slash commands this skill responds to (e.g., '/my-skill'). Must include /<skill-directory-name> for a root-SKILL.md plugin, or /<sub-skill-name> for each nested skills/<sub-skill>/SKILL.md in a multi-skill plugin."
     },
     "tools": {
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "WebFetch", "WebSearch", "Task", "NotebookEdit"]
+        "enum": [
+          "Read",
+          "Write",
+          "Edit",
+          "Glob",
+          "Grep",
+          "Bash",
+          "WebFetch",
+          "WebSearch",
+          "Task",
+          "NotebookEdit"
+        ]
       },
       "description": "Claude Code tools the skill expects to use"
     },
     "compatibility": {
       "type": "object",
       "properties": {
-        "claude_code_min_version": { "type": "string" }
+        "claude_code_min_version": {
+          "type": "string"
+        }
       }
     },
     "category": {
       "type": "string",
       "description": "Skill category grouping",
-      "enum": ["base", "workflow", "agents", "standards", "security", "productivity"]
+      "enum": [
+        "base",
+        "workflow",
+        "agents",
+        "standards",
+        "security",
+        "productivity"
+      ]
     }
   },
   "additionalProperties": false

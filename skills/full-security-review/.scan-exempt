@@ -1,4 +1,4 @@
-# security-review/skill.md is a security audit skill. Its content intentionally
+# full-security-review/SKILL.md is a security audit skill. Its content intentionally
 # references vulnerability patterns as checklist items and grep examples so Claude
 # knows what to look for. These are detection references, not exploitation instructions.
 \.env\b

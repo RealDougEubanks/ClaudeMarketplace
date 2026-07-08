@@ -1,4 +1,4 @@
-# best-practices/skill.md is a security and coding standards checklist skill.
+# best-practices/SKILL.md is a security and coding standards checklist skill.
 # It references .env files in the context of .env.example conventions (documenting
 # required environment variables) and references "password" in the context of
 # requiring password hashing (never plaintext storage). These are security guidance

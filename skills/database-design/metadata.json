@@ -1,6 +1,6 @@
 {
   "name": "database-design",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Designs database schemas from domain requirements (ERD, indexes, migrations, security) or reviews existing schemas for normalization issues, missing indexes, unsafe migrations, and scalability risks.",
   "author": {
     "name": "Doug Eubanks",

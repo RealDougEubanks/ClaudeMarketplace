@@ -34,9 +34,8 @@ Examples of what skills can do:
 ClaudeMarketplace/
 ├── skills/                         # Published skills
 │   ├── registry.json               # Index of all available skills
-│   └── example-skill/              # One directory per skill
-│       ├── commands/
-│       │   └── example-skill.md    # Skill prompt with YAML frontmatter
+│   └── example-skill/              # One directory per skill (= one plugin)
+│       ├── SKILL.md                # Skill prompt with YAML frontmatter
 │       ├── .claude-plugin/
 │       │   └── plugin.json         # Claude Code plugin manifest
 │       ├── metadata.json           # Name, version, author, tags, etc.
@@ -263,7 +262,7 @@ You don't have to enable everything. There are three common patterns:
 ./scripts/new-skill.sh my-new-skill
 
 # Edit the generated files:
-# - skills/my-new-skill/commands/my-new-skill.md  → instructions Claude follows
+# - skills/my-new-skill/SKILL.md                  → instructions Claude follows
 # - skills/my-new-skill/metadata.json             → name, version, category, tags, tools
 # - skills/my-new-skill/README.md                 → human-readable docs
 
@@ -282,7 +281,7 @@ Every skill has four files:
 
 | File                          | Purpose                                                    |
 |-------------------------------|------------------------------------------------------------|
-| `commands/<name>.md`          | The prompt with YAML frontmatter — what Claude executes    |
+| `SKILL.md`                    | The prompt with YAML frontmatter — what Claude executes    |
 | `metadata.json`               | Machine-readable metadata (name, version, tags, tools)     |
 | `.claude-plugin/plugin.json`  | Claude Code plugin manifest for discovery                  |
 | `README.md`                   | Human-readable docs (usage, examples, installation notes)  |
@@ -313,7 +312,7 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before 
 
 **TL;DR:**
 1. Run `./scripts/new-skill.sh your-skill-name` to scaffold
-2. Write your `commands/your-skill-name.md`, `metadata.json`, and `README.md`
+2. Write your `SKILL.md`, `metadata.json`, and `README.md`
 3. Validate with `./scripts/validate.sh skills/your-skill-name`
 4. Add to `skills/registry.json`
 5. Open a PR

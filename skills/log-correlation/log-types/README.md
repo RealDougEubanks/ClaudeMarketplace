@@ -2,7 +2,7 @@
 
 This directory contains log type definitions. Each `.md` file defines one log type that the `/log-correlation` skill knows how to discover, collect, parse, and correlate.
 
-To add support for a new log format, create a new file in this directory following the template below. No changes to `commands/log-correlation.md` are needed — the skill discovers all `.md` files here at runtime.
+To add support for a new log format, create a new file in this directory following the template below. No changes to `SKILL.md` are needed — the skill discovers all `.md` files here at runtime.
 
 ---
 

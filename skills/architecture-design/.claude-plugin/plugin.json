@@ -1,11 +1,12 @@
 {
   "name": "architecture-design",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Guides system and feature architecture design with C4 diagrams, service boundaries, API contracts, failure analysis, and design artifacts.",
   "author": {
     "name": "Doug Eubanks",
     "url": "https://github.com/RealDougEubanks"
   },
   "repository": "https://github.com/RealDougEubanks/ClaudeMarketplace",
+  "homepage": "https://github.com/RealDougEubanks/ClaudeMarketplace",
   "license": "MIT"
 }
