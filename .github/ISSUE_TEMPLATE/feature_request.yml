@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest a new skill or improvement to an existing one
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Request type
+      options:
+        - New skill
+        - Improvement to an existing skill
+        - Tooling or CI improvement
+    validations:
+      required: true
+
+  - type: input
+    id: skill
+    attributes:
+      label: Skill name (if existing)
+      placeholder: "e.g. code-review"
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the workflow or task you're trying to accomplish.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What should the skill do? How should it behave?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any other approaches you thought about?

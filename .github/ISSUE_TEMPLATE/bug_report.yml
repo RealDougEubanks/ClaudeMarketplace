@@ -1,0 +1,50 @@
+name: Bug report
+description: Report a broken or misbehaving skill
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. For security issues, please use [GitHub's private vulnerability reporting](../../security/advisories/new) instead of opening an issue here.
+
+  - type: input
+    id: skill
+    attributes:
+      label: Skill name
+      description: Which skill is affected?
+      placeholder: "e.g. git-workflow"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug. Include what you expected vs. what actually occurred.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce this?
+      placeholder: |
+        1. Install skill
+        2. Run /skill-name
+        3. ...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Skill version
+      description: Check `metadata.json` in the skill directory.
+      placeholder: "e.g. 1.2.0"
+
+  - type: input
+    id: claude-code-version
+    attributes:
+      label: Claude Code version
+      description: Run `claude --version` to find this.
