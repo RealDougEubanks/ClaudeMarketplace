@@ -15,22 +15,61 @@ permissions:
   contents: write
 
 jobs:
-  publish:
-    name: Tag and release
+  # Gate: only release when code paths changed — not docs, workflows, or templates.
+  check-paths:
+    name: Check for releasable changes
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     if: |
       github.event_name == 'workflow_dispatch' ||
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event == 'push')
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 2
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Detect releasable paths
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            echo "Manual dispatch — releasing unconditionally."
+            exit 0
+          fi
+
+          sha="${{ github.event.workflow_run.head_sha }}"
+          parent=$(git rev-parse "${sha}^")
+          changed=$(git diff --name-only "${parent}" "${sha}")
+
+          echo "Changed files:"
+          echo "$changed"
+
+          # Release only when skills, schema, scripts, or tests change.
+          # Workflow files, docs, and root Markdown do not warrant a new version.
+          if echo "$changed" | grep -qE '^(skills/|schema/|scripts/|tests/)'; then
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            echo "Releasable changes detected."
+          else
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+            echo "No releasable changes — skipping release."
+          fi
+
+  publish:
+    name: Tag and release
+    needs: check-paths
+    if: needs.check-paths.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
-          # workflow_run: check out the exact commit that triggered CI.
-          # workflow_dispatch: head_sha is empty, so fall back to the ref
-          # the workflow was dispatched on.
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Python
