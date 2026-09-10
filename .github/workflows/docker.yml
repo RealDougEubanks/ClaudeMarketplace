@@ -1,9 +1,18 @@
 name: Docker
 
+# Trigger after a successful Publish Registry run (which creates the tag).
+# Tag-push events from GITHUB_TOKEN do not re-trigger workflows, so we use
+# workflow_run instead.
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_run:
+    workflows: ["Publish Registry"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag to build (e.g. v1.2.3)"
+        required: true
 
 permissions:
   contents: read
@@ -14,9 +23,27 @@ jobs:
     name: Build and push to ghcr.io
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          # For workflow_run, fetch all tags so metadata-action can resolve semver.
+          fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Resolve image tag
+        id: resolve
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            # Find the highest semver tag reachable from this commit
+            tag=$(git tag --sort=-v:refname | grep '^v' | head -1)
+            echo "tag=${tag:-latest}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
@@ -31,8 +58,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ steps.resolve.outputs.tag }}
             type=raw,value=latest
 
       - name: Build and push
