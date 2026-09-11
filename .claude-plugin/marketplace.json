@@ -228,7 +228,7 @@
       "name": "log-correlation",
       "source": "./skills/log-correlation",
       "description": "Correlates and troubleshoots logs across OS, AWS (CloudWatch, CloudTrail, ALB, Lambda), application, and web server sources. Extensible via log-types/ definitions.",
-      "version": "1.3.0",
+      "version": "1.5.0",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
