@@ -22,6 +22,16 @@ Invoked via: `/log-correlation` or `/log-correlation <correlation-key> <time-win
 
 ---
 
+## Anti-Patterns
+
+Avoid these during investigation. Each silences a signal rather than resolving it.
+
+- **Raising the alarm threshold to stop the paging.** The alarm is not the problem — it is the only thing working. Raising the threshold converts a known defect into an unknown one and raises the floor the next event has to clear before anyone notices. Legitimate only when you have proven the threshold was mis-set against a measured baseline, which is a different investigation from the one you are avoiding.
+- **Scaling before diagnosing.** If latency is *down* while error rate is up, the system is fast-failing — adding capacity changes nothing and hides the ceiling. Diagnose first.
+- **IP-blocking as a long-term DoS mitigation.** Treat it as a temporary hold while root cause is established, not a resolution.
+
+---
+
 ## How Extensibility Works
 
 This skill loads log type definitions from `skills/log-correlation/log-types/` (or the installed plugin path). Each `.md` file defines one log type. To add support for a new log format, create a new file in that directory following the template in `log-types/README.md`.
@@ -49,6 +59,16 @@ To list the available log type ids without reading their contents, use Glob on t
 - AWS: [aws-cloudwatch](log-types/aws-cloudwatch.md), [aws-cloudtrail](log-types/aws-cloudtrail.md), [aws-alb](log-types/aws-alb.md), [aws-lambda](log-types/aws-lambda.md)
 - Application: [app-json](log-types/app-json.md), [app-logfmt](log-types/app-logfmt.md)
 - Web: [web-nginx](log-types/web-nginx.md), [web-apache](log-types/web-apache.md)
+
+**Quick reference — what each web-stack source contains:**
+
+| Source | Answers | Does NOT contain |
+|--------|---------|-----------------|
+| Access log (`*-access.log`) | The HTTP status actually returned to the client | Why it happened |
+| Web-server error log (`*-error.log`, nginx/Apache) | Rule denials, missing files, upstream timeouts, permission failures | Application exceptions |
+| Application exception log (`*-magento`, `*-app`, etc.) | Stack traces, unhandled exceptions, dependency timeouts | The HTTP status code |
+
+The status code lives in the access log. The cause lives in the application log. Neither is in the web-server error log. Reaching for the wrong file first is a common time sink (see Anti-Patterns).
 
 ### Step 2 — Load Only the Selected Log Type Definitions
 
@@ -80,9 +100,37 @@ Based on the loaded log type registry, determine which sources are accessible in
 
 Only proceed with sources the user has selected (or all accessible sources if "all available" was requested).
 
+**Forensic preservation — check retention before you rely on live data.** For every CloudWatch log group in scope, verify how long it retains data. Anything you are reading live but not exporting has an expiry, and it is usually shorter than the investigation's follow-up timeline.
+
+```bash
+aws logs describe-log-groups \
+  --query 'logGroups[].[logGroupName,retentionInDays]' \
+  --output table
+# retentionInDays null = never expires (retained indefinitely).
+# Anything <= 30 may already be missing data from earlier in the incident.
+```
+
+If retention is shorter than the incident window, flag it in the report and export the raw events before proceeding.
+
 ### Step 4 — Collect Log Data
 
 For each accessible source in scope, use Bash to extract log entries for the specified time window.
+
+**Before writing any parser for a log group, print two raw lines and read the format.** Log formats differ across sources — a delimiter that works for nginx access logs will silently produce blanks against Varnish, which puts the IP chain first and unquoted. Two lines cost fifteen seconds; a wrong field number costs a wrong conclusion that only announces itself when the wrongness happens to look obviously wrong.
+
+```bash
+# Run once per log group before writing any awk/grep parser against it:
+./runq.sh "<log-group>" $S $E 'fields @message | limit 2' fmt.json
+jq -r '.results[][]|select(.field=="@message")|.value' fmt.json
+```
+
+**Verify your sample window covers the incident before reasoning from it.** `sort @timestamp desc | limit N` returns the newest entries in your *query window*, which may be hours after the incident ended. Confirm the sample timestamps fall inside the event before drawing any conclusions.
+
+```bash
+# After collecting a sample, check what timestamps it actually contains:
+awk -F'[][]' '{print $2}' sample.log | sort | uniq -c | head
+# Prefer a histogram (stats count(*) by bin(5m)) — it cannot silently hand you the wrong hour.
+```
 
 Use the **Time Extraction Command** from each log type definition, substituting the user-provided time window. Single-quote every substituted value and confirm it passed the sanitization rule in Safety Rules — never interpolate an unvetted string into a shell command. Apply the **Error Patterns** as grep filters when collecting data to limit volume:
 
@@ -150,6 +198,15 @@ Analyze the unified timeline to identify the most likely root cause:
 
 Produce a concise root cause statement with supporting evidence (timestamps, entry counts, source names).
 
+**When claiming A causes B, compare the counts.** If you assert that error X produces error Y, the count of X and the count of Y should be near one-for-one. A mismatch means a second population exists that you have not found yet. Both a match and a mismatch are informative — do the subtraction explicitly and include it in the report.
+
+```bash
+# Normalize varying IDs so identical errors collapse into one signature:
+jq -r '.results[][]|select(.field=="@message")|.value' log.json \
+  | sed 's/[0-9]\{3,\}/N/g' \
+  | sort | uniq -c | sort -rn | head -20
+```
+
 ### Step 8 — Output the Correlation Report
 
 Produce a structured report in this format:
@@ -206,6 +263,14 @@ Would you like me to save this report to handoffs/reviews/incident-<timestamp>.m
 ```
 
 If the user confirms, write the report there using the Write tool. Apply the redaction rule from Safety Rules to the saved artifact: a handoff file may be committed to a shared repo, so it must contain no raw tokens, credentials, emails, or IPs.
+
+**Before writing any artifact to a ticket, page, or channel, read the stored value back and check for broken markup.** Placeholder text, unresolved template variables, and escaped markup in a published ticket are visibly wrong and attributed to you. After any create/update that renders markup, read the response body and grep for the things that must not have survived:
+
+```bash
+grep -oE '\\\[|~accountid|__[A-Z_]+__|TODO|\.\.\.' <<< "$stored_description"
+# If anything matches, fix it before the ticket is visible to others.
+# When in doubt, use plain text — a correct plain sentence beats a broken rich one.
+```
 
 ---
 
