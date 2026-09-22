@@ -366,6 +366,21 @@
       ],
       "version": "1.3.0",
       "category": "productivity"
+    },
+    {
+      "name": "ledger-tasks-yylo",
+      "path": "skills/ledger-tasks-yylo",
+      "description": "Comprehensive guide for the YYLO Ledger kanban CLI - task create, list, search, deps, ready, order, and merge commands, dependency management, and workflow patterns for agent-driven development.",
+      "tags": [
+        "kanban",
+        "task-management",
+        "project-management",
+        "cli",
+        "developer-productivity",
+        "agents"
+      ],
+      "version": "1.0.0",
+      "category": "workflow"
     }
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "name": "ledger-tasks-yylo",
+  "version": "1.0.0",
+  "description": "Comprehensive guide for the YYLO Ledger kanban CLI - task create, list, search, deps, ready, order, and merge commands, dependency management, and workflow patterns.",
+  "author": {
+    "name": "YYLO team",
+    "url": "https://github.com/yylo-dev/yylo-skills"
+  },
+  "repository": "https://github.com/yylo-dev/yylo-skills",
+  "homepage": "https://github.com/yylo-dev/yylo-skills",
+  "license": "MIT"
+}
