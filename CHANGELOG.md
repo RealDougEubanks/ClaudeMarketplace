@@ -14,6 +14,16 @@ From 1.0.6, each section matches a git tag (`vX.Y.Z`) that `publish.yml` creates
 
 ---
 
+## [1.0.7] — 2026-10-15
+
+### Changed
+
+- Documentation: the root README, CONTRIBUTING, SECURITY, CLAUDE.md project section, PR template, and skill READMEs now follow the doc-refresh STE-lite standard; the root README follows the Standard Readme section order
+- Skill READMEs corrected where they had drifted from their skills: argument syntax (`log-correlation`, `git-workflow`), IAM actions, criteria counts, and the `SECURITY.md` skill path
+- Seven skills with README-only changes get a patch version: `architecture-design`, `architecture-review`, `code-review`, `log-correlation`, `onboarding`, `requirements-generator`, `test-writer`
+
+---
+
 ## [1.0.6] — 2026-10-15
 
 ### Added
@@ -27,7 +37,6 @@ From 1.0.6, each section matches a git tag (`vX.Y.Z`) that `publish.yml` creates
 - Standards updated: OWASP Top 10 2025 (`full-security-review`, `abd-security`), OWASP LLM Top 10 2025, OpenAPI 3.2 and RFC 9457 errors (`api-design`), MADR 4.0 (`adr`), WCAG 2.2 criteria and the 24px target size (`accessibility`), Keep a Changelog 1.1 sections (`changelog-generator`), Argon2id and NIST SP 800-63B-4 (`golden-rules` 1.9.0)
 - `pre-commit` and `doc-refresh` hooks share one marker, backup, and chain convention, and resolve the hooks directory with `git rev-parse --git-path hooks`
 - `doc-refresh` hook runs `check` mode by default; set `DOC_REFRESH_HOOK_MODE=write` to rewrite docs
-- Documentation: the root README, CONTRIBUTING, SECURITY, CLAUDE.md project section, PR template, and skill READMEs now follow the doc-refresh STE-lite standard; the root README follows the Standard Readme section order
 - Frontmatter: `incident-report` uses `sonnet`, `adr` inherits the session model, and `best-practices`, `mvp-readiness`, `dependency-audit` use `effort: high`
 
 ### Fixed
