@@ -15,3 +15,7 @@ updates:
       actions:
         patterns:
           - "actions/*"
+      # init and analyze must share a major version, so update them in one PR.
+      codeql:
+        patterns:
+          - "github/codeql-action*"
