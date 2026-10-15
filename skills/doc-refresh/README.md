@@ -56,11 +56,15 @@ The bundled `scripts/ste_check.py` scores each document for its tier. It also fl
 passive voice and terms that the project glossary rejects. The target is 90%. The skill
 gives each score in its summary.
 
-Every doc also gets two universal rules, whatever the standard: accessible writing (alt text,
-descriptive link text, heading order, per W3C WAI) and inclusive language (per the Google and
-Microsoft style guides; a default term list ships in `standards/inclusive-terms.txt`). The
-checker reports `a11y-*` issues alongside the score. READMEs follow the Standard Readme section
-order, and event-driven API references use AsyncAPI 3.1.
+Two more rules apply to every document, whatever the standard:
+
+- **Accessible writing** (W3C WAI). Give each informative image alt text. Write link text that
+  names the target. Do not skip a heading level.
+- **Inclusive language** (the Google and Microsoft style guides). Use neutral terms such as
+  "allowlist". The default term list is `standards/inclusive-terms.txt`.
+
+The checker reports accessibility issues as `a11y-*` items next to the score. A README follows
+the Standard Readme section order. An event-driven API reference uses AsyncAPI 3.1.
 
 ### Safety checks
 
