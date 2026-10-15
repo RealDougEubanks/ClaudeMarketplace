@@ -62,7 +62,7 @@ ClaudeMarketplace/
 
 | Skill | Command | Description |
 |-------|---------|-------------|
-| [golden-rules](skills/golden-rules/) | `/golden-rules` | Installs mandatory security, coding, naming, and design standards into `CLAUDE.md` as always-on context for every Claude Code session |
+| [golden-rules](skills/golden-rules/) | `/golden-rules` | Installs mandatory security, coding, naming, design, testing, error handling, API contract, and performance standards into CLAUDE.md as always-on context for every Claude Code session |
 
 ### Workflow
 
@@ -70,7 +70,7 @@ ClaudeMarketplace/
 |-------|---------|-------------|
 | [agent-based-development](skills/agent-based-development/) | `/agent-based-development` | Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model |
 | [git-workflow](skills/git-workflow/) | `/git-workflow` | Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference |
-| [adr](skills/adr/) | `/adr` | Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR format. Supports creating, listing, updating, superseding, and searching ADRs |
+| [adr](skills/adr/) | `/adr` | Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR 4.0 format. Supports creating, listing, updating, superseding, and searching ADRs |
 | [api-design](skills/api-design/) | `/api-design` | Designs REST, GraphQL, and gRPC APIs (OpenAPI/schema/proto output) and reviews existing APIs for consistency, best practices, and breaking change risks |
 | [architecture-design](skills/architecture-design/) | `/architecture-design` | Designs new systems from requirements: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns |
 | [changelog-generator](skills/changelog-generator/) | `/changelog-generator` | Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts |
@@ -94,14 +94,14 @@ ClaudeMarketplace/
 
 | Skill | Command | Description |
 |-------|---------|-------------|
-| [dependency-audit](skills/dependency-audit/) | `/dependency-audit` | Audits project dependencies across package.json, requirements.txt, go.mod, and Gemfile for unpinned versions, deprecated packages, missing lockfiles, and known CVEs |
-| [full-security-review](skills/full-security-review/) | `/full-security-review` | Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings |
+| [dependency-audit](skills/dependency-audit/) | `/dependency-audit` | Audits dependencies across npm, pip, Go, Cargo, Composer, .NET, and Ruby manifests for unpinned versions, deprecated packages, missing lockfiles, and known CVEs |
+| [full-security-review](skills/full-security-review/) | `/full-security-review` | Structured security audit covering injection, auth, secrets, input validation, dependencies, cryptography, and AI/LLM risks. Produces severity-graded findings |
 
 ### Productivity
 
 | Skill | Command | Description |
 |-------|---------|-------------|
-| [doc-refresh](skills/doc-refresh/) | `/doc-refresh` | Complete documentation refresh — audits stale docs, creates missing docs, rewrites for a 2am on-call engineer with zero assumed context. Installs as a pre-commit hook via `/doc-refresh install` |
+| [doc-refresh](skills/doc-refresh/) | `/doc-refresh` | Documentation refresh: audits stale docs, creates missing ones, and rewrites them to a selected standard (STE-lite, plain language, Diataxis) with mandatory security callouts |
 | [log-correlation](skills/log-correlation/) | `/log-correlation` | Correlates and troubleshoots logs across OS (Linux/macOS), AWS (CloudWatch, CloudTrail, ALB, Lambda), application (JSON, logfmt), and web servers (Nginx, Apache) |
 | [onboarding](skills/onboarding/) | `/onboarding` | Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview |
 
@@ -109,60 +109,33 @@ ClaudeMarketplace/
 
 ## Git Hooks
 
-Two skills can install themselves as git hooks so they run automatically on every commit
-without you having to invoke them manually.
+Two skills can install themselves as git hooks so they run on every commit.
 
-| Skill | Hook type | Hook file | What it does automatically |
-|-------|-----------|-----------|----------------------------|
-| [pre-commit](skills/pre-commit/) | pre-commit | `.git/hooks/pre-commit` | Scans staged files for secrets, dead code, naming issues, conflict markers, and direct-to-main commits. Blocks the commit if a BLOCKER is found. |
-| [doc-refresh](skills/doc-refresh/) | pre-commit | `.git/hooks/pre-commit` | Refreshes all project documentation before the commit finalises and auto-stages any updated doc files so they land in the same commit as the code. |
+| Skill | What the hook does |
+|-------|--------------------|
+| [pre-commit](skills/pre-commit/) | Scans staged files for secrets, dead code, naming issues, conflict markers, and direct-to-main commits. Blocks the commit if a BLOCKER is found. |
+| [doc-refresh](skills/doc-refresh/) | Reports documentation drift. With `DOC_REFRESH_HOOK_MODE=write`, rewrites stale docs and stages them in the same commit. Never blocks a commit. |
 
-> **Note:** Both hooks use `.git/hooks/pre-commit`. If you want both to run, install
-> `pre-commit` first, then manually merge the two scripts, or run `/doc-refresh install`
-> which will warn you if a hook already exists.
+Both hooks write to the hooks directory that git reports (`git rev-parse --git-path hooks`),
+so they respect worktrees. If `core.hooksPath` is set (husky, lefthook), the installers warn
+and stop, because a hook manager owns the hooks.
 
-### Installing a hook
+The two hooks stack. Each installer moves an existing hook to `pre-commit.backup.<skill>`
+and runs it first. Each uninstaller removes only its own hook (identified by a
+`# claude-skill-hook: <skill>` marker) and restores the backup.
 
-```
-/pre-commit install
-```
-
-```
-/doc-refresh install
+```text
+/pre-commit install      /pre-commit uninstall
+/doc-refresh install     /doc-refresh uninstall
 ```
 
-Each command writes a shell script to `.git/hooks/` and makes it executable. The hook
-runs automatically on every `git commit` from that point on. Both hooks fail gracefully —
-if Claude Code is unavailable the commit proceeds with a warning rather than being blocked.
-
-### Skipping a hook for one commit
-
-Both hooks respect an environment variable escape hatch:
-
-| Skill | Skip variable |
-|-------|--------------|
-| `pre-commit` | `git commit --no-verify` |
+| Skill | Skip one commit |
+|-------|-----------------|
+| `pre-commit` | `SKIP_PRE_COMMIT=1 git commit ...` |
 | `doc-refresh` | `SKIP_DOC_REFRESH=1 git commit ...` |
 
-Use `--no-verify` sparingly — it bypasses all hooks including the secret scanner.
-Prefer the skill-specific skip variable when you only need to skip one hook.
-
-### Uninstalling a hook
-
-```
-/pre-commit uninstall
-```
-
-```
-/doc-refresh uninstall
-```
-
-### Hook scope
-
-Git hooks are stored in `.git/hooks/`, which is not committed to the repository.
-Each team member must run the install command in their own local clone.
-To automate this for the whole team, add the install command to your project's
-setup or bootstrap script.
+`git commit --no-verify` skips every hook, including the secret scan. Prefer the skip
+variables. Hooks are local to each clone, so each team member runs the install command.
 
 ---
 
@@ -245,8 +218,9 @@ You don't have to enable everything. There are three common patterns:
 
 **Per-project overrides** — add an `enabledPlugins` block to a project's `.claude/settings.json` to enable skills only for that project. Project settings layer on top of your global config.
 
+In a project's `.claude/settings.json`:
+
 ```json
-// .claude/settings.json in a specific project
 {
   "enabledPlugins": {
     "accessibility@claude-skills-marketplace": true,
@@ -311,10 +285,10 @@ See [`schema/metadata.schema.json`](schema/metadata.schema.json) for the full va
 We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
 
 **TL;DR:**
-1. Run `./scripts/new-skill.sh your-skill-name` to scaffold
+1. Run `./scripts/new-skill.sh your-skill-name` to scaffold (it also registers the skill)
 2. Write your `SKILL.md`, `metadata.json`, and `README.md`
 3. Validate with `./scripts/validate.sh skills/your-skill-name`
-4. Add to `skills/registry.json`
+4. Run the pre-commit checklist in [CONTRIBUTING.md](CONTRIBUTING.md)
 5. Open a PR
 
 ## License

@@ -43,7 +43,7 @@ Recommend and justify:
 Identify entities from the domain. For each entity:
 - Name (singular noun, snake_case table name)
 - Fields: name, type, constraints (NOT NULL, UNIQUE, DEFAULT), description
-- Primary key strategy: UUID vs auto-increment (UUID for distributed systems, auto-increment for simplicity)
+- Primary key strategy: UUID vs auto-increment (UUID for distributed systems, auto-increment for simplicity). When choosing UUIDs, use UUIDv7 (RFC 9562): its leading Unix-millisecond timestamp keeps keys time-ordered, so inserts append to the B-tree index. Random UUIDv4 keys land at random index positions, which fragments B-tree indexes and slows inserts on large tables. Generate v7 in the database (where supported) or the application. A v7 key reveals when the row was created; for identifiers where that matters, RFC 9562 Section 8 recommends UUIDv4.
 - Timestamps: always include `created_at`, `updated_at`
 - Soft delete: include `deleted_at` for business-critical records
 

@@ -1,8 +1,7 @@
 ---
 name: adr
-description: Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR format. Supports creating, listing, updating, superseding, and searching ADRs.
+description: Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR 4.0 format. Supports creating, listing, updating, superseding, and searching ADRs.
 argument-hint: "[create <title> | list | update <n> <status> | supersede <n> | search <keyword>]"
-model: haiku
 allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
@@ -10,67 +9,82 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ## Purpose
 
-Create, list, update, and supersede Architecture Decision Records (ADRs) following the Markdown Architectural Decision Records (MADR) format. Maintains an ADR directory (see Directory Convention below). Works standalone or as a companion to `/architecture-design`.
+Create, list, update, and supersede Architecture Decision Records (ADRs) following the Markdown Architectural Decision Records (MADR) 4.0 format. Maintains an ADR directory (see Directory Convention below). Works standalone or as a companion to `/architecture-design`.
 
 ---
 
 ## Directory Convention
 
-Before creating anything, detect where this project keeps ADRs. Use Glob to check, in order: `docs/decisions/ADR-*.md`, `docs/adr/*.md`, `adr/*.md`, `docs/architecture/decisions/*.md`. Use the first directory that already contains ADRs. Only if none exists, default to `docs/decisions/`. All paths below refer to this detected directory.
+Before creating anything, detect where this project keeps ADRs. Use Glob to check, in order: `docs/decisions/ADR-*.md`, `docs/decisions/[0-9][0-9][0-9][0-9]-*.md`, `docs/adr/*.md`, `adr/*.md`, `docs/architecture/decisions/*.md`. Use the first directory that already contains ADRs. Only if none exists, default to `docs/decisions/`. All paths below refer to this detected directory. If existing ADRs use a different file-name pattern (e.g. MADR's `NNNN-title.md`), follow that pattern instead of `ADR-NNN-title.md`.
 
 ---
 
-## ADR Format (MADR)
+## ADR Format (MADR 4.0)
 
-Every ADR uses this structure:
+Every ADR follows the MADR 4.0.0 template (<https://adr.github.io/madr/>). Metadata lives in YAML front matter. `tags` is not part of MADR; this skill adds it as an optional key so `list` and `search` can filter by area. Sections marked `<!-- optional -->` may be dropped when they add nothing; remove the marker comments from the saved file.
 
 ```markdown
-# ADR-NNN: <Title>
+---
+status: proposed | accepted | rejected | deprecated | superseded by ADR-NNN
+date: YYYY-MM-DD
+decision-makers: <names or roles>
+consulted: <people whose opinions were sought; two-way communication>
+informed: <people kept up to date; one-way communication>
+tags: <architecture | security | database | api | infrastructure | ...>
+---
 
-**Date:** YYYY-MM-DD
-**Status:** Proposed | Accepted | Deprecated | Superseded by ADR-NNN
-**Deciders:** <names or roles>
-**Tags:** <architecture | security | database | api | infrastructure | ...>
+# ADR-NNN: <Title>
 
 ## Context and Problem Statement
 
-[1-3 paragraphs: what situation led to this decision? What is the problem being solved? What forces are at play?]
+[2-3 sentences: what situation led to this decision? What problem is being solved? Phrase it as a question if that helps.]
 
+<!-- optional -->
 ## Decision Drivers
 
-- [driver 1: most important constraint or goal]
-- [driver 2]
+* [driver 1: most important constraint or goal]
+* [driver 2]
 
 ## Considered Options
 
-1. **[Option A — Recommended]** — one-sentence description
-2. **[Option B]** — one-sentence description
-3. **[Option C]** — one-sentence description
+* [Option A]
+* [Option B]
+* [Option C]
 
 ## Decision Outcome
 
-**Chosen option:** [Option A], because [one paragraph justification tied to decision drivers].
+Chosen option: "[Option A]", because [justification tied to the decision drivers].
 
-### Positive Consequences
-- [what becomes easier, better, or possible]
+<!-- optional -->
+### Consequences
 
-### Negative Consequences / Trade-offs
-- [what becomes harder, more expensive, or is given up]
+* Good, because [what becomes easier, better, or possible]
+* Bad, because [what becomes harder, more expensive, or is given up]
+* Neutral, because [effect that is neither a gain nor a loss]
 
+<!-- optional, but include it whenever possible -->
+### Confirmation
+
+[How compliance with this decision will be checked: design or code review, an architecture test (e.g. ArchUnit), a lint rule, a CI check.]
+
+<!-- optional -->
 ## Pros and Cons of the Options
 
-### Option A — [Name]
-- ✅ [pro]
-- ✅ [pro]
-- ❌ [con]
-- ❌ [con]
+### [Option A]
 
-### Option B — [Name]
-- ✅ [pro]
-- ❌ [con]
+* Good, because [argument]
+* Neutral, because [argument]
+* Bad, because [argument]
 
-## Links
-- [Link to related ADR, design doc, RFC, or Jira ticket]
+### [Option B]
+
+* Good, because [argument]
+* Bad, because [argument]
+
+<!-- optional -->
+## More Information
+
+[Supporting evidence, team agreement, when to revisit the decision, links to related ADRs, design docs, RFCs, or tickets.]
 ```
 
 ---
@@ -92,7 +106,7 @@ Parse `$ARGUMENTS` first and dispatch directly — do not ask if the action is g
 If no arguments were given, ask the user what they want to do:
 - **(a) Create a new ADR** — document a new architectural decision
 - **(b) List existing ADRs** — show all ADRs with status and one-line summary
-- **(c) Update an ADR's status** — mark as Accepted, Deprecated, or Superseded
+- **(c) Update an ADR's status** — mark as Accepted, Rejected, Deprecated, or Superseded
 - **(d) Supersede an ADR** — create a new ADR that replaces an existing one
 - **(e) Search ADRs** — find ADRs by tag, status, or keyword
 
@@ -105,9 +119,10 @@ If no arguments were given, ask the user what they want to do:
 3. Ask the user (skip the title question if it was passed as an argument):
    - What is the decision being made? (one sentence title)
    - What is the context / problem? (what forced this decision)
-   - Who are the deciders?
+   - Who made the decision? Who was consulted, and who needs to be informed?
    - What options were considered?
    - What was chosen and why?
+   - How will compliance be confirmed (review, test, CI check)?
 4. Generate the full ADR using the MADR format above.
 5. Use Write to save to `<adr-dir>/ADR-<NNN>-<kebab-case-title>.md`. Create the directory if it doesn't exist.
 6. Update the ADR index (see Step 3).
@@ -116,7 +131,7 @@ If no arguments were given, ask the user what they want to do:
 
 ### Step 2b — List existing ADRs
 
-Use Glob to find all ADRs in the detected ADR directory. Use Read on each to extract: number, title, status, date, tags. Output a sorted table:
+Use Glob to find all ADRs in the detected ADR directory. Use Read on each to extract: number, title, status, date, tags. Read these from the YAML front matter; for older ADRs that use bold `**Status:**`-style fields instead, read those. Output a sorted table:
 
 ```
 ## Architecture Decision Records
@@ -132,8 +147,9 @@ Use Glob to find all ADRs in the detected ADR directory. Use Read on each to ext
 
 ### Step 2c — Update status
 
-Use Read to load the ADR. Use Edit to update the Status field. Valid transitions:
+Use Read to load the ADR. Use Edit to update the `status` front matter key (or the legacy `**Status:**` line in older ADRs) and set `date` to today. Valid transitions:
 - Proposed → Accepted (decision confirmed)
+- Proposed → Rejected (decision considered and turned down)
 - Proposed → Deprecated (no longer relevant before being accepted)
 - Accepted → Deprecated (no longer the right approach)
 - Accepted → Superseded by ADR-NNN (replaced by a newer decision)
@@ -143,8 +159,8 @@ Use Read to load the ADR. Use Edit to update the Status field. Valid transitions
 ### Step 2d — Supersede
 
 1. Create a new ADR (Step 2a) that documents the new decision.
-2. In the new ADR, add a link: "Supersedes ADR-NNN: [title]"
-3. Use Edit to update the old ADR's status to "Superseded by ADR-NNN".
+2. In the new ADR's More Information section, add a link: "Supersedes ADR-NNN: [title]"
+3. Use Edit to update the old ADR's `status` to `superseded by ADR-NNN`.
 
 ---
 
@@ -156,4 +172,4 @@ Use Grep across the detected ADR directory for the keyword or tag. Return matchi
 
 ### Step 3 — Maintain ADR Index
 
-After any create/update operation, regenerate `<adr-dir>/README.md` — an index of all ADRs sorted by number, showing status as a text badge: `[ACCEPTED]`, `[PROPOSED]`, `[DEPRECATED]`, `[SUPERSEDED]`.
+After any create/update operation, regenerate `<adr-dir>/README.md` — an index of all ADRs sorted by number, showing status as a text badge: `[ACCEPTED]`, `[PROPOSED]`, `[REJECTED]`, `[DEPRECATED]`, `[SUPERSEDED]`.

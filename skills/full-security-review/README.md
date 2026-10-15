@@ -14,7 +14,7 @@ When you run `/full-security-review`, Claude:
 4. Uses Bash to scan git history for committed secrets.
 5. Checks each vulnerability category in a structured checklist.
 6. Assigns severity to every finding: `critical | severe | moderate | low | info`.
-7. Produces a markdown Security Review Report with OWASP mappings.
+7. Produces a markdown Security Review Report mapped to OWASP Top 10 2025 categories and CWE IDs, plus the OWASP LLM Top 10 (2025) and Agentic Applications Top 10 for AI findings.
 8. If `handoffs/reviews/` exists (ABD workflow active), also writes a JSON artifact.
 
 ## Vulnerability Categories Covered
@@ -27,7 +27,9 @@ When you run `/full-security-review`, Claude:
 | Input Validation | Missing sanitization, path traversal, insecure deserialization |
 | Dependencies & Config | Outdated packages, supply-chain risks, debug mode in production, permissive CORS/CSP |
 | Cryptography | MD5/SHA1, hardcoded IVs, short keys |
-| AI/LLM Integration | Prompt injection, insecure LLM output handling, excessive agency, PII leakage into prompts |
+| AI/LLM Integration | Prompt injection, improper LLM output handling, excessive agency, PII leakage into prompts, system prompt leakage |
+| Agents & MCP | Goal hijack, tool misuse, over-privileged agent identity, unpinned MCP servers, memory poisoning |
+| CI/CD | Actions not pinned by commit SHA, `pull_request_target` running PR code, over-broad workflow tokens |
 
 ## Severity Scale
 
@@ -71,6 +73,8 @@ Quick scoped scan (pattern scanning only, no design review):
 
 **[CRITICAL] Hardcoded API key in source**
 - **File:** `src/config.ts:14`
+- **OWASP:** A04 — Cryptographic Failures
+- **CWE:** CWE-798 Use of Hard-coded Credentials
 - **Description:** STRIPE_SECRET_KEY hardcoded as a string literal.
 - **Recommendation:** Move to environment variable; rotate the key immediately.
 ```

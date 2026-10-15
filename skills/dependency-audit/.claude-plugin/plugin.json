@@ -1,6 +1,6 @@
 {
   "name": "dependency-audit",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Audits project dependencies across package.json, requirements.txt, go.mod, and Gemfile for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
   "author": {
     "name": "Doug Eubanks",

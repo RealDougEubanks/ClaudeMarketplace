@@ -21,7 +21,7 @@ Guides you through designing a complete API surface:
 1. Gathers requirements: domain, consumers, protocol, auth mechanism
 2. Models resources and maps them to HTTP methods (REST) or types/resolvers (GraphQL)
 3. Designs request/response schemas, error contracts, pagination, and versioning
-4. Generates a complete spec file: OpenAPI 3.1 YAML, `schema.graphql`, or `.proto`
+4. Generates a complete spec file: OpenAPI 3.2 YAML (3.1 when the project's tooling lacks 3.2 support), `schema.graphql`, or `.proto`
 5. Saves the output to `docs/api/`
 
 ### Review Mode (`/api-design --review`)
@@ -32,7 +32,7 @@ Audits an existing API against best practices:
 2. Checks REST best practices (naming, HTTP methods, versioning, pagination, error format, security)
 3. Checks GraphQL best practices (descriptions, mutation return types, N+1, pagination patterns)
 4. Flags breaking changes that would impact existing consumers
-5. Outputs a severity-graded report with OWASP API Security Top 10 mapping where relevant
+5. Outputs a severity-graded report with OWASP API Security Top 10 (2023 edition) mapping where relevant
 
 ---
 
@@ -40,7 +40,7 @@ Audits an existing API against best practices:
 
 | Protocol | Output File | Format |
 |----------|-------------|--------|
-| REST | `docs/api/openapi.yml` | OpenAPI 3.1 YAML |
+| REST | `docs/api/openapi.yml` | OpenAPI 3.2 YAML (3.1 fallback) |
 | GraphQL | `docs/api/schema.graphql` | SDL (Schema Definition Language) |
 | gRPC | `docs/api/<service>.proto` | Protocol Buffers v3 |
 
@@ -69,20 +69,23 @@ DELETE /resources/:id      → delete (204 No Content)
 
 ## Error Format
 
-All error responses use a consistent structure:
+All error responses use RFC 9457 Problem Details (`Content-Type: application/problem+json`), with `requestId` and field-level `errors` carried as extension members:
 
 ```json
 {
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Human-readable description",
-    "details": [
-      { "field": "email", "message": "Invalid email format" }
-    ],
-    "requestId": "abc-123"
-  }
+  "type": "https://api.example.com/problems/validation-error",
+  "title": "Request validation failed",
+  "status": 422,
+  "detail": "One or more fields are invalid.",
+  "instance": "/v1/users",
+  "requestId": "abc-123",
+  "errors": [
+    { "field": "email", "message": "Invalid email format" }
+  ]
 }
 ```
+
+RFC 9457 replaced RFC 7807 in July 2023: <https://www.rfc-editor.org/rfc/rfc9457>. APIs that already ship a different envelope switch formats in their next major version, not in place.
 
 Never expose stack traces or internal system details in error responses.
 
@@ -110,6 +113,12 @@ In review mode, the skill flags these as **breaking changes** that require a ver
 
 ---
 
+## Rate Limiting
+
+The skill recommends the IETF `RateLimit` and `RateLimit-Policy` header fields. They come from an Internet-Draft (draft-ietf-httpapi-ratelimit-headers, revision -11 as of May 2026), not a published RFC, so confirm the current syntax at <https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/>. The older `X-RateLimit-*` headers are accepted as legacy. 429 responses should always include `Retry-After`.
+
+---
+
 ## Review Report Format
 
 Findings are graded by severity:
@@ -119,14 +128,14 @@ Findings are graded by severity:
 - **MEDIUM** — best practice deviations that cause friction
 - **LOW** — minor naming inconsistencies or missing documentation
 
-Each finding includes location, description, recommended fix, and OWASP API Security Top 10 mapping where applicable.
+Each finding includes location, description, recommended fix, and an OWASP API Security Top 10 2023 ID (API1:2023 to API10:2023) where applicable.
 
 ---
 
 ## Example: Generated OpenAPI Snippet
 
 ```yaml
-openapi: "3.1.0"
+openapi: "3.2.1"
 info:
   title: Orders API
   version: "1.0.0"

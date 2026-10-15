@@ -101,10 +101,12 @@ Map each parsed commit to changelog sections:
 | `fix` | **Fixed** |
 | `perf` | **Changed** (note: performance improvement) |
 | `refactor`, `style` | **Changed** |
-| `revert` | **Reverted** (special section) |
+| `revert` | **Fixed** if it undoes a shipped regression; **Removed** if it withdraws a released feature. Prefix the entry with `Reverted:` |
 | `docs`, `ci`, `build`, `chore`, `test` | *(no entry — internal only)* |
-| Breaking change (any type with `!` or `BREAKING CHANGE:` footer) | **Breaking Changes** (always at the top of the version block) |
+| Breaking change (any type with `!` or `BREAKING CHANGE:` footer) | **Changed**, or **Removed** when the change drops functionality. Prefix the entry with `**BREAKING:**` and list it first in its section |
 | Does not match spec format | **Uncategorized** — with note: "These commits don't follow Conventional Commits format and were not auto-categorized." |
+
+Keep a Changelog 1.1.0 defines exactly six change types: Added, Changed, Deprecated, Removed, Fixed, Security (<https://keepachangelog.com/en/1.1.0/>). Do not invent extra sections such as "Reverted" or "Breaking Changes"; mark those entries with a prefix inside the standard sections instead. The only non-standard section this skill emits is the temporary **Uncategorized — Please Review** list, which the user must sort before release.
 
 ### Step 5S-2 — Auto-Determine Semver Bump (strict mode)
 
@@ -154,6 +156,7 @@ The new version section format:
 - <description> (<short-hash>)
 
 ### Changed
+- **BREAKING:** <description> (<short-hash>)
 - <description> (<short-hash>)
 
 ### Deprecated
@@ -172,7 +175,7 @@ The new version section format:
 - <description> (<short-hash>)
 ```
 
-Omit any section that has no entries.
+Omit any section that has no entries. Remove the **Uncategorized** section once its entries are sorted into the standard sections.
 
 ### Step 8 — Confirm and Remind
 

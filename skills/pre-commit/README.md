@@ -10,7 +10,7 @@ When you run `/pre-commit`, the skill inspects all staged files (or all modified
 
 | Check | What It Catches | Severity |
 |---|---|---|
-| Secret scan | Hardcoded passwords, API keys, AWS credentials, private key headers | BLOCKER |
+| Secret scan | Hardcoded passwords, API keys, AWS credentials, private key headers | BLOCKER (WARNING in `*.test.*` / `*.spec.*`) |
 | Dead code scan | `stub`, `placeholder` strings in non-test files | BLOCKER |
 | Dead code scan | `TODO`, `FIXME`, `HACK`, `XXX`, commented-out code blocks | WARNING |
 | Naming check | ALL_CAPS non-constants, single-letter function params, names < 3 chars | WARNING |
@@ -42,9 +42,9 @@ Runs all checks against staged files immediately. Prints a summary table and eit
 /pre-commit install
 ```
 
-Writes a `pre-commit` shell script to `.git/hooks/pre-commit` and makes it executable. After installation, the checks run automatically every time you run `git commit`.
+Writes a `pre-commit` shell script to the repository's hooks directory (resolved with `git rev-parse --git-path hooks`, normally `.git/hooks/pre-commit`) and makes it executable. If `core.hooksPath` is set (husky, lefthook), the installer warns and stops unless you confirm. After installation, the checks run automatically every time you run `git commit`.
 
-The hook falls back gracefully if Claude Code is not installed — it prints a warning and allows the commit to proceed rather than blocking your workflow.
+The blocking checks are plain shell and work without Claude Code. If the `claude` CLI is not installed, the optional advisory review is skipped.
 
 Note: git hooks are local to your machine. Each team member must run `/pre-commit install` in their own clone, or you can add it to your project's setup/bootstrap script.
 
@@ -54,7 +54,7 @@ Note: git hooks are local to your machine. Each team member must run `/pre-commi
 /pre-commit uninstall
 ```
 
-Removes `.git/hooks/pre-commit` if it exists and confirms removal.
+Removes the hook only if it carries this skill's marker line (`# claude-skill-hook: pre-commit`). If a previous hook was backed up at install time, it is restored as the active hook. A hook installed by anything else is left alone.
 
 ---
 
@@ -67,8 +67,9 @@ Searches staged files for patterns that indicate hardcoded credentials:
 - `api_key`, `apikey`, `api_token`, `access_token`, `secret_key`, `secret` assignments
 - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` assignments
 - PEM private key headers (`-----BEGIN RSA PRIVATE KEY-----`, etc.)
+- Token prefixes: `sk-ant-`, `sk-proj-`, `github_pat_`, `ghp_`, `glpat-`, `npm_`, `AIza`, `xox[baprs]-`, `sk_live_`
 
-Files matching `*.example`, `*.sample`, `*.test.*`, `*.spec.*`, and paths under `node_modules/` or `vendor/` are excluded from the secret scan.
+Files matching `*.example` and `*.sample`, and paths under `node_modules/` or `vendor/`, are excluded from the secret scan. Test files (`*.test.*`, `*.spec.*`) are scanned, but a match there is a WARNING instead of a BLOCKER.
 
 ### Dead code scan
 
@@ -108,7 +109,7 @@ This creates `.git/hooks/pre-commit`. From that point on, every `git commit` in 
 
 The installed hook enforces its blockers with deterministic shell checks (secret patterns, conflict markers, direct-to-main) — it works and blocks even when Claude Code is unavailable. If the `claude` CLI is present, the hook additionally runs an advisory review, capped at 60 seconds, whose output can only warn and never blocks or approves a commit.
 
-If a pre-commit hook already exists (for example one installed by the doc-refresh skill), the installer backs it up to `.git/hooks/pre-commit.backup` and tells you, rather than silently overwriting it.
+If a pre-commit hook already exists (for example one installed by the doc-refresh skill), the installer moves it to `pre-commit.backup.pre-commit` in the hooks directory and the new hook runs it first on every commit. The installer refuses to overwrite an existing backup. Reinstalling over this skill's own hook (identified by the `# claude-skill-hook: pre-commit` marker) upgrades it in place.
 
 To remove the hook:
 

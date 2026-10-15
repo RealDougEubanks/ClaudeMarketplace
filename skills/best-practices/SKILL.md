@@ -3,6 +3,7 @@ name: best-practices
 description: Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates.
 argument-hint: "[path] [--only=<categories>]"
 allowed-tools: Read, Glob, Grep, Write
+effort: high
 ---
 
 # Skill: best-practices

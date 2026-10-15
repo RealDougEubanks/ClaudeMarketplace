@@ -1,0 +1,4 @@
+# WCAG 2.2 SC 3.3.8 Accessible Authentication: the audit checks that password
+# fields allow paste and password managers. "password" names the field under
+# audit; the skill never reads or handles a credential.
+password

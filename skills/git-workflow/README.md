@@ -11,7 +11,7 @@ When you run `/git-workflow`, Claude asks what you're trying to do and then exec
 | **View docs** | Prints the full release-branch workflow reference |
 | **Start new work** | Detects the release branch, asks for task info, creates `feature/` or `fix/` branch |
 | **Open a PR** | Checks for unresolved `critical/severe/moderate` findings first, then generates PR with `gh pr create` |
-| **Cut a release** | Opens a release PR into `main`, then tags `main` after the merge |
+| **Cut a release** | Opens a release PR into `main`, then creates an annotated tag on `main` after the merge |
 | **Resolve a merge conflict** | Walks through each conflicted file, explains both sides, applies the agreed resolution, completes the rebase or merge |
 | **Manage stashes** | Lists, inspects, applies, pops, or drops stashes (with confirmation before destructive drops) |
 
@@ -34,7 +34,7 @@ When the release is ready: `release/1.0` → PR → `main` → tag `v1.0.0`
 | Feature branch | `feature/task-NNN-description` | `feature/task-042-user-auth` |
 | Fix branch | `fix/task-NNN-description` | `fix/task-107-login-crash` |
 | Release branch | `release/<version>` | `release/1.0` |
-| Version tag | `vMAJOR.MINOR.PATCH` | `v1.0.0` |
+| Version tag | `vMAJOR.MINOR.PATCH` (annotated) | `v1.0.0` |
 
 ## PR Safety Gate
 

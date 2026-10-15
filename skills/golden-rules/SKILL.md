@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 Install mandatory security, coding, design, testing, error handling, API contract, and performance standards into this project's CLAUDE.md so they are active for every Claude Code session automatically.
 
-This skill's version: **1.8.0** (also stamped in the marker comment inside the Golden Rules Block below).
+This skill's version: **1.9.0** (also stamped in the marker comment inside the Golden Rules Block below).
 
 ## Instructions
 
@@ -38,14 +38,16 @@ Write or append the following content verbatim:
 
 ## Golden Rules
 
-<!-- golden-rules v1.8.0 — do not remove; used by /golden-rules --update -->
+<!-- golden-rules v1.9.0 — do not remove; used by /golden-rules --update -->
 
 GOLDEN RULES (MANDATORY — ALL WORK IN THIS PROJECT MUST FOLLOW THESE)
 
 1. Security is paramount. Every design, implementation, and review decision must prioritize security. When in doubt, choose the more secure option and document the assumption in docs/assumptions.md.
 
 2. Do not store secrets, passwords, keys, PII, or other sensitive data insecurely.
-   - Passwords: Hash with a strong adaptive function (Argon2, bcrypt, scrypt). Never store plaintext or reversibly encrypted passwords.
+   - Passwords: Hash with a strong adaptive function (Argon2id, bcrypt, scrypt). Never store plaintext or reversibly encrypted passwords.
+   - Password policy (NIST SP 800-63B-4): no composition rules and no forced periodic rotation (change only on evidence of compromise); screen new passwords against breached and common-password lists; accept long passphrases (at least 64 characters) and allow paste and password managers.
+   - MFA: offer phishing-resistant authentication (passkeys / WebAuthn) and prefer it over SMS or OTP codes.
    - API keys, tokens, secrets: Use environment variables or a secrets manager. Never commit to the repo or log.
    - PII: Encrypt at rest and in transit. Minimize collection and retention. Follow applicable privacy rules.
    - Other sensitive data: Use encryption or hashing as appropriate. Document non-obvious choices in docs/assumptions.md.
@@ -89,7 +91,7 @@ DESIGN & UX GUIDELINES (apply unless project explicitly overrides)
 - Light and dark mode: Support both themes with easy switching (toggle, system preference, or both). Persist user preference.
 - Visual design: Prefer minimalist, clean designs. Avoid clutter; use clear hierarchy and whitespace.
 - Responsive design: Layouts must be responsive — usable across mobile, tablet, and desktop. Use fluid layouts and touch-friendly targets.
-- Accessibility: Choose accessible and pleasant color palettes. WCAG AA contrast minimum. Do not rely on color alone for meaning.
+- Accessibility: Choose accessible and pleasant color palettes. WCAG 2.2 AA contrast minimum. Do not rely on color alone for meaning.
 
 GIT HYGIENE (MANDATORY)
 

@@ -12,24 +12,26 @@ Architecture Decision Records (ADRs) are short documents that capture the contex
 
 ADRs answer: *Why does this codebase look the way it does?* They are the institutional memory of your system's evolution.
 
-This skill uses the **MADR** (Markdown Architectural Decision Records) format — a lightweight, structured Markdown template that is easy to write, easy to read, and version-control-friendly.
+This skill uses the **MADR 4.0** (Markdown Architectural Decision Records) format, a lightweight Markdown template that is easy to write, easy to read, and diffs cleanly in version control. Template reference: <https://adr.github.io/madr/>.
 
 ---
 
 ## MADR Format Overview
 
-Each ADR is a Markdown file with these sections:
+Each ADR starts with YAML front matter (`status`, `date`, `decision-makers`, `consulted`, `informed`, plus an optional `tags` key that this skill adds for filtering), followed by these sections:
 
 | Section | Purpose |
 |---------|---------|
 | **Context and Problem Statement** | The situation that forced a decision |
-| **Decision Drivers** | The constraints and goals that mattered most |
+| **Decision Drivers** (optional) | The constraints and goals that mattered most |
 | **Considered Options** | The alternatives that were evaluated |
 | **Decision Outcome** | What was chosen and why |
-| **Pros and Cons of the Options** | Structured comparison of all alternatives |
-| **Links** | Related ADRs, RFCs, tickets, design docs |
+| **Consequences** (optional) | Good, Bad, and Neutral effects of the choice |
+| **Confirmation** (optional) | How compliance with the decision will be checked |
+| **Pros and Cons of the Options** (optional) | Good / Neutral / Bad arguments per option |
+| **More Information** (optional) | Evidence, revisit conditions, links to related ADRs, RFCs, tickets |
 
-Files are stored as `docs/decisions/ADR-NNN-kebab-case-title.md`.
+Files are stored as `docs/decisions/ADR-NNN-kebab-case-title.md`. If the project already has ADRs under another name pattern (such as MADR's `NNNN-title.md`), the skill follows that pattern.
 
 ---
 
@@ -40,7 +42,7 @@ Files are stored as `docs/decisions/ADR-NNN-kebab-case-title.md`.
 Invoke `/adr` and select **create**. The skill will:
 
 1. Find the next available ADR number from existing files in `docs/decisions/`.
-2. Ask for the decision title, context, deciders, options considered, and the chosen option.
+2. Ask for the decision title, context, decision-makers, who was consulted and informed, options considered, the chosen option, and how compliance will be confirmed.
 3. Generate a complete MADR-formatted ADR.
 4. Save it to `docs/decisions/ADR-<NNN>-<kebab-title>.md`.
 5. Regenerate the ADR index at `docs/decisions/README.md`.
@@ -55,6 +57,7 @@ Valid status transitions:
 
 ```
 Proposed → Accepted
+Proposed → Rejected
 Proposed → Deprecated
 Accepted → Deprecated
 Accepted → Superseded by ADR-NNN
@@ -79,60 +82,70 @@ Search across `docs/decisions/` by keyword, tag, or status. Returns matching ADR
 ## Example ADR
 
 ```markdown
-# ADR-001: Use PostgreSQL as Primary Database
+---
+status: accepted
+date: 2026-01-15
+decision-makers: Engineering Lead, Backend Team
+consulted: DBA, Security
+informed: Product, Support
+tags: database, infrastructure
+---
 
-**Date:** 2026-01-15
-**Status:** Accepted
-**Deciders:** Engineering Lead, Backend Team
-**Tags:** database, infrastructure
+# ADR-001: Use PostgreSQL as Primary Database
 
 ## Context and Problem Statement
 
 We are building a SaaS platform that requires ACID-compliant transactions,
-complex relational queries, and strong ecosystem support. We need to select
-a primary database before writing any data-layer code.
+complex relational queries, and strong ecosystem support. Which primary
+database should we adopt before writing any data-layer code?
 
 ## Decision Drivers
 
-- Must support ACID transactions for financial operations
-- Team has existing PostgreSQL expertise
-- Must integrate with our ORM of choice (SQLAlchemy / Prisma)
+* Must support ACID transactions for financial operations
+* Team has existing PostgreSQL expertise
+* Must integrate with our ORM of choice (SQLAlchemy / Prisma)
 
 ## Considered Options
 
-1. **PostgreSQL** — battle-tested open-source relational database
-2. **MySQL** — widely-used relational database
-3. **MongoDB** — document-oriented NoSQL database
+* PostgreSQL
+* MySQL
+* MongoDB
 
 ## Decision Outcome
 
-**Chosen option:** PostgreSQL, because it provides the strongest ACID guarantees,
+Chosen option: "PostgreSQL", because it provides the strongest ACID guarantees,
 has the richest feature set for complex queries (CTEs, window functions, JSONB),
 and matches team expertise.
 
-### Positive Consequences
-- Full ACID transaction support
-- Rich query capabilities reduce application complexity
+### Consequences
 
-### Negative Consequences / Trade-offs
-- Horizontal write scaling requires more work than some NoSQL alternatives
+* Good, because full ACID transaction support covers the financial flows
+* Good, because rich query features reduce application complexity
+* Bad, because horizontal write scaling needs more work than some NoSQL options
+
+### Confirmation
+
+Schema migrations are reviewed by the DBA, and a CI check rejects any new
+datastore client library that has not been approved through an ADR.
 
 ## Pros and Cons of the Options
 
-### Option 1 — PostgreSQL
-- ✅ Full ACID compliance
-- ✅ JSONB for flexible fields
-- ✅ Strong team familiarity
-- ❌ Vertical scaling limits at extreme write volumes
+### PostgreSQL
 
-### Option 2 — MySQL
-- ✅ Wide hosting support
-- ❌ Less feature-rich than PostgreSQL
+* Good, because of full ACID compliance
+* Good, because JSONB handles flexible fields
+* Good, because the team knows it well
+* Bad, because vertical scaling limits appear at extreme write volumes
 
-### Option 3 — MongoDB
-- ✅ Horizontal scaling
-- ❌ No multi-document transactions in earlier versions
-- ❌ Schema flexibility can lead to data consistency issues
+### MySQL
+
+* Good, because hosting support is wide
+* Bad, because it has fewer query features than PostgreSQL
+
+### MongoDB
+
+* Good, because it scales horizontally
+* Bad, because schema flexibility can lead to data consistency issues
 ```
 
 ---
