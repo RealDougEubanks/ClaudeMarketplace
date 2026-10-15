@@ -14,6 +14,16 @@ From 1.0.6, each section matches a git tag (`vX.Y.Z`) that `publish.yml` creates
 
 ---
 
+## [1.0.7] — 2026-10-15
+
+### Changed
+
+- Documentation: the root README, CONTRIBUTING, SECURITY, CLAUDE.md project section, PR template, and skill READMEs now follow the doc-refresh STE-lite standard; the root README follows the Standard Readme section order
+- Skill READMEs corrected where they had drifted from their skills: argument syntax (`log-correlation`, `git-workflow`), IAM actions, criteria counts, and the `SECURITY.md` skill path
+- Every skill except `example-skill` gets a patch version for its README changes (22 skills)
+
+---
+
 ## [1.0.6] — 2026-10-15
 
 ### Added

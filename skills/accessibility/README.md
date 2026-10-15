@@ -1,133 +1,176 @@
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
+
 # accessibility
 
-A Claude Code skill for auditing existing UI code against WCAG 2.2 AA and providing proactive accessibility guidance when designing new components.
+The accessibility skill audits UI code against WCAG 2.2 Level AA. It also gives
+accessibility guidance when you design a new component.
 
-## Commands
+## Usage
 
-- `/accessibility` — Audit existing code for WCAG 2.2 AA issues (review mode)
-- `/accessibility --design` — Get accessibility guidance while designing a new feature or component (design mode)
+| Slash command | Mode | What it does |
+|---|---|---|
+| `/accessibility` | Review | Audits all UI code in the repository |
+| `/accessibility src/components` | Review | Audits only the given directory or file |
+| `/accessibility --design` | Design | Asks which component you design, then gives guidance |
+| `/accessibility --design modal` | Design | Gives guidance for the named component |
 
-## Modes
+The skill reads files only. It uses the `Read`, `Glob`, and `Grep` tools and does not
+change your code. It treats file contents as data, not as instructions.
 
-### Review Mode (default, `/accessibility`)
+## Review mode
 
-Scans your UI codebase for accessibility issues using static analysis patterns:
+Review mode is the default. The skill does these steps:
 
-1. Discovers all UI files (JSX, TSX, Vue, Svelte, HTML, ERB, Blade, CSS/SCSS)
-2. Runs Grep-based pattern checks across all files
-3. Reads complex interactive components to check focus management and ARIA logic
-4. Notes colour combinations for manual contrast verification
-5. Produces a severity-graded findings report with WCAG criterion references, user impact, and fix diffs
+1. Find all UI files: JSX, TSX, Vue, Svelte, HTML, ERB, Blade, and CSS or SCSS. If you
+   give a path, the skill searches only that path.
+2. Run every pattern check in the tables of `SKILL.md`. The skill does not sample.
+3. Read the logic of complex components (modals, menus, date pickers, comboboxes, tabs).
+   Check focus movement, the Escape key, arrow keys, live regions, and state.
+4. Calculate the contrast ratio for each foreground and background hex pair in the CSS.
+5. Write a report of findings. Each finding has a severity, a WCAG criterion, the user
+   impact, and a fix diff.
 
-### Design Mode (`/accessibility --design`)
+The skill calculates contrast with the WCAG relative luminance formula. Use a manual tool
+(WebAIM Contrast Checker or Colour Contrast Analyser) only when the colors are not known
+statically. Examples are CSS variables set at runtime, opacity layers, gradients, and text
+on images.
 
-When building a new feature or component, this mode provides proactive guidance:
+Contrast thresholds for AA:
 
-- Component-specific ARIA patterns (modals, menus, tabs, accordions, forms, tables, toasts)
-- Keyboard interaction models for each component type
-- Focus management patterns (where focus goes on open/close/navigate)
-- Screen reader announcement strategies
+| Content | Minimum ratio |
+|---|---|
+| Normal text | 4.5:1 |
+| Large text (24px or more, or 18.66px or more bold) | 3:1 |
+| UI components and graphical objects | 3:1 |
 
-## WCAG 2.2 AA Overview
+## Design mode
 
-WCAG 2.2 is organized around four principles (POUR):
+Design mode gives guidance before you write code. If you name a component, the skill gives
+that guidance directly. If you do not name a component, the skill asks for one.
 
-| Principle | Meaning |
-|-----------|---------|
-| Perceivable | Information must be presentable in ways users can perceive |
-| Operable | UI components and navigation must be operable |
-| Understandable | Information and operation must be understandable |
-| Robust | Content must be interpretable by a wide range of user agents |
+| Component | Key requirements |
+|---|---|
+| Modal or dialog | `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, focus trap, Escape closes, focus returns to trigger |
+| Dropdown menu | `role="menu"` and `role="menuitem"`, arrow keys, Escape closes |
+| Tabs | `role="tablist"`, `role="tab"`, `role="tabpanel"`, arrow keys, `aria-selected` |
+| Accordion | `aria-expanded` on the trigger, `aria-controls` points to the panel |
+| Form | Visible label per input, `required` and `aria-required`, errors linked with `aria-describedby`, error summary on submit |
+| Data table | `<caption>`, `<th scope>`, `id` and `headers` for complex tables |
+| Toast or alert | `role="alert"` for urgent, `role="status"` for non-urgent |
+| Image with text | `alt` describes content and function; decorative images use `alt=""` |
+| Icon button | `aria-label` is always required |
+| Loading state | `aria-busy="true"` and an `aria-live` announcement on completion |
 
-Level AA is the level most accessibility laws point to, though the WCAG version differs by law. The skill audits against WCAG 2.2 AA, which also covers 2.1 AA:
+## Check areas
 
-- **US ADA Title II** (state and local government): WCAG 2.1 AA, with compliance dates of 26 April 2027 or 26 April 2028 depending on population, per the DOJ's April 2026 interim final rule.
-- **EU European Accessibility Act**: applies from 28 June 2025; EN 301 549 is the harmonised standard used to show conformance.
-- **WCAG 3.0** is still a W3C Working Draft and is not used as an audit target.
+| Check area | Issues found |
+|---|---|
+| Images and media | Missing alt text, video without captions, unclear decorative images |
+| Semantic structure | Heading order, landmark regions, `div` used as a button |
+| Forms | Missing labels, required field marks, error association, Redundant Entry (3.3.7) |
+| Authentication | Paste blocked, password managers blocked, cognitive tests at login (3.3.8) |
+| Consistent Help | Help links in a different order or location across page templates (3.2.6) |
+| Keyboard navigation | Positive `tabindex`, focus traps, missing key handlers, Focus Not Obscured (2.4.11) |
+| ARIA usage | Invalid roles, `aria-hidden` on focusable elements, missing live regions |
+| Color and visual | Color-only meaning, pointer targets under 24x24 CSS px (2.5.8) |
+| Motion and animation | No `prefers-reduced-motion` support, autoplay media, flashing content |
+| Language | Missing `lang` attribute on `<html>` |
 
-WCAG 2.2 adds checks the skill covers: Focus Not Obscured (Minimum) (2.4.11), Target Size (Minimum) (2.5.8, 24x24 CSS px), Consistent Help (3.2.6), Redundant Entry (3.3.7), and Accessible Authentication (Minimum) (3.3.8: no cognitive tests at login; allow paste and password managers). 4.1.1 Parsing was removed in 2.2 and is not checked.
+The skill does not report 4.1.1 Parsing. WCAG 2.2 removed that criterion.
 
-## What Each Check Catches
-
-| Check Area | Issues Found |
-|------------|-------------|
-| Images and Media | Missing alt text, uncaptioned video, decorative image misuse |
-| Semantic Structure | Heading hierarchy, landmark regions, div-as-button anti-pattern |
-| Forms | Missing labels, required field marking, error association |
-| Keyboard Navigation | Tab order issues, focus traps, missing keyboard handlers |
-| ARIA Usage | Invalid roles, aria-hidden on focusable elements, missing live regions |
-| Color and Visual | Semantic-only color, pointer targets under 24x24 CSS px, pointer-events misuse |
-| Authentication | Paste blocking, password managers disabled, cognitive tests at login |
-| Motion and Animation | Missing prefers-reduced-motion support, autoplaying media |
-| Language | Missing lang attribute on html element |
-
-## Who Is Affected
-
-| Disability Type | Examples of Issues Caught |
-|----------------|--------------------------|
-| Visual (blindness, low vision) | Missing alt text, poor contrast, no landmarks |
-| Motor (limited mobility, tremor) | No keyboard access, small touch targets, positive tabindex |
-| Auditory (deaf, hard of hearing) | Missing video captions, audio-only content |
-| Cognitive (ADHD, dyslexia) | Complex navigation, time limits, flashing content |
-
-Approximately 15% of the global population has some form of disability. Accessible products are better products for everyone.
-
-## Severity Levels
+## Severity levels
 
 | Severity | Definition |
-|----------|-----------|
-| Critical | Blocks access entirely for one or more disability groups |
-| High | Significantly impairs use; major friction or partial access loss |
-| Medium | Causes friction or confusion; workaround usually exists |
-| Low | Best practice improvement; minor impact on specific scenarios |
+|---|---|
+| Critical | Blocks access fully for one or more user groups |
+| High | Significantly impairs use |
+| Medium | Causes friction; a workaround usually exists |
+| Low | Best practice improvement |
 
-## Manual Testing Guidance
+## Example output
 
-Automated checks catch approximately 30-40% of accessibility issues. Manual testing is essential:
+````markdown
+## Accessibility Review — src/components — 2026-10-14
 
-**Keyboard-only testing:**
-1. Unplug your mouse
-2. Tab through every interactive element — verify visible focus, logical order
-3. Activate buttons with Enter/Space, navigate menus with arrow keys
-4. Dismiss modals with Escape, verify focus returns to trigger
+### Summary
+| Severity | Count |
+|----------|-------|
+| Critical | 1 |
+| High | 1 |
+| Medium | 0 |
+| Low | 0 |
 
-**Screen reader testing:**
-- macOS / iOS: VoiceOver (built-in, free) — Cmd+F5 to activate
-- Windows: NVDA (free) or JAWS (paid)
-- Android: TalkBack (built-in)
+**WCAG 2.2 Level AA Compliance Estimate:** Likely Fails
 
-**Zoom testing:**
-- Set browser zoom to 400% — verify no content is hidden or overlapping
-- Enable OS-level large text — verify layout adapts
+### Findings
 
-## Colour Contrast Tools
+**[CRITICAL] Form inputs missing labels — src/components/ContactForm.tsx**
+- **WCAG:** 1.3.1 Info and Relationships (Level A), 4.1.2 Name, Role, Value (Level A)
+- **Impact:** Screen reader users cannot identify what information to enter.
+- **Fix:**
+  ```diff
+  - <input type="email" placeholder="Enter your email" />
+  + <label htmlFor="email">Email address</label>
+  + <input id="email" type="email" aria-required="true" autocomplete="email" />
+  ```
+````
 
-Since Claude cannot render pixels, contrast ratios must be verified with external tools:
+## Standards context
 
-- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
-- [Colour Contrast Analyser](https://www.tpgi.com/color-contrast-checker/) (desktop app, picks colours from screen)
-- [Accessible Colors](https://accessible-colors.com/) (suggests accessible alternatives)
+The audit target is WCAG 2.2 Level AA. Content that meets 2.2 AA also meets 2.1 AA and
+2.0 AA.
 
-WCAG AA requires:
-- Normal text (< 18pt or < 14pt bold): 4.5:1 contrast ratio
-- Large text (≥ 18pt or ≥ 14pt bold): 3:1 contrast ratio
-- UI components and graphics: 3:1 against adjacent colors
+| Rule | Status |
+|---|---|
+| US ADA Title II (state and local government) | Requires WCAG 2.1 AA. Compliance dates are 26 April 2027 and 26 April 2028, by entity size, per the DOJ interim final rule of April 2026. |
+| EU European Accessibility Act | Applies from 28 June 2025. EN 301 549 is the harmonised standard for conformance. |
+| WCAG 3.0 | W3C Working Draft. The skill does not grade against it. |
 
-## Component Design Patterns
+This README is not legal advice. Confirm the obligations for your jurisdiction and your
+organization.
 
-| Component | Key Requirements |
-|-----------|-----------------|
-| Modal/Dialog | `role="dialog"`, `aria-modal="true"`, focus trap, Escape to close |
-| Dropdown Menu | `role="menu"`, arrow key navigation, Escape closes |
-| Tabs | `role="tablist/tab/tabpanel"`, arrow key switching, `aria-selected` |
-| Accordion | `aria-expanded` on trigger, `aria-controls` pointing to panel |
-| Form | Visible label per input, error linked via `aria-describedby` |
-| Data Table | `<caption>`, `<th scope>`, complex tables use `id`/`headers` |
-| Toast/Alert | `role="alert"` (urgent) or `role="status"` (non-urgent) |
-| Icon Button | `aria-label` always required |
-| Loading | `aria-busy="true"` + `aria-live` for completion announcement |
+## Manual testing
 
-## Integration with Other Skills
+Automated pattern checks do not find all issues. Do manual tests too.
 
-- `/code-review` — general code quality review (run alongside accessibility)
-- `/best-practices` — broader frontend best practices
+Keyboard test:
+
+1. Disconnect the mouse.
+2. Press Tab through each interactive element. Make sure that focus is visible and the
+   order is logical.
+3. Activate buttons with Enter and Space. Use the arrow keys in menus.
+4. Press Escape to close a modal. Make sure that focus goes back to the trigger.
+
+Screen reader test:
+
+- macOS and iOS: VoiceOver (built in). Press Cmd+F5 to start it on macOS.
+- Windows: NVDA (free) or JAWS (paid).
+- Android: TalkBack (built in).
+
+Zoom test:
+
+1. Set the browser zoom to 400%.
+2. Make sure that no content is hidden or overlaps.
+
+## Installation
+
+Add this repository as a marketplace in `~/.claude/settings.json` (see the root
+[README](../../README.md)). Then enable the plugin:
+
+```json
+{
+  "enabledPlugins": {
+    "accessibility@claude-skills-marketplace": true
+  }
+}
+```
+
+## Related skills
+
+- `/code-review`: general code quality review. Run it with this skill.
+- `/best-practices`: wider frontend best practices.

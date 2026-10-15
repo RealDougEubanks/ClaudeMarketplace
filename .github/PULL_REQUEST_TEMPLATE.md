@@ -1,17 +1,18 @@
-## What this PR does
+## What this pull request changes
 
-<!-- One or two sentences. What skill was added, changed, or fixed? -->
+<!-- One or two sentences. Name the skill that you added, changed, or fixed. -->
 
-## Pre-commit checklist
+## Checks
 
-- [ ] `./scripts/validate.sh skills/<name>` passes
-- [ ] Version bumped in `metadata.json`, `registry.json`, `marketplace.json`, and `plugin.json`
-- [ ] `./scripts/check-registry.sh` passes
-- [ ] `./scripts/sync-versions.sh --check` passes
-- [ ] `shellcheck scripts/*.sh tests/*.sh` clean
-- [ ] `npx markdownlint-cli2 "skills/**/*.md" "*.md"` clean
-- [ ] `.scan-exempt` changes reviewed and justified (if any)
+- [ ] `./scripts/validate.sh skills/<name>` passes for each changed skill.
+- [ ] The version is higher in `metadata.json`, `skills/registry.json`, `.claude-plugin/marketplace.json`, and `.claude-plugin/plugin.json`.
+- [ ] `./scripts/check-registry.sh` passes.
+- [ ] `./scripts/sync-versions.sh --check` passes.
+- [ ] `shellcheck scripts/*.sh tests/*.sh` passes.
+- [ ] `npx markdownlint-cli2 "skills/**/*.md" "*.md"` passes.
+- [ ] `bash tests/run-all.sh` passes.
+- [ ] Each `.scan-exempt` change has a comment that tells why the pattern is necessary.
 
-## Testing
+## Tests
 
-<!-- How did you test the skill locally? -->
+<!-- Tell how you tested the skill in Claude Code. -->

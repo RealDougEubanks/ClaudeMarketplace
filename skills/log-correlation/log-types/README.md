@@ -1,14 +1,28 @@
+<!--
+doc: contributor-guide
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, tiered, no controlled dictionary)
+last-refreshed: 2026-10-15
+generated-by: doc-refresh skill
+-->
+
 # How to Add a New Log Type
 
-This directory contains log type definitions. Each `.md` file defines one log type that the `/log-correlation` skill knows how to discover, collect, parse, and correlate.
+This directory contains the log type definitions. Each `.md` file defines one log type. The
+`/log-correlation` skill uses the file to find, collect, parse, and correlate that log.
 
-To add support for a new log format, create a new file in this directory following the template below. No changes to `SKILL.md` are needed — the skill discovers all `.md` files here at runtime.
+To add a log format, do these steps:
+
+1. Copy the template below into a new file in this directory.
+2. Fill in each section for the new log format.
+3. Do not change `SKILL.md`. The skill reads all `.md` files in this directory when it runs,
+   except this `README.md`.
 
 ---
 
 ## Log Type Definition Template
 
-Copy the following template into a new file named `<id>.md` (kebab-case, e.g., `haproxy.md`, `postgres.md`):
+Copy this template into a new file named `<id>.md`. Use kebab-case, for example `haproxy.md`
+or `postgres.md`.
 
 ```markdown
 # Log Type: <Human-Readable Name>
@@ -94,10 +108,10 @@ Format: `<this log type pattern> + <other log type pattern> = <root cause hypoth
 
 | Convention | Rule |
 |------------|------|
-| File name | `<id>.md` in kebab-case (must match the `id` field in Metadata) |
-| Category | Use existing categories where possible; add new ones only if none fit |
-| id | Must be unique across all files in this directory |
-| Description | One sentence, no period at the end preferred |
+| File name | `<id>.md` in kebab-case. It must be the same as the `id` field in Metadata. |
+| Category | Use a category that exists. Add a category only if no category fits. |
+| id | Must be unique in this directory. |
+| Description | One sentence. Do not end it with a period. |
 
 ---
 

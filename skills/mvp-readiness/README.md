@@ -1,59 +1,72 @@
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
+
 # mvp-readiness
 
-Run a structured quality-gate audit before declaring a project MVP-ready. Claude checks 18 criteria across stability, security, logging, documentation, and implementation integrity, then produces a pass/fail report with file-level evidence and a blockers list.
-
-## What It Does
-
-When you run `/mvp-readiness`, Claude:
-
-1. Reads `README.md`, `docs/`, and key config files.
-2. Uses Glob to discover source files and project structure.
-3. Uses Grep to check for hardcoded secrets, placeholder code, and missing error handling.
-4. Evaluates each checklist item as **PASS**, **FAIL**, or **N/A** (with justification).
-5. Produces a markdown report with a summary, full results table, and a blockers list.
-
-The project is declared **NOT READY** if any item is FAIL without written N/A justification.
-
-## The Checklist
-
-### Stability & Error Handling
-- All external calls (DB, API, file system) have error boundaries.
-- No crashes on invalid input.
-- Repeated runs do not corrupt state (idempotency).
-
-### Configuration & Environment
-- Required env vars validated on startup, fail fast if missing.
-- No hardcoded magic strings, URLs, or ports.
-- No secrets committed to the repo.
-
-### Logging & Observability
-- Logs include timestamps and severity (INFO, WARN, ERROR).
-- No silent failures.
-
-### Security (Golden Rules)
-- All user input validated or sanitized.
-- Least privilege principle applied.
-- Sensitive features off by default.
-
-### Documentation & UX
-- README: clone-to-run in fewer than 3 steps.
-- Help commands or usage examples present.
-- Web projects: WCAG AA contrast, mobile-responsive.
-
-### Implementation Integrity
-- No placeholder or stub code in production paths.
-- Consistent naming conventions.
-- README includes stack, license, troubleshooting.
+This skill runs a quality-gate audit before you declare a project MVP-ready. The full audit
+checks 23 items in 8 sections. The report gives PASS, FAIL, or N/A for each item, with
+file-level evidence and a list of blockers.
 
 ## Usage
 
-```
-/mvp-readiness
-```
+| Slash command | Mode | Use |
+|---|---|---|
+| `/mvp-readiness` | Full audit | Before launch. Checks all 8 sections. |
+| `/mvp-readiness --quick` | Quick scan | During daily work. Checks only the 5 hard blockers. Completes in less than 30 seconds. |
 
-Invoke in the root of your project. Claude audits the current working directory.
+Run the slash command from the root of your project. The skill audits the current working
+directory.
+
+## What It Does
+
+### Full audit
+
+1. Reads `README.md` and the files in `docs/`.
+2. Uses Glob to find source files, config files, and entry points.
+3. Uses Grep to find hardcoded secrets, placeholder code, and external calls with no error handling.
+4. Reads `.gitignore` to confirm that it covers `.env`.
+5. Searches `README.md` for clone, install, and run instructions.
+6. Examines the package manifests for unpinned versions, abandoned packages, and a missing lockfile.
+7. Looks for performance problems: no pagination, sync calls in async handlers, and foreign keys with no index.
+8. Gives each checklist item a status of PASS, FAIL, or N/A. Each N/A has a written reason.
+9. Writes a Markdown report with a summary, a results table, and a list of blockers.
+
+The project is **NOT READY** if one or more items are FAIL and have no written N/A reason.
+
+### Quick scan
+
+The quick scan runs 5 Bash or Grep checks. It does not read files one at a time.
+
+| Check | FAIL condition |
+|---|---|
+| Secret scan | A `password = "..."` match outside test files |
+| README exists | `README.md` is missing or is 100 bytes or smaller |
+| External call error handling | More than 5 `fetch`, `axios`, `.query(`, or `.connect(` calls with no `try`, `catch`, `rescue`, or `.then(` on the same line (a heuristic) |
+| Secrets in git history | A `.env` file shows in `git log --all` |
+| Placeholder code | `TODO`, `FIXME`, `stub`, `placeholder`, or `impl later` in non-test files |
+
+The status line shows `READY` only if all 5 checks pass.
+
+## The Checklist
+
+| Section | Items |
+|---|---|
+| 1. Stability & Error Handling | Error checks on all external calls (DB, API, file system). No crash on invalid input. Repeated runs do not corrupt state. |
+| 2. Configuration & Environment | Required env vars validated at startup (fail fast). No hardcoded magic strings, URLs, or ports. No secrets in the repo. |
+| 3. Logging & Observability | Logs have timestamps and severity levels. No silent failures. |
+| 4. Security (Golden Rules) | All user input validated or sanitized. Least privilege. Sensitive features off by default. |
+| 5. Documentation & UX | README goes from clone to run in fewer than 3 steps. `--help` or usage examples. Web projects: WCAG 2.2 AA contrast and mobile support. |
+| 6. Implementation Integrity | No placeholder code in production paths. Naming follows the project convention. README has stack, license, and troubleshooting sections. |
+| 7. Dependency Health | Versions pinned or range-constrained. No abandoned or deprecated packages. Lockfile committed. |
+| 8. Performance Baseline | No N+1 queries or unindexed foreign keys. Pagination on list endpoints. No sync blocking calls in async handlers. |
 
 ## Example Output
+
+Full audit:
 
 ```markdown
 ## MVP Readiness Report — my-app — 2026-01-15
@@ -63,19 +76,33 @@ Invoke in the root of your project. Claude audits the current working directory.
 **Blockers:** 2
 
 ### Checklist Results
-| # | Item | Status | Evidence |
-|---|------|--------|----------|
-| 1 | Error boundaries on external calls | PASS | All DB calls wrapped in try/catch |
-| 2 | No crash on invalid input | FAIL | src/cli.ts:42 crashes on non-numeric --port |
+| # | Section | Item | Status | Evidence |
+|---|---------|------|--------|----------|
+| 1 | Stability & Error Handling | Error boundaries on all external calls | PASS | All DB calls in src/db.ts wrapped in try/catch |
+| 2 | Stability & Error Handling | No crash on invalid input | FAIL | CLI crashes with TypeError on non-numeric --port (src/cli.ts:42) |
 ...
 
-### Blockers
-- [#2] src/cli.ts:42 — Add input validation before parseInt call.
+### Blockers (must fix before MVP)
+- [#2] `src/cli.ts:42` — CLI crashes on non-numeric --port. Add input validation before parseInt.
+```
+
+Quick scan:
+
+```
+## MVP Quick Scan — <project> — <date>
+
+✓ Secret scan: PASSED
+✗ README: FAILED — README.md not found
+✓ Error handling: PASSED (heuristic)
+✓ Git history: PASSED
+⚠ Placeholder code: WARNING — 3 TODOs in src/ (non-blocking)
+
+Status: NOT READY — 1 blocker. Run /mvp-readiness for full audit.
 ```
 
 ## Installation
 
-Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+Enable the plugin through the Claude Code marketplace. Add this to `~/.claude/settings.json`:
 
 ```json
 {
@@ -85,9 +112,10 @@ Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 }
 ```
 
-Once enabled, invoke with `/mvp-readiness` in any Claude Code session.
+Then run `/mvp-readiness` in a Claude Code session.
+
 ## Related Skills
 
-- `/golden-rules` — install always-on security and coding standards
-- `/full-security-review` — deep security audit with OWASP coverage
-- `/agent-based-development` — full multi-agent workflow with built-in MVP gate
+- `/golden-rules`: installs always-on security and coding standards.
+- `/full-security-review`: a deep security audit with OWASP coverage.
+- `/agent-based-development`: a multi-agent workflow with an MVP gate.

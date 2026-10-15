@@ -1,19 +1,30 @@
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
+
 # best-practices
 
-A holistic codebase audit skill for Claude Code. Auto-detects your technology stack and checks it against best practices for that specific language, framework, and architecture. Produces a prioritized improvement roadmap with a level-of-effort estimate for every finding.
+The best-practices skill audits a full codebase. It detects the technology stack and checks
+the code against best practices for that language, framework, and infrastructure. The result
+is a prioritized improvement roadmap. Each finding has a priority and a level-of-effort
+estimate.
 
 ---
 
 ## How it differs from related skills
 
-| Skill | What it does |
-|-------|-------------|
-| `/code-review` | Reviews a PR diff — focused on what changed in this pull request |
-| `/full-security-review` | Security vulnerabilities only — injection, auth, secrets, cryptography |
-| `/mvp-readiness` | Binary pass/fail launch checklist — is this ready to ship? |
-| `/best-practices` | **Holistic audit of the entire codebase** — stack-aware, produces a prioritized improvement roadmap |
+| Skill | Scope |
+|-------|-------|
+| `/code-review` | Engineering quality of the changed files on a branch, or of a path that you name |
+| `/full-security-review` | Security findings only: injection, auth, secrets, cryptography |
+| `/mvp-readiness` | Pass/fail launch checklist |
+| `/best-practices` | Full codebase audit, stack-aware, with a prioritized roadmap |
 
-Use `/best-practices` when you want a strategic picture of where the codebase stands and what to improve next. Use the other skills for targeted reviews.
+Use `/best-practices` to see where the codebase stands and what to improve next. Use the
+other skills for targeted reviews.
 
 ---
 
@@ -25,13 +36,17 @@ Use `/best-practices` when you want a strategic picture of where the codebase st
 |----------|-----------|
 | TypeScript | `tsconfig.json`, `**/*.ts` |
 | JavaScript | `package.json`, `**/*.js` |
-| Python | `pyproject.toml`, `setup.py`, `requirements.txt` |
+| Python | `pyproject.toml`, `setup.py`, `requirements.txt`, `**/*.py` |
 | Go | `go.mod`, `**/*.go` |
 | Ruby | `Gemfile`, `**/*.rb` |
 | PHP | `composer.json`, `**/*.php` |
-| Java | `pom.xml`, `build.gradle` |
-| C# | `*.csproj`, `*.sln` |
-| Rust | `Cargo.toml` |
+| Java | `pom.xml`, `build.gradle`, `**/*.java` |
+| C# | `*.csproj`, `*.sln`, `**/*.cs` |
+| Rust | `Cargo.toml`, `**/*.rs` |
+
+JavaScript, TypeScript, Python, and Go have dedicated checklists. Ruby, PHP, Java, C#, and
+Rust get the universal checks only. The report states when language-specific checks were
+out of scope.
 
 ### Frameworks
 
@@ -54,20 +69,43 @@ Use `/best-practices` when you want a strategic picture of where the codebase st
 
 ---
 
-## How to invoke
+## Usage
+
+```
+/best-practices [path] [--only=<categories>]
+```
+
+| Argument | Effect |
+|----------|--------|
+| *(none)* | Full audit of the whole repository |
+| `path` | Limit the audit to this directory |
+| `--only=<categories>` | Run only the named sections (comma-separated) |
+
+Valid `--only` categories:
+
+- Universal: `structure`, `naming`, `errors`, `testing`, `docs`, `dependencies`, `config`,
+  `performance`, `memory`, `input-bounds`, `logging`, `health`, `caching`, `copy`,
+  `architecture`
+- Stack: `javascript`, `python`, `go`, `database`, `docker`, `cicd`
+
+Examples:
 
 ```
 /best-practices
+/best-practices services/api
+/best-practices --only=logging,health,caching
 ```
 
-Run this from the root of any project. No arguments required — stack detection is automatic.
+The skill does these steps:
 
-Claude will:
-1. Detect your full technology stack and confirm it with you
-2. Map the codebase structure (file counts, largest files, test coverage ratio)
-3. Run all applicable best-practice checks for your detected stack
-4. Score every finding by priority and level of effort
-5. Output a structured improvement roadmap
+1. Detect the technology stack and ask you to confirm it.
+2. Map the codebase: file counts, the largest files, and the test-to-source ratio.
+3. Run the checks one section at a time, in order.
+4. Give each finding a priority and an effort size.
+5. Write the roadmap in the report format.
+6. If a `handoffs/` directory exists, offer to save the findings to `handoffs/plans/`.
+
+The skill loads stack checklists from `checklists/` only for the stacks that it detects.
 
 ---
 
@@ -75,12 +113,13 @@ Claude will:
 
 | Priority | Meaning |
 |----------|---------|
-| P1 Critical | Actively harmful, blocking velocity, or causing production bugs — fix immediately |
-| P2 High | Significant technical debt that will compound — address this sprint or next |
-| P3 Medium | Meaningful improvement — plan for next quarter |
-| P4 Low | Nice to have — address opportunistically |
+| P1 Critical | Causes production bugs, harms the code, or blocks team velocity. Fix immediately. |
+| P2 High | Technical debt that grows over time. Fix this sprint or next. |
+| P3 Medium | A useful improvement. Plan it for next quarter. |
+| P4 Low | Nice to have. Fix it when you are in that code. |
 
-Priority is determined by: correctness/reliability impact first, then security, maintainability, performance, and developer experience.
+The skill sets priority in this order: correctness and reliability, then security,
+maintainability, performance, and developer experience.
 
 ---
 
@@ -94,24 +133,32 @@ Priority is determined by: correctness/reliability impact first, then security, 
 | L | 3–5 days | Restructure a major module, add broad test coverage, migrate to a new pattern |
 | XL | 1+ week | Architectural change, framework migration, new infrastructure layer |
 
-Within each priority tier, findings are sorted by effort ascending — so quick wins surface first.
+In each priority tier, the report sorts findings by effort, smallest first. Quick wins come
+first.
 
 ---
 
-## Using findings with the agent-based-development workflow
+## Use the findings with agent-based-development
 
-If your project uses the `agent-based-development` skill and has a `handoffs/` directory, `/best-practices` will offer to write the findings as a Planning artifact to `handoffs/plans/`. The ABD workflow can then pick these up as actionable tasks.
+If your project has a `handoffs/` directory, the skill offers to write the findings as a
+Planning artifact to `handoffs/plans/`. The agent-based-development workflow can then use
+them as tasks.
 
-Recommended workflow:
+A typical sequence:
 
 ```
 /best-practices          → get the full roadmap
-/full-security-review         → dedicated security deep-dive (complements this report)
+/full-security-review    → dedicated security deep-dive (complements this report)
 /test-writer             → generate tests for untested files identified in the report
 /dependency-audit        → CVE scan and outdated package check
 ```
 
-Start with the Quick Wins table at the end of the report — these are P1/P2 items that take under 4 hours each and deliver the highest return on time invested.
+Start with the Quick Wins table at the end of the report. It lists P1 and P2 findings with
+effort XS or S.
+
+> **SECURITY:** The report redacts hardcoded secrets. It shows only the location and the
+> type of each secret. Rotate any secret that the report finds, because it is already in
+> the repository history.
 
 ---
 
@@ -143,6 +190,22 @@ Estimated total effort: 8–14 days
 
 ### Suggested Next Steps
 ...
+```
+
+The full report layout is in `templates/report-format.md`.
+
+---
+
+## Installation
+
+Add this repository as a marketplace in `~/.claude/settings.json`, then enable the plugin:
+
+```json
+{
+  "enabledPlugins": {
+    "best-practices@claude-skills-marketplace": true
+  }
+}
 ```
 
 ---

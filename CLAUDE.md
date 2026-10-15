@@ -1,31 +1,62 @@
+<!--
+doc: agent-context
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, tiered, no controlled dictionary)
+last-refreshed: 2026-10-15
+generated-by: doc-refresh skill
+-->
+
 # Claude Code Skills Marketplace — Project Context
 
-This is the **Claude Code Skills Marketplace** repository. It is a collection of reusable prompt skills for Claude Code — each skill is a plugin directory under `skills/` containing a `SKILL.md` instruction file at its root, `metadata.json` (machine-readable metadata), and `README.md` (human docs).
+This repository is the **Claude Code Skills Marketplace**. It contains reusable skills for
+Claude Code. Each skill is a plugin directory under `skills/`. The directory contains
+`SKILL.md` (the instructions), `metadata.json` (machine-readable metadata), and `README.md`
+(documentation for people).
 
-When working in this repo, your job is to help build, validate, and publish skills. Always follow the contribution conventions below.
+In this repository, help build, validate, and publish skills. Obey the conventions below.
 
 ## Contribution Conventions
 
-- Skill directory names must be **kebab-case** (e.g. `git-workflow`, `golden-rules`).
-- Each skill directory has this structure: `SKILL.md` at the plugin root (with YAML frontmatter), `metadata.json`, `README.md`, `.claude-plugin/plugin.json`. There is NO `commands/` directory (legacy layout, removed — see `docs/decisions/0001-migrate-to-skill-md-layout.md`). Multi-skill plugins (agent-based-development) use `skills/<sub-skill>/SKILL.md` instead of a root `SKILL.md`.
-- `metadata.json` must validate against `schema/metadata.schema.json`.
-- After creating or editing a skill, run `./scripts/validate.sh skills/<skill-name>`.
-- After adding a skill directory, run `./scripts/check-registry.sh`. `new-skill.sh` already adds the skill to `registry.json` and `marketplace.json`; edit them by hand only for a skill made without the script.
-- Use `./scripts/new-skill.sh <name>` to scaffold a new skill. It creates the full directory structure (including `.claude-plugin/plugin.json`) and registers the skill in `registry.json` and `marketplace.json`.
-- Skills are distributed via the Claude Code marketplace — there is no manual install script. Direct users to add this repo as a marketplace in `~/.claude/settings.json`.
-- Do not modify `skills/example-skill/` — it is the canonical reference for contributors.
+- Use kebab-case for skill directory names, for example `git-workflow`.
+- Give each skill directory this structure: `SKILL.md` at the plugin root (with YAML
+  frontmatter), `metadata.json`, `README.md`, and `.claude-plugin/plugin.json`.
+- Do not make a `commands/` directory. The project removed that legacy layout; see
+  `docs/decisions/0001-migrate-to-skill-md-layout.md`.
+- A multi-skill plugin uses `skills/<sub-skill>/SKILL.md` and has no root `SKILL.md`. Only
+  agent-based-development uses this layout.
+- Make sure that `metadata.json` agrees with `schema/metadata.schema.json`.
+- Scaffold a new skill with `./scripts/new-skill.sh <name>`. The script makes the full
+  directory, including `.claude-plugin/plugin.json`, and adds the skill to `registry.json`
+  and `marketplace.json`.
+- After you add a skill directory, run `./scripts/check-registry.sh`. Edit `registry.json` and
+  `marketplace.json` by hand only for a skill that you made without the script.
+- After you create or edit a skill, run `./scripts/validate.sh skills/<skill-name>`.
+- Distribute skills only through the Claude Code marketplace. There is no install script. Tell
+  users to add this repository as a marketplace in `~/.claude/settings.json`.
+- Do not change `skills/example-skill/`. It is the reference for contributors.
 
 ## Pre-Commit Checklist (MANDATORY — run before every commit)
 
-Always run these checks before committing. CI will fail if any are skipped.
+Do all of these checks before each commit. CI fails if one fails.
 
-1. **Validate skill structure** — `./scripts/validate.sh skills/<name>` for each changed skill.
-2. **Sync registry versions** — `skills/registry.json` version must match `metadata.json` version for every skill. Update registry.json whenever you bump a skill version.
-3. **Bump versions** — Any skill whose `SKILL.md`, supporting files, `metadata.json`, or `README.md` changed must have its version incremented in **all four places**: `metadata.json`, `skills/registry.json`, `.claude-plugin/marketplace.json`, and `skills/<name>/.claude-plugin/plugin.json`. Use semver patch bumps for fixes, minor bumps for new features or layout changes.
-4. **Run ShellCheck** — `shellcheck scripts/*.sh tests/*.sh`. All scripts must pass with no errors.
-5. **Run markdownlint** — `npx markdownlint-cli2 "skills/**/*.md" "*.md"`. No bare URLs — wrap emails and URLs in backticks or angle brackets.
-6. **Check registration and version sync** — `./scripts/check-registry.sh` to confirm every skill directory is registered, and `./scripts/sync-versions.sh --check` to confirm versions agree across `metadata.json`, `registry.json`, `marketplace.json`, and `plugin.json`.
-7. **Run the tests** — `bash tests/run-all.sh`. CI runs the same suite.
+1. **Validate skill structure.** Run `./scripts/validate.sh skills/<name>` for each changed
+   skill.
+2. **Sync registry versions.** The version in `skills/registry.json` must be the same as the
+   version in `metadata.json` for each skill. Change `registry.json` each time that you
+   increase a skill version.
+3. **Increase versions.** Increase the version of each skill whose `SKILL.md`, supporting
+   files, `metadata.json`, or `README.md` changed. Write the new version in all four places:
+   `metadata.json`, `skills/registry.json`, `.claude-plugin/marketplace.json`, and
+   `skills/<name>/.claude-plugin/plugin.json`. Use a patch increase for a fix. Use a minor
+   increase for a new feature or a layout change.
+4. **Run ShellCheck.** Run `shellcheck scripts/*.sh tests/*.sh`. All scripts must pass with
+   no errors.
+5. **Run markdownlint.** Run `npx markdownlint-cli2 "skills/**/*.md" "*.md"`. Do not use bare
+   URLs. Put each email address and URL in backticks or angle brackets.
+6. **Check registration and version sync.** Run `./scripts/check-registry.sh` to make sure
+   that the registry lists each skill directory. Run `./scripts/sync-versions.sh --check` to make
+   sure that the versions agree in `metadata.json`, `registry.json`, `marketplace.json`, and
+   `plugin.json`.
+7. **Run the tests.** Run `bash tests/run-all.sh`. CI runs the same suite.
 
 ## Golden Rules
 

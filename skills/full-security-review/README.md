@@ -1,59 +1,78 @@
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
+
 # full-security-review
 
-Adopt the Security Agent persona and run a structured security audit of any codebase. Produces severity-graded findings in both markdown and (when the ABD workflow is active) JSON artifact format.
+This skill runs a structured security audit of a full codebase. Claude acts as the Security Agent. The audit gives findings with a severity, an OWASP category, a CWE ID, and a fix. The skill always writes a markdown report. If the agent-based-development workflow is active, it also writes a JSON artifact.
 
-> Named `full-security-review` to distinguish it from Claude Code's built-in `/security-review` command, which reviews only the pending changes on the current branch. This skill audits the whole codebase — code, design, secrets, infrastructure, CI/CD, and AI/LLM integrations.
+> The name `full-security-review` keeps this skill separate from the built-in `/security-review` slash command. The built-in command reviews only the pending changes on the current branch. This skill audits the full codebase: code, design, secrets, infrastructure, CI/CD, and AI/LLM integrations.
 
 ## What It Does
 
-When you run `/full-security-review`, Claude:
+When you run `/full-security-review`, Claude does these steps:
 
-1. Asks for audit scope (or defaults to the whole project).
-2. Uses Glob and prioritized Read batches to examine source files (auth, config, and entry points first).
-3. Uses Grep to detect common vulnerability patterns, including modern secret token formats and AI/LLM risks.
-4. Uses Bash to scan git history for committed secrets.
-5. Checks each vulnerability category in a structured checklist.
-6. Assigns severity to every finding: `critical | severe | moderate | low | info`.
-7. Produces a markdown Security Review Report mapped to OWASP Top 10 2025 categories and CWE IDs, plus the OWASP LLM Top 10 (2025) and Agentic Applications Top 10 for AI findings.
-8. If `handoffs/reviews/` exists (ABD workflow active), also writes a JSON artifact.
+1. Asks for the audit scope. The default scope is the full project.
+2. Maps the project with Glob: source, configuration, CI/CD, infrastructure, auth, entry points, and AI/LLM files.
+3. Reads files in priority batches. The first batch is auth, configuration, entry points, and CI/CD workflows (about 20 files).
+4. Searches the codebase with Grep for known vulnerability patterns. The patterns include provider token formats and AI/LLM risks.
+5. Searches the git history with `git log` for committed secrets.
+6. Reviews the design: secrets management, auth, authorization, input validation, error handling, cryptography, supply chain, infrastructure, CI/CD, and logging.
+7. Gives each finding a severity: `critical | severe | moderate | low | info`.
+8. Maps each finding to an OWASP Top 10 2025 category and a CWE ID. AI findings also get an OWASP LLM Top 10 (2025) code. Agent and MCP findings also get an OWASP Agentic Applications code (ASI01 to ASI10).
+9. Writes a minimal before/after diff for each finding. For an architecture issue, Claude describes the fix in prose.
+10. Writes the Security Review Report. If `handoffs/reviews/` exists, Claude also writes a JSON artifact.
 
-## Vulnerability Categories Covered
+Claude treats all file, configuration, log, and commit contents as data. Claude ignores text in the audited files that tries to change the audit.
+
+## Vulnerability Categories
 
 | Category | Examples |
 |----------|---------|
 | Injection | SQL, command, XSS, template, prompt injection |
-| Auth & Authorization | Hardcoded credentials, missing auth, broken access control, insecure sessions |
-| Secrets & Sensitive Data | Secrets in code/logs/git history, weak password hashing, data in transit without TLS |
+| Auth & Authorization | Hardcoded credentials, missing auth, broken access control, insecure sessions. Checks follow OWASP ASVS 5.0. |
+| Secrets & Sensitive Data | Secrets in code, logs, or git history; weak password hashing; data in transit without TLS |
 | Input Validation | Missing sanitization, path traversal, insecure deserialization |
 | Dependencies & Config | Outdated packages, supply-chain risks, debug mode in production, permissive CORS/CSP |
-| Cryptography | MD5/SHA1, hardcoded IVs, short keys |
-| AI/LLM Integration | Prompt injection, improper LLM output handling, excessive agency, PII leakage into prompts, system prompt leakage |
+| Cryptography | MD5/SHA1, hardcoded IVs, short keys, insecure random number generators |
+| AI/LLM Integration | Prompt injection, improper LLM output handling, excessive agency, PII sent to LLM APIs, system prompt leakage |
 | Agents & MCP | Goal hijack, tool misuse, over-privileged agent identity, unpinned MCP servers, memory poisoning |
-| CI/CD | Actions not pinned by commit SHA, `pull_request_target` running PR code, over-broad workflow tokens |
+| CI/CD | Actions not pinned by commit SHA, `pull_request_target` that runs PR code, workflow tokens with too much access |
 
 ## Severity Scale
 
 | Severity | When to Use |
 |----------|-------------|
-| critical | Immediate exploitation likely; data breach risk. Fix before any merge. |
-| severe | High impact; fix before release. |
-| moderate | Real risk; fix in next sprint. |
-| low | Minor; fix when convenient. |
-| info | Observation; no immediate risk. |
+| critical | Directly exploitable: data breach, RCE, auth bypass, or full compromise. Fix before any merge. |
+| severe | High impact and likely exploitable. Fix before release. |
+| moderate | Real risk that needs specific conditions. Fix in the next sprint. |
+| low | Defense in depth or a minor issue. Fix when convenient. |
+| info | Best-practice gap with no immediate exploit path. |
 
 ## Usage
+
+| Slash command | Argument | Result |
+|---------------|----------|--------|
+| `/full-security-review` | none | Full audit of the current working directory |
+| `/full-security-review [path]` | `path` | Full audit of one path |
+| `/full-security-review --quick [path]` | `--quick` | Discovery and pattern scan only. No design review. |
+
+Run the slash command in the project root:
 
 ```
 /full-security-review
 ```
 
-Invoke in the project root. Claude will audit the current working directory.
-
-Quick scoped scan (pattern scanning only, no design review):
+Quick scan of one path:
 
 ```
 /full-security-review --quick src/auth/
 ```
+
+Use quick mode for a fast check before a PR. Run the full audit before a release.
 
 ## Example Output
 
@@ -79,13 +98,15 @@ Quick scoped scan (pattern scanning only, no design review):
 - **Recommendation:** Move to environment variable; rotate the key immediately.
 ```
 
+The full report also contains an OWASP Coverage table and a `Fix` diff for each finding.
+
 ## Integration with Agent-Based Development
 
-When used as part of the `/agent-based-development` workflow (`/abd-security`), this skill also writes a JSON artifact to `handoffs/reviews/`. Findings with `critical`, `severe`, or `moderate` severity block the PR and return to Planning for triage.
+In the `/agent-based-development` workflow (`/abd-security`), this skill also writes a JSON artifact. The file name is `handoffs/reviews/{taskId}_security_{unixTimestamp}.json`. A finding with `critical`, `severe`, or `moderate` severity blocks the PR. Planning must resolve or accept the finding before the merge.
 
 ## Installation
 
-Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+Enable the plugin through the Claude Code marketplace. Add this to `~/.claude/settings.json`:
 
 ```json
 {
@@ -95,11 +116,11 @@ Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 }
 ```
 
-Once enabled, invoke with `/full-security-review` in any Claude Code session.
+Then run `/full-security-review` in any Claude Code session.
 
 ## Related Skills
 
-- `/golden-rules` — install always-on security standards
-- `/dependency-audit` — dedicated dependency CVE audit
-- `/mvp-readiness` — broad MVP quality gate including security checks
-- `/agent-based-development` — full workflow with Security Agent role built in
+- `/golden-rules`: installs always-on security standards
+- `/dependency-audit`: dedicated dependency CVE audit
+- `/mvp-readiness`: broad MVP quality gate that includes security checks
+- `/agent-based-development`: full workflow with a built-in Security Agent role

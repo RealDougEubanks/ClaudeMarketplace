@@ -1,12 +1,15 @@
 <!--
-doc: ASSUMPTIONS
-last-refreshed: 2026-04-07
+doc: decision-log
+standard: plain (entries are historical records and keep their original wording)
+last-refreshed: 2026-10-15
 generated-by: doc-refresh skill
 -->
 
 # Assumptions
 
-Non-obvious decisions made during development. Each entry records the assumption, rationale, author, and date.
+This file records each decision that is not obvious from the code. Each entry gives the
+assumption, the reason, the author, and the date. Do not change an old entry. To change a
+decision, add a new entry and mark the old entry as superseded.
 
 ---
 
