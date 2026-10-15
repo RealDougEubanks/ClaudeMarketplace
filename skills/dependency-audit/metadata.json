@@ -1,6 +1,6 @@
 {
   "name": "dependency-audit",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Audits dependencies across npm, pip, Go, Cargo, Composer, .NET, and Ruby manifests for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
   "author": {
     "name": "Doug Eubanks",

@@ -9,7 +9,7 @@
       "name": "golden-rules",
       "source": "./skills/golden-rules",
       "description": "Installs mandatory security, coding, naming, design, testing, error handling, API contract, and performance standards into CLAUDE.md as always-on context for every Claude Code session.",
-      "version": "1.9.0",
+      "version": "1.9.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -26,7 +26,7 @@
       "name": "agent-based-development",
       "source": "./skills/agent-based-development",
       "description": "Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model.",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -45,7 +45,7 @@
       "name": "mvp-readiness",
       "source": "./skills/mvp-readiness",
       "description": "Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.",
-      "version": "1.4.1",
+      "version": "1.4.2",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -63,7 +63,7 @@
       "name": "full-security-review",
       "source": "./skills/full-security-review",
       "description": "Structured security audit covering injection, auth, secrets, input validation, dependencies, and cryptography. Produces severity-graded findings.",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -81,7 +81,7 @@
       "name": "git-workflow",
       "source": "./skills/git-workflow",
       "description": "Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference.",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -152,7 +152,7 @@
       "name": "dependency-audit",
       "source": "./skills/dependency-audit",
       "description": "Audits project dependencies for unpinned versions, deprecated packages, missing lockfiles, and known CVEs.",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -173,7 +173,7 @@
       "name": "changelog-generator",
       "source": "./skills/changelog-generator",
       "description": "Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts.",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -249,7 +249,7 @@
       "name": "incident-report",
       "source": "./skills/incident-report",
       "description": "Generates professional incident reports using customizable templates and rules. Supports outage, security, performance, and data-loss types. Extensible via templates/ and rules/.",
-      "version": "1.3.1",
+      "version": "1.3.2",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -270,7 +270,7 @@
       "name": "pre-commit",
       "source": "./skills/pre-commit",
       "description": "Fast pre-commit quality gate: secrets, dead code, naming, conflict markers, and direct-to-main protection. Installs as a git hook.",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -290,7 +290,7 @@
       "name": "best-practices",
       "source": "./skills/best-practices",
       "description": "Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates.",
-      "version": "1.4.1",
+      "version": "1.4.2",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -350,7 +350,7 @@
       "name": "adr",
       "source": "./skills/adr",
       "description": "Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR 4.0 format. Supports creating, listing, updating, superseding, and searching ADRs.",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -369,7 +369,7 @@
       "name": "api-design",
       "source": "./skills/api-design",
       "description": "Designs and reviews REST, GraphQL, and gRPC APIs. Design mode produces OpenAPI specs, GraphQL schemas, or proto files. Review mode audits existing APIs for consistency, best practices, and breaking change risks.",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -390,7 +390,7 @@
       "name": "database-design",
       "source": "./skills/database-design",
       "description": "Designs database schemas from domain requirements (ERD, indexes, migrations, security) or reviews existing schemas for normalization issues, missing indexes, unsafe migrations, and scalability risks.",
-      "version": "1.3.1",
+      "version": "1.3.2",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -411,7 +411,7 @@
       "name": "accessibility",
       "source": "./skills/accessibility",
       "description": "Audits code for WCAG 2.2 AA compliance (review mode) and provides design guidance for building accessible components (design mode). Covers semantic HTML, ARIA, keyboard navigation, colour contrast, focus management, and motion.",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"
@@ -431,7 +431,7 @@
       "name": "doc-refresh",
       "source": "./skills/doc-refresh",
       "description": "Documentation refresh: audits stale docs, creates missing ones, and rewrites them to a selected standard (STE-lite, plain language, Diataxis) with mandatory security callouts.",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": {
         "name": "Doug Eubanks",
         "url": "https://github.com/RealDougEubanks"

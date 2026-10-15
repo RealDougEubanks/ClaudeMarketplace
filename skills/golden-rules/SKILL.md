@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 Install mandatory security, coding, design, testing, error handling, API contract, and performance standards into this project's CLAUDE.md so they are active for every Claude Code session automatically.
 
-This skill's version: **1.9.0** (also stamped in the marker comment inside the Golden Rules Block below).
+This skill's version: **1.9.1** (also stamped in the marker comment inside the Golden Rules Block below).
 
 ## Instructions
 
@@ -38,7 +38,7 @@ Write or append the following content verbatim:
 
 ## Golden Rules
 
-<!-- golden-rules v1.9.0 — do not remove; used by /golden-rules --update -->
+<!-- golden-rules v1.9.1 — do not remove; used by /golden-rules --update -->
 
 GOLDEN RULES (MANDATORY — ALL WORK IN THIS PROJECT MUST FOLLOW THESE)
 

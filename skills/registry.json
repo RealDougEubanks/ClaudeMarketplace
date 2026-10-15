@@ -35,7 +35,7 @@
         "api-contracts",
         "performance"
       ],
-      "version": "1.9.0",
+      "version": "1.9.1",
       "category": "base"
     },
     {
@@ -51,7 +51,7 @@
         "review",
         "handoffs"
       ],
-      "version": "1.5.0",
+      "version": "1.5.1",
       "category": "workflow"
     },
     {
@@ -65,7 +65,7 @@
         "checklist",
         "standards"
       ],
-      "version": "1.4.1",
+      "version": "1.4.2",
       "category": "standards"
     },
     {
@@ -80,7 +80,7 @@
         "vulnerability",
         "injection"
       ],
-      "version": "1.5.0",
+      "version": "1.5.1",
       "category": "security"
     },
     {
@@ -94,7 +94,7 @@
         "branching",
         "pr"
       ],
-      "version": "1.5.0",
+      "version": "1.5.1",
       "category": "workflow"
     },
     {
@@ -141,7 +141,7 @@
         "go",
         "ruby"
       ],
-      "version": "1.4.0",
+      "version": "1.4.1",
       "category": "security"
     },
     {
@@ -155,7 +155,7 @@
         "documentation",
         "versioning"
       ],
-      "version": "1.4.0",
+      "version": "1.4.1",
       "category": "workflow"
     },
     {
@@ -218,7 +218,7 @@
         "devops",
         "templates"
       ],
-      "version": "1.3.1",
+      "version": "1.3.2",
       "category": "workflow"
     },
     {
@@ -234,7 +234,7 @@
         "gate",
         "standards"
       ],
-      "version": "1.4.0",
+      "version": "1.4.1",
       "category": "standards"
     },
     {
@@ -250,7 +250,7 @@
         "improvement",
         "architecture"
       ],
-      "version": "1.4.1",
+      "version": "1.4.2",
       "category": "standards"
     },
     {
@@ -297,7 +297,7 @@
         "design",
         "knowledge-management"
       ],
-      "version": "1.4.0",
+      "version": "1.4.1",
       "category": "workflow"
     },
     {
@@ -314,7 +314,7 @@
         "review",
         "contracts"
       ],
-      "version": "1.4.0",
+      "version": "1.4.1",
       "category": "workflow"
     },
     {
@@ -331,7 +331,7 @@
         "design",
         "review"
       ],
-      "version": "1.3.1",
+      "version": "1.3.2",
       "category": "workflow"
     },
     {
@@ -347,7 +347,7 @@
         "keyboard",
         "inclusive-design"
       ],
-      "version": "1.4.0",
+      "version": "1.4.1",
       "category": "standards"
     },
     {
@@ -364,7 +364,7 @@
         "stale",
         "audit"
       ],
-      "version": "1.4.0",
+      "version": "1.4.1",
       "category": "productivity"
     }
   ]
