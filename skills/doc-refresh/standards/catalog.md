@@ -18,7 +18,7 @@ Each document gets three layers:
 | Value | Layer | Use it for | Reference |
 |---|---|---|---|
 | `auto` (default) | — | Pick per document from the matrix below | — |
-| `ste-lite` | Sentence rules | Procedures, runbooks, reference descriptions, AI-agent context files | [ste-lite.md](ste-lite.md) |
+| `ste-lite` | Sentence rules | Procedures, runbooks, reference descriptions, AI-agent context files (Tier 1 + Tier 2) | [ste-lite.md](ste-lite.md) |
 | `ste` | Sentence rules + vocabulary | Regulated or contractual docs that require ASD-STE100 | [ste-lite.md](ste-lite.md) |
 | `plain` | Sentence rules | READMEs, policies, end-user guides, general audiences | ISO 24495-1:2023 Plain language — Governing principles and guidelines; <https://www.plainlanguage.gov/guidelines/> |
 | `google` | Sentence rules | Developer docs in projects that follow Google conventions | <https://developers.google.com/style> |
@@ -50,6 +50,16 @@ the tree by Diátaxis and writes procedures in STE-lite.
 
 If the project already declares a style guide (in `CONTRIBUTING.md`, a `.vale.ini`, or a
 `styles/` directory), use that guide for sentence rules unless the user named a standard.
+
+## STE-lite tiers
+
+[ste-lite.md](ste-lite.md) splits the STE writing rules into two tiers:
+
+- **Tier 1 (always):** every document, whatever its sentence standard. Sentence and paragraph
+  limits, one instruction per step, notices before the step, one term per concept.
+- **Tier 2 (procedural):** imperative mood, active voice, no modal verbs, no "-ing" phrases.
+  Applies in full to the document types whose sentence rules say `ste-lite` in the matrix
+  above, and to the numbered steps of every other document.
 
 ## Reconcile with the persona
 

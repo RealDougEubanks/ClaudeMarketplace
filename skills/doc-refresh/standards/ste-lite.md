@@ -1,6 +1,7 @@
-# STE-lite: ASD-STE100 writing rules without the controlled dictionary
+# STE-lite: tiered ASD-STE100 writing rules without the controlled dictionary
 
-Use this file when the selected standard is `ste-lite` or `ste`.
+Use this file when the selected standard is `ste-lite` or `ste`, and for the "always" tier
+that applies to every document (see the catalog).
 
 ## What it is
 
@@ -9,12 +10,14 @@ and Defence Industries Association of Europe). The current edition is Issue 9, r
 January 2025. The standard has two parts: writing rules and a controlled dictionary of about
 900 approved words. Each approved word has one meaning and one part of speech.
 
-"STE-lite" is an in-house convention, not a named standard. It applies the writing rules and
-drops the closed dictionary. That is roughly 80% of STE: the dictionary is the costly part,
-because it needs trained writers and checker tools. ASD itself says that STE belongs inside a
-wider company style guide. No published source defines "80% STE", so do not cite that number
-as a standard. Describe the result as "ASD-STE100 Issue 9 writing rules, no controlled
-dictionary."
+"STE-lite" is an in-house convention, not a named standard. It keeps the writing rules, splits
+them into two tiers, and drops the closed dictionary. The dictionary is the costly part: it
+needs trained writers and checker tools, and ASD itself says that STE belongs inside a wider
+company style guide.
+
+Do not describe STE-lite as a percentage of STE ("80% STE"). The rules do not carry equal
+weight, and no published source defines a percentage. Describe it as "ASD-STE100 Issue 9
+writing rules, tiered, no controlled dictionary."
 
 Sources:
 
@@ -24,23 +27,36 @@ Sources:
 > Paraphrase the rules below. Do not copy rule text or dictionary entries from the standard;
 > ASD keeps the copyright.
 
-## Rules to apply (the kept 80%)
+## Tier 1 — always (every document, whatever the standard)
+
+These rules carry most of STE's value and cost little readability.
 
 | Area | Rule |
 |---|---|
-| Procedural sentences | 20 words or fewer. One instruction per sentence. Imperative mood. |
-| Descriptive sentences | 25 words or fewer. Active voice. Use passive only when the actor is unknown or not relevant. |
+| Sentence length | 20 words or fewer in procedural steps. 25 words or fewer in other prose. |
 | Paragraphs | One topic. 6 sentences or fewer. Use a list or a table for 3 or more parallel items. |
-| Articles | Keep "the" and "a". Do not write telegraphic text. |
-| Noun clusters | 3 words or fewer. Code identifiers and product names are exempt. |
-| Verb forms | Simple present, simple past, simple future, imperative. Do not use "would", "could", "should", "might" or "may". Use "can" for ability, "must" for obligation, "do not" for prohibition. |
-| "-ing" forms | Do not use "-ing" verb forms as nouns or in long phrases ("by setting X" becomes "set X"). Fixed technical nouns such as "logging" are permitted. |
-| Terminology | One term for one concept. Build a short glossary for the project before you write, and use only those terms. |
+| Steps | One instruction per numbered step. A short note after the instruction is permitted. |
 | Notices | Put a safety or security notice immediately before the step that it applies to. |
+| Terminology | One term for one concept. Build a short project glossary before you write, and use only those terms. |
 | Order | Put conditions first ("If X, do Y."). Put the most important information first. |
-| Lists | Use numbered lists for sequences and bullets for unordered items. |
+| Articles | Keep "the" and "a". Do not write telegraphic text. |
 
-## What STE-lite relaxes (the dropped 20%)
+## Tier 2 — procedural (procedures, runbooks, troubleshooting, reference, agent context)
+
+These rules make instructions unambiguous, which also helps AI agents. They cost readability
+in conceptual text, so apply them only to these document types — and, in every document, to
+the text of numbered steps.
+
+| Area | Rule |
+|---|---|
+| Mood | Imperative for instructions ("Set the token."). |
+| Voice | Active. Use passive only when the actor is unknown or not relevant. |
+| Modal verbs | Do not use "would", "could", "should", "might" or "may". Use "can" for ability, "must" for obligation, "do not" for prohibition. |
+| "-ing" forms | Do not use "-ing" verb forms in phrases such as "by setting X" or "before running Y" ("set X", "before you run Y"). Fixed technical nouns such as "logging" are permitted. |
+| Verb forms | Simple present, simple past, simple future, imperative. |
+| Noun clusters | 3 words or fewer. Code identifiers and product names are exempt. |
+
+## What STE-lite relaxes
 
 - No controlled dictionary. Use normal technical English plus the project's technical nouns
   and verbs (STE rules for technical nouns and technical verbs already allow domain terms).
@@ -48,13 +64,15 @@ Sources:
 - Table cells can be fragments.
 - Code, commands, configuration, and error strings stay verbatim, even when they break a rule.
 - Headings can be noun phrases.
+- Outside Tier 2 document types, prose (not steps) follows the plain-language standard.
 
 ## Full `ste` mode
 
 The controlled dictionary is not bundled with this skill. If the user selects `ste`:
 
 1. Ask whether they have the ASD-STE100 Issue 9 dictionary available.
-2. If they do, use it to restrict vocabulary and report non-approved words.
+2. If they do, apply Tier 1 and Tier 2 to all prose, restrict vocabulary to the dictionary
+   plus project technical terms, and report non-approved words.
 3. If they do not, apply `ste-lite` and say so in the summary.
 
 Full STE fits regulated or contractual work: aerospace, defence, and some medical-device
@@ -72,22 +90,34 @@ These levels follow the STE convention (warning before caution) in software term
 
 Each notice: 1 to 3 short sentences. State the risk, then the action to take.
 
-## Measure conformance
+## Glossary file
 
-Run the bundled checker on each file you write:
+Write the project glossary to a temporary file so the checker can enforce it. Use one line per
+concept, with the preferred term, a colon, and the terms to avoid:
 
-```bash
-python3 "${CLAUDE_PLUGIN_ROOT:-skills/doc-refresh}/scripts/ste_check.py" --min-score 80 <files>
+```text
+# preferred: avoid, avoid
+subaccount: sub-account, child account
+API token: API key
 ```
 
-The checker tests only rules that a script can test reliably: sentence length (20 for
-numbered steps, 25 for other prose), paragraph length, and modal verbs. It skips frontmatter,
-HTML comments, code blocks, tables, and headings. A score of 80% or more meets the STE-lite
-target. Fix every flagged sentence that you can fix without loss of meaning. Then review
-the rest of the rules (voice, "-ing" forms, terminology) by reading the text.
+## Measure conformance
 
-## Where STE fits poorly
+Run the bundled checker with the tier that matches the document type:
 
-Strict STE reads stiffly in conceptual and teaching text. Use it fully on procedures,
-runbooks, safety-critical steps, and reference descriptions. For tutorials and explanations,
-apply only the sentence-length and terminology rules, and keep a natural voice.
+```bash
+# Tier 2 document types (runbook, troubleshooting, reference, agent context)
+python3 "${CLAUDE_PLUGIN_ROOT:-skills/doc-refresh}/scripts/ste_check.py" --tier full --glossary <glossary> <files>
+
+# All other document types (Tier 2 rules apply only inside numbered steps)
+python3 "${CLAUDE_PLUGIN_ROOT:-skills/doc-refresh}/scripts/ste_check.py" --tier always --glossary <glossary> <files>
+```
+
+The checker tests the rules that a script can test: sentence and paragraph length, modal
+verbs, "-ing" phrases, likely passive voice, and glossary terms to avoid. The passive-voice and
+"-ing" checks are heuristics: review each hit, and keep the sentence when the rewrite is worse.
+The checker skips frontmatter, HTML comments, code blocks, tables, and headings.
+
+A score is the share of sentences with no violation. Aim for 90% or more, and fix every
+glossary violation. A high score is necessary, not sufficient: also read the text for the
+rules no script can test (one instruction per step, condition first, notice placement).

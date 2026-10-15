@@ -43,13 +43,16 @@ chosen per document.
 Read [standards/catalog.md](standards/catalog.md) (resolve it like the templates in Step 4).
 
 - If the user passed `--standard <value>` (or named a standard in plain words, for example
-  "about 80% ASD-STE100", which means `ste-lite`), use it for every document.
+  "about 80% ASD-STE100", which means `ste-lite`), use it for every document. Tell the user
+  that STE-lite applies its procedural tier only to procedural and reference docs.
 - Otherwise use `auto`: pick a standard per document type from the catalog's default matrix.
 - If a document already has a `standard:` field in its metadata comment and the user did not
   name one, keep that standard so successive runs stay consistent.
-- If the selected standard is `ste-lite` or `ste`, also read
-  [standards/ste-lite.md](standards/ste-lite.md) and build a short project glossary (one term
-  per concept) before you write.
+- Always read [standards/ste-lite.md](standards/ste-lite.md): its Tier 1 rules apply to every
+  document. Build a short project glossary (one term per concept) and write it to a temporary
+  file in the format that file describes, before you write any doc.
+- Tier 2 (procedural) rules apply to runbooks, troubleshooting pages, reference pages, and
+  agent context files, and to the numbered steps of every other doc.
 
 Print the chosen standard for each document before writing.
 
@@ -70,7 +73,8 @@ Rules for every document written or rewritten, whatever the standard:
 
 - **No assumed knowledge.** Define every acronym on first use.
 - **Numbered steps for procedures.** Never use prose for a sequence of actions.
-- **Sentence length.** 20 words or fewer in procedures, 25 or fewer in descriptive text.
+- **STE-lite Tier 1.** Sentence limits (20 words in steps, 25 elsewhere), one instruction per
+  step, one term per concept, conditions first.
 - **Notices before the step.** Put the notice immediately before the step it governs:
   `> **SECURITY:**` for credentials, secrets, tokens, network exposure, or permissions;
   `> **WARNING:**` for actions that destroy or replace live data; `> **CAUTION:**` for
@@ -193,11 +197,14 @@ any placeholder unfilled — if the information is not found, write `Unknown —
 **Conformance check** (after writing each doc):
 
 1. Re-read the doc against the selected standard's rules.
-2. For `ste-lite` and `ste`, run the bundled checker and fix flagged sentences until the score
-   is 80% or more (or explain in the summary why a sentence must stay):
+2. Run the bundled checker on every doc. Use `--tier full` for Tier 2 document types and
+   `--tier always` for the rest. Fix flagged sentences until the score is 90% or more and no
+   glossary violation remains. Passive-voice and "-ing" hits are heuristics: keep a sentence
+   when the rewrite is worse, and say so in the summary.
 
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT:-skills/doc-refresh}/scripts/ste_check.py" --min-score 80 <doc files>
+   python3 "${CLAUDE_PLUGIN_ROOT:-skills/doc-refresh}/scripts/ste_check.py" \
+     --tier full --glossary <glossary file> --min-score 90 <doc files>
    ```
 
    If `python3` is not available, check sentence length by reading and say so in the summary.
@@ -216,7 +223,7 @@ Docs rewritten:       X  (filenames)
 Docs unchanged:       X  (filenames, with "historical record" where Step 0 applied)
 
 Standard per doc:     README.md=plain, docs/RUNBOOK.md=ste-lite, ...
-STE-lite scores:      docs/RUNBOOK.md 91%, ...  (ste_check.py; target 80%)
+STE-lite scores:      docs/RUNBOOK.md 94% (full), README.md 98% (always), ...  (target 90%)
 Doc tests run:        <command> — pass/fail
 Notices added:        X SECURITY, X WARNING, X CAUTION
 Skipped (uncommitted or changed during the run): X  (filenames)
@@ -347,8 +354,7 @@ never delete, never write outside the target).
 When invoked as `/doc-refresh check`:
 
 Run Steps 0.5 and 1–3 only. Print the stale audit table and the missing-docs list. For each
-doc whose metadata comment names `standard: ste-lite` or `ste`, also run `ste_check.py` and
-print its score. Do NOT write or delete any files. Useful for CI to detect documentation drift.
+doc, also run `ste_check.py` with the tier for its document type and print its score. Do NOT write or delete any files. Useful for CI to detect documentation drift.
 
 ---
 

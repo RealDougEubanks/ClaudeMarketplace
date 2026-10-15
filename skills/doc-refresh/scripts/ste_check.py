@@ -2,8 +2,10 @@
 """Heuristic ASD-STE100 writing-rule checker for Markdown.
 
 Scores each file as the share of prose sentences with no rule violation.
-It checks only rules a script can test reliably: sentence length,
-paragraph length, and modal verbs that STE-lite replaces with can/must.
+Tier "always" checks sentence and paragraph length and glossary terms in all
+prose, and the procedural rules only inside numbered steps. Tier "full"
+applies the procedural rules (modal verbs, -ing phrases, likely passive
+voice) to all prose. Passive and -ing checks are heuristics.
 """
 
 import argparse
@@ -15,7 +17,17 @@ from pathlib import Path
 
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_PARAGRAPH_SENTENCES = 6
+MAX_GLOSSARY_ENTRIES = 200
+MAX_GLOSSARY_LINE = 300
 MODAL_RE = re.compile(r"\b(should|would|could|might|may)\b", re.IGNORECASE)
+PASSIVE_RE = re.compile(
+    r"\b(?:am|is|are|was|were|be|been|being)\s+(?:\w+ly\s+)?"
+    r"(\w+ed|built|done|made|known|given|taken|shown|seen|written|sent|kept|found|held|run|set)\b",
+    re.IGNORECASE)
+ING_PHRASE_RE = re.compile(r"\b(?:by|when|before|after|while|without|on)\s+(\w{3,}ing)\b", re.IGNORECASE)
+ING_EXEMPT = {"thing", "things", "string", "nothing", "something", "anything", "everything",
+              "during", "morning", "ring", "spring", "king", "logging", "monitoring", "tracing",
+              "caching", "routing", "pricing", "staging", "testing", "scheduling", "existing"}
 ORDERED_ITEM_RE = re.compile(r"^\s*\d+[.)]\s+")
 BULLET_ITEM_RE = re.compile(r"^\s*[-*+]\s+")
 FENCE_RE = re.compile(r"^\s*(```|~~~)")
@@ -117,7 +129,45 @@ def prose_blocks(lines):
         yield done
 
 
-def check_text(path: str, text: str, max_procedural: int, max_descriptive: int) -> FileReport:
+def parse_glossary(text: str) -> list:
+    """Parse 'preferred: avoid, avoid' lines into (preferred, compiled-avoid-regex) pairs."""
+    entries = []
+    for number, raw in enumerate(text.splitlines(), start=1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if len(line) > MAX_GLOSSARY_LINE:
+            raise CheckError(f"glossary line {number}: longer than {MAX_GLOSSARY_LINE} characters")
+        preferred, sep, avoid = line.partition(":")
+        avoid_terms = [t.strip() for t in avoid.split(",") if t.strip()]
+        if not sep or not preferred.strip() or not avoid_terms:
+            raise CheckError(f"glossary line {number}: expected 'preferred: avoid, avoid'")
+        for term in avoid_terms:
+            entries.append((preferred.strip(),
+                            re.compile(r"(?<!\w)" + re.escape(term) + r"(?!\w)", re.IGNORECASE)))
+        if len(entries) > MAX_GLOSSARY_ENTRIES:
+            raise CheckError(f"glossary: more than {MAX_GLOSSARY_ENTRIES} terms")
+    return entries
+
+
+def procedural_problems(sentence: str, line: int) -> list:
+    problems = []
+    modal = MODAL_RE.search(sentence)
+    if modal:
+        problems.append(Violation(line, "modal-verb", f"'{modal.group(0)}' (use can, must, or do not)"))
+    ing = next((m for m in ING_PHRASE_RE.finditer(sentence) if m.group(1).lower() not in ING_EXEMPT), None)
+    if ing:
+        problems.append(Violation(line, "ing-phrase", f"'{ing.group(0)}' (heuristic; use a verb clause)"))
+    passive = PASSIVE_RE.search(sentence)
+    if passive:
+        problems.append(Violation(line, "passive-voice", f"'{passive.group(0)}' (heuristic; prefer active)"))
+    return problems
+
+
+def check_text(path: str, text: str, max_procedural: int, max_descriptive: int,
+               tier: str = "full", glossary=()) -> FileReport:
+    if tier not in ("always", "full"):
+        raise CheckError(f"unknown tier {tier!r}")
     report = FileReport(path=path)
     for start, kind, block in prose_blocks(text.splitlines()):
         sentences = [s for s in SENTENCE_END_RE.split(strip_inline(block)) if s.strip()]
@@ -131,9 +181,12 @@ def check_text(path: str, text: str, max_procedural: int, max_descriptive: int) 
             words = len(sentence.split())
             if words > limit:
                 problems.append(Violation(start, f"{kind}-length", f"{words} words (max {limit})"))
-            modal = MODAL_RE.search(sentence)
-            if modal:
-                problems.append(Violation(start, "modal-verb", f"'{modal.group(0)}' (use can, must, or do not)"))
+            if tier == "full" or kind == "procedural":
+                problems.extend(procedural_problems(sentence, start))
+            for preferred, avoid_re in glossary:
+                hit = avoid_re.search(sentence)
+                if hit:
+                    problems.append(Violation(start, "glossary", f"'{hit.group(0)}' (use '{preferred}')"))
             if problems:
                 report.violations.extend(problems)
             else:
@@ -141,7 +194,7 @@ def check_text(path: str, text: str, max_procedural: int, max_descriptive: int) 
     return report
 
 
-def check_file(path: Path, max_procedural: int, max_descriptive: int) -> FileReport:
+def read_bounded(path: Path) -> str:
     try:
         size = path.stat().st_size
     except OSError as err:
@@ -149,12 +202,16 @@ def check_file(path: Path, max_procedural: int, max_descriptive: int) -> FileRep
     if size > MAX_FILE_BYTES:
         raise CheckError(f"{path}: file is {size} bytes; the limit is {MAX_FILE_BYTES}")
     try:
-        text = path.read_text(encoding="utf-8")
+        return path.read_text(encoding="utf-8")
     except UnicodeDecodeError as err:
         raise CheckError(f"{path}: not UTF-8 text") from err
     except OSError as err:
         raise CheckError(f"{path}: cannot read file: {err.strerror}") from err
-    return check_text(str(path), text, max_procedural, max_descriptive)
+
+
+def check_file(path: Path, max_procedural: int, max_descriptive: int,
+               tier: str = "full", glossary=()) -> FileReport:
+    return check_text(str(path), read_bounded(path), max_procedural, max_descriptive, tier, glossary)
 
 
 def bounded_int(low: int, high: int):
@@ -174,15 +231,25 @@ def main(argv=None) -> int:
     parser.add_argument("files", nargs="+", type=Path, help="Markdown files to check")
     parser.add_argument("--max-procedural", type=bounded_int(5, 60), default=20)
     parser.add_argument("--max-descriptive", type=bounded_int(5, 60), default=25)
+    parser.add_argument("--tier", choices=("always", "full"), default="full",
+                        help="always: procedural rules only in numbered steps; full: everywhere")
+    parser.add_argument("--glossary", type=Path, help="file of 'preferred: avoid, avoid' lines")
     parser.add_argument("--min-score", type=bounded_int(0, 100), default=0,
                         help="exit 1 when any file scores below this percentage")
     parser.add_argument("--json", action="store_true", help="print a JSON report")
     args = parser.parse_args(argv)
 
-    reports, failed = [], False
+    reports, failed, glossary = [], False, ()
+    if args.glossary:
+        try:
+            glossary = parse_glossary(read_bounded(args.glossary))
+        except CheckError as err:
+            print(f"ste_check: error: {err}", file=sys.stderr)
+            return 2
     for path in args.files:
         try:
-            reports.append(check_file(path, args.max_procedural, args.max_descriptive))
+            reports.append(check_file(path, args.max_procedural, args.max_descriptive,
+                                      args.tier, glossary))
         except CheckError as err:
             print(f"ste_check: error: {err}", file=sys.stderr)
             failed = True

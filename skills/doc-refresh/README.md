@@ -21,14 +21,17 @@ Pass `--standard` to choose one, or let the skill pick per document (`auto`):
 | Value | Use |
 |-------|-----|
 | `auto` | Default. Runbooks and reference get `ste-lite`; READMEs, policies and guides get `plain`. |
-| `ste-lite` | ASD-STE100 Issue 9 writing rules without the controlled dictionary ("about 80% STE"). |
+| `ste-lite` | ASD-STE100 Issue 9 writing rules in two tiers, without the controlled dictionary. |
 | `ste` | Full ASD-STE100; needs your copy of the STE dictionary, otherwise falls back to `ste-lite`. |
 | `plain` | ISO 24495-1 plain language. |
 | `google` / `microsoft` | The Google or Microsoft developer style guide. |
 | `diataxis` | Diátaxis page structure; combine with a sentence standard, e.g. `diataxis,ste-lite`. |
 
-The bundled `scripts/ste_check.py` scores STE-lite prose (sentence length, paragraph length,
-modal verbs). The skill aims for 80% or more and reports each score in its summary.
+STE-lite has two tiers. Tier 1 (sentence limits, one instruction per step, notices before
+the step, one term per concept) applies to every doc. Tier 2 (imperative, active voice, no
+modal verbs or "-ing" phrases) applies to runbooks, reference pages, and agent context files,
+and to numbered steps everywhere. The bundled `scripts/ste_check.py` scores each doc for its
+tier, flags likely passive voice and glossary terms to avoid, and the skill aims for 90%.
 
 ### Safety checks
 
@@ -77,7 +80,7 @@ Docs rewritten:       1  (README.md — 3 dead command references fixed)
 Docs unchanged:       2  (CONTRIBUTING.md, docs/assumptions.md)
 
 Standard per doc:     README.md=plain, docs/RUNBOOK.md=ste-lite
-STE-lite scores:      docs/RUNBOOK.md 91% (target 80%)
+STE-lite scores:      docs/RUNBOOK.md 94% (full), README.md 98% (always)
 Notices added:        4 SECURITY, 1 WARNING, 1 CAUTION
 
 Next: commit these changes, then run /pre-commit to verify.

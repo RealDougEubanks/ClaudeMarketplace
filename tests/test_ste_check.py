@@ -137,6 +137,74 @@ def test_main_out_of_range_limit_rejected():
         assert exc.code == 2
 
 
+def test_check_text_tier_always_ignores_modal_in_descriptive_prose():
+    report = mod.check_text("t.md", "You may set the token.\n", 20, 25, tier="always")
+    assert report.violations == []
+
+
+def test_check_text_tier_always_flags_modal_inside_numbered_step():
+    report = mod.check_text("t.md", "1. You should set the token.\n", 20, 25, tier="always")
+    assert rules(report) == ["modal-verb"]
+
+
+def test_check_text_passive_voice_flagged_in_full_tier():
+    report = check("The token is stored in the vault.\n")
+    assert "passive-voice" in rules(report)
+
+
+def test_check_text_ing_phrase_flagged_but_exempt_nouns_pass():
+    assert "ing-phrase" in rules(check("Start the run by setting the token.\n"))
+    assert check("Turn on logging during the test.\n").violations == []
+
+
+def test_check_text_unknown_tier_rejected():
+    try:
+        mod.check_text("t.md", "x.\n", 20, 25, tier="strict")
+        raise AssertionError("expected CheckError")
+    except mod.CheckError as err:
+        assert "tier" in str(err)
+
+
+def test_parse_glossary_flags_avoided_term_case_insensitive():
+    glossary = mod.parse_glossary("# comment\nsubaccount: sub-account, child account\n")
+    report = mod.check_text("t.md", "Open the Sub-Account page.\n", 20, 25, glossary=glossary)
+    assert rules(report) == ["glossary"]
+    assert "subaccount" in report.violations[0].detail
+
+
+def test_parse_glossary_does_not_match_inside_code():
+    glossary = mod.parse_glossary("API token: API key\n")
+    report = mod.check_text("t.md", "Set `API key` in the file.\n", 20, 25, glossary=glossary)
+    assert report.violations == []
+
+
+def test_parse_glossary_malformed_line_rejected():
+    for bad in ("no colon here\n", ": avoid\n", "preferred:\n", "x: " + "a" * 400 + "\n"):
+        try:
+            mod.parse_glossary(bad)
+            raise AssertionError(f"expected CheckError for {bad!r}")
+        except mod.CheckError:
+            pass
+
+
+def test_parse_glossary_too_many_terms_rejected():
+    text = "".join(f"p{i}: a{i}\n" for i in range(mod.MAX_GLOSSARY_ENTRIES + 1))
+    try:
+        mod.parse_glossary(text)
+        raise AssertionError("expected CheckError")
+    except mod.CheckError as err:
+        assert "more than" in str(err)
+
+
+def test_main_bad_glossary_exits_2():
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as handle:
+        handle.write("broken line\n")
+    try:
+        assert mod.main(["README.md", "--glossary", handle.name]) == 2
+    finally:
+        Path(handle.name).unlink()
+
+
 if __name__ == "__main__":
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     passed = failed = 0
