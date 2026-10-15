@@ -88,3 +88,10 @@ decision, add a new entry and mark the old entry as superseded.
 - **Why:** Aliases follow the newest model in each family, so skills never point at a retired model. incident-report uses `sonnet` for customer-facing prose; adr inherits the session model for its interview and architecture prose.
 - **Recorded by:** Claude (skills update 2026-10)
 - **Date:** 2026-10-15
+
+---
+
+- **Assumption:** Repository-specific mandatory rules in `CLAUDE.md` (plugin and skill layout, Python environment) live in a `## Project-Specific Rules` section after the Golden Rules block, not inside it.
+- **Why:** `/golden-rules --update` replaces the whole `## Golden Rules` section. Rules inside it that the skill does not ship would be deleted on each update.
+- **Recorded by:** Claude (golden-rules 1.9.1 update)
+- **Date:** 2026-10-15

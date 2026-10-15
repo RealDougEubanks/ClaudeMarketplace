@@ -60,12 +60,16 @@ Do all of these checks before each commit. CI fails if one fails.
 
 ## Golden Rules
 
+<!-- golden-rules v1.9.1 — do not remove; used by /golden-rules --update -->
+
 GOLDEN RULES (MANDATORY — ALL WORK IN THIS PROJECT MUST FOLLOW THESE)
 
 1. Security is paramount. Every design, implementation, and review decision must prioritize security. When in doubt, choose the more secure option and document the assumption in docs/assumptions.md.
 
 2. Do not store secrets, passwords, keys, PII, or other sensitive data insecurely.
-   - Passwords: Hash with a strong adaptive function (Argon2, bcrypt, scrypt). Never store plaintext or reversibly encrypted passwords.
+   - Passwords: Hash with a strong adaptive function (Argon2id, bcrypt, scrypt). Never store plaintext or reversibly encrypted passwords.
+   - Password policy (NIST SP 800-63B-4): no composition rules and no forced periodic rotation (change only on evidence of compromise); screen new passwords against breached and common-password lists; accept long passphrases (at least 64 characters) and allow paste and password managers.
+   - MFA: offer phishing-resistant authentication (passkeys / WebAuthn) and prefer it over SMS or OTP codes.
    - API keys, tokens, secrets: Use environment variables or a secrets manager. Never commit to the repo or log.
    - PII: Encrypt at rest and in transit. Minimize collection and retention. Follow applicable privacy rules.
    - Other sensitive data: Use encryption or hashing as appropriate. Document non-obvious choices in docs/assumptions.md.
@@ -74,15 +78,15 @@ GOLDEN RULES (MANDATORY — ALL WORK IN THIS PROJECT MUST FOLLOW THESE)
 
 4. All inputs must be sanitized, length-checked, typed (where the language supports it), and exercised by unit tests. All exceptions must be trapped and handled — never allow an unhandled exception to propagate to the user or crash a process silently.
    - Sanitize: strip, escape, or reject untrusted input before use in queries, templates, file paths, shell commands, or downstream calls.
-   - Bound: enforce explicit maximum lengths/sizes on every input. In memory-unsafe languages, check buffer sizes before every copy/read/write — no `strcpy`, `gets`, `sprintf`, or unbounded `memcpy`.
+   - Bound: enforce explicit maximum lengths/sizes on every input (request bodies, headers, query params, file uploads, buffers). In memory-unsafe languages (C, C++, unsafe Rust, cgo), check buffer sizes before every copy/read/write — no `strcpy`, `gets`, `sprintf`, or unbounded `memcpy`. Use `strncpy`/`snprintf`/bounded equivalents.
    - Type: use static types or runtime schema validation (Zod, Pydantic, JSON Schema, or language equivalent) at every boundary.
-   - Test: every input handler and parser must have unit tests covering valid input, invalid input, boundary/oversized input, and the exception path.
-   - Handle: every thrown or returned error must be caught, logged with context, and converted to a meaningful response or recovery action. No empty catch blocks. No bare `except:` that hides the failure.
+   - Test: every input handler and parser must have unit tests covering valid input, invalid input, boundary/oversized input, and the exception path. Each Golden Rule above (sanitization, length bounds, exception handling) must be verified by at least one test per handler.
+   - Handle: every thrown or returned error must be caught, logged with context, and converted to a meaningful response or recovery action. No empty catch blocks. No bare `except:` or `catch (Throwable)` that hides the failure.
 
-5. AI-generated copy must be free of AI'isms and other telltale signs of machine-written content. Applies to user-facing text, docs, READMEs, commit messages, and comments produced with AI assistance.
-   - Forbidden phrases (non-exhaustive): "delve into", "in today's fast-paced world", "it's important to note", "leverage" (as a verb), "tapestry", "embark on a journey", "game-changer", "revolutionize", "seamlessly", "robust solution", "cutting-edge", "boasts", "testament to".
-   - Forbidden patterns: "Not only… but also…", hedging openers ("Certainly!", "Absolutely!"), closing summaries that restate the obvious, emoji bullets in serious copy.
-   - Edit AI output before shipping — never paste raw model output into customer-facing surfaces.
+5. AI-generated copy must be free of AI'isms and other telltale signs of machine-written content. This applies to all user-facing text, marketing copy, docs, READMEs, commit messages, and comments produced with AI assistance.
+   - Forbidden phrases (non-exhaustive): "delve into", "in today's fast-paced world", "it's important to note", "navigate the landscape", "unleash", "leverage" (as a verb), "tapestry", "embark on a journey", "in the realm of", "game-changer", "revolutionize", "seamlessly", "robust solution", "cutting-edge", "elevate your", "at the end of the day", "boasts", "testament to".
+   - Forbidden patterns: gratuitous tricolons ("X, Y, and Z" stacked in every sentence), em-dash sandwiches in every paragraph, "Not only… but also…" constructions, hedging openers like "Certainly!" or "Absolutely!", closing summaries that restate the obvious, emoji bullets in serious copy.
+   - Write like a human who has read the codebase: specific, concrete, and grounded in the actual subject. If a sentence would survive deletion without losing information, delete it. Edit AI output before shipping — never paste raw model output into customer-facing surfaces.
 
 CODING & NAMING GUIDELINES (apply unless project explicitly overrides in docs/assumptions.md)
 
@@ -109,7 +113,7 @@ DESIGN & UX GUIDELINES (apply unless project explicitly overrides)
 - Light and dark mode: Support both themes with easy switching (toggle, system preference, or both). Persist user preference.
 - Visual design: Prefer minimalist, clean designs. Avoid clutter; use clear hierarchy and whitespace.
 - Responsive design: Layouts must be responsive — usable across mobile, tablet, and desktop. Use fluid layouts and touch-friendly targets.
-- Accessibility: Choose accessible and pleasant color palettes. WCAG AA contrast minimum. Do not rely on color alone for meaning.
+- Accessibility: Choose accessible and pleasant color palettes. WCAG 2.2 AA contrast minimum. Do not rely on color alone for meaning.
 
 GIT HYGIENE (MANDATORY)
 
@@ -154,31 +158,33 @@ PERFORMANCE BASICS (MANDATORY)
 - Cache expensive computations and frequently-read data. Define TTLs and invalidation strategy — no stale-forever caches.
 - Set timeouts on every external call (HTTP, DB, queue). No indefinite waits. Define retry policy with backoff for transient failures.
 - Do not optimize prematurely, but do not ship known O(n^2) or worse algorithms on unbounded inputs. Document accepted performance trade-offs in docs/assumptions.md.
-- Watch for memory leaks and race conditions. Release listeners, timers, subscriptions, and pools. Guard shared state with locks, atomics, transactions, or message passing.
+- Watch for memory leaks and race conditions. Long-lived processes must release listeners, timers, subscriptions, and connection pools. Concurrent access to shared state must be guarded by locks, atomics, transactions, or message passing — never assume "it works in dev."
 
 LOGGING & OBSERVABILITY (MANDATORY)
 
-- Emit structured logs (JSON or logfmt) with timestamp, level, message, correlation ID, and context. No `print` / `console.log` in production paths.
-- Log security-relevant events: failed logins, successful logins from new IPs, password resets, permission changes, MFA challenges, account lockouts, rate-limit trips, suspicious input rejections.
-- Log outbound integration events: email sends (provider, message ID, status), SMS, payments, webhooks, third-party API failures and retries. Include upstream response codes.
-- Never log secrets, passwords, full tokens, or raw PII. Hash, redact, or omit.
-- Emit metrics for request/error rates, p50/p95/p99 latency, queue depth, job success/failure, and the events above. Alerts must have an owner and a runbook.
+- Emit structured logs (JSON or logfmt) with: timestamp, level, message, request/correlation ID, and contextual fields. No `print` / `console.log` for production code paths.
+- Log every security-relevant event with enough context to investigate later: failed logins, successful logins from new IPs, password resets, permission changes, MFA challenges, account lockouts, rate-limit trips, CSRF/origin rejections, suspicious input rejections.
+- Log every outbound integration event: email sends (provider, message ID, recipient hash, status), SMS sends, payment attempts, webhook deliveries, third-party API failures, retries, and timeouts. Include the upstream response code.
+- Never log secrets, passwords, full tokens, full PAN/SSN/keys, or raw PII. Hash, redact, or omit. Log a stable correlation ID instead of the raw subject.
+- Emit metrics for: request rate, error rate, p50/p95/p99 latency, queue depth, background job success/failure counts, external dependency latency, and the security/integration events above (auth_failures_total, email_send_failures_total, etc.).
+- Wire alerts to the metrics that actually indicate user pain or breach risk. Alerts without an owner and a runbook are noise — remove them.
 
 HEALTH CHECKS & UPTIME MONITORING (MANDATORY)
 
-- Every deployable service must expose `/healthz` (liveness) and `/readyz` (readiness) endpoints.
-- Provide a deeper `/health` endpoint that checks each critical dependency (DB, cache, queue, object storage, third-party APIs like Resend/Stripe/auth) and reports `ok` / `degraded` / `fail` with last-check timestamp and latency. Verify credential validity where supported so expired keys are caught early.
-- Liveness/readiness require no auth; the detailed health endpoint must not leak secrets or internal hostnames. Return 200 when healthy, 503 when not, so external monitors (NodePing, UptimeRobot, Pingdom) alert correctly.
-- Configure an external uptime monitor against the public URL and the deep health endpoint with on-call alerting. A service without an external monitor is unmonitored.
+- Every deployable service must expose a `/healthz` (liveness) and `/readyz` (readiness) HTTP endpoint. Liveness reports "the process is up"; readiness reports "this instance can serve traffic right now" and fails when dependencies are unhealthy.
+- Provide a deeper `/health` (or `/status`) endpoint that synthetically checks each critical dependency the service relies on: primary database, cache, queue, object storage, search index, and every third-party API in the request path (e.g. Resend or other email providers, Stripe, auth provider). Each dependency reports `ok` / `degraded` / `fail` with the last check timestamp and latency.
+- The dependency check must also verify credential validity where the upstream supports it (e.g. token introspection, low-cost authenticated call) so expired API keys are caught before users hit them.
+- Health endpoints must not require authentication for liveness/readiness, but the detailed dependency endpoint must not leak secrets, connection strings, or internal hostnames. Return HTTP 200 when healthy and 503 when not, so external monitors (NodePing, UptimeRobot, Pingdom, CloudFlare health checks) can alert correctly.
+- Configure an external uptime monitor (e.g. NodePing) against the public URL and the deep health endpoint, with alerting routed to the on-call channel. A service without an external monitor is unmonitored.
 
 CACHING & CDN (MANDATORY)
 
-- Cacheability is a per-route design decision. Set explicit `Cache-Control`, `ETag`/`Last-Modified`, and `Vary` headers — never rely on framework defaults.
-- Immutable static/versioned assets: `Cache-Control: public, max-age=31536000, immutable`, served through the CDN.
-- Cacheable HTML/API: deliberate `s-maxage` for the CDN and shorter `max-age` for browsers. Use `stale-while-revalidate` for low-risk content.
-- Non-cacheable responses (authenticated pages, dashboards, anything with PII): `Cache-Control: private, no-store`. Audit user-specific routes to confirm they are not cached publicly.
-- Provide a cache-purge path (deploy hook, admin action, webhook → CDN purge API). Stale-forever caches are a bug.
-- On CloudFlare: use Cache Rules (not deprecated Page Rules), configure Tiered Cache / Cache Reserve where justified, set Origin Rules to strip cookies on static paths, enable WAF / Bot Fight Mode / rate limiting at the edge, monitor `CF-Cache-Status` for hit ratio, and follow CloudFlare's framework-specific guidance (Workers, Pages) for SPA/SSR apps.
+- Treat cacheability as a design decision per route. For every public response, set explicit `Cache-Control`, `ETag`/`Last-Modified`, and `Vary` headers — never rely on framework defaults.
+- Static assets and immutable content (hashed filenames, versioned URLs, public marketing pages): `Cache-Control: public, max-age=31536000, immutable`. Serve through the CDN.
+- Cacheable HTML / API responses: pick a deliberate `s-maxage` for the CDN and a shorter `max-age` for the browser. Use `stale-while-revalidate` for low-risk content.
+- Non-cacheable responses (authenticated user pages, dashboards, mutation responses, anything containing PII or per-user data): `Cache-Control: private, no-store` and ensure `Set-Cookie` responses bypass shared caches. Audit any route that returns user-specific data to confirm it is not cached publicly.
+- Provide an explicit cache-purge path for content that can change (deploy hook, admin action, or webhook → CDN purge API). Stale-forever caches are a bug.
+- If hosted on CloudFlare, follow CloudFlare's published guidance: use Cache Rules (not deprecated Page Rules) for cache behavior, set Tiered Cache where it helps, use Cache Reserve only for content that justifies it, configure Bot Fight Mode / WAF / rate-limiting rules at the edge, set Origin Rules to strip cookies on static paths so they remain cacheable, and use the `CF-Cache-Status` header in monitoring to confirm hit ratio. For SPA/SSR apps, follow CloudFlare's framework-specific guidance (Workers, Pages, or the documented cache-key recipe for the framework in use).
 
 CODE EFFICIENCY & DEPENDENCY HYGIENE (MANDATORY)
 
@@ -204,13 +210,17 @@ PLATFORM-SPECIFIC GUIDELINES (MANDATORY)
 - Windows: Follow Microsoft's official guidance for the target stack — Fluent Design / WinUI for modern UI, Windows App SDK / .NET conventions, and Microsoft Learn documentation for APIs, security, and packaging (MSIX).
 - Cross-platform code: When shared UI or behavior spans platforms, branch to honor each host's conventions rather than picking a lowest common denominator. Document any deliberate deviations from a platform's guidelines in `docs/assumptions.md`.
 
-PYTHON ENVIRONMENT (MANDATORY)
+ASSUMPTIONS TRACKING
 
-- Never install Python packages into the OS Python install. Always use a virtual environment.
-- Create a venv at the project root: `python3 -m venv .venv`
-- Activate before running or installing: `source .venv/bin/activate`
-- Add `.venv/` to `.gitignore` — never commit it.
-- Pin all dependencies in `requirements.txt` (or `pyproject.toml`). Use `pip freeze > requirements.txt` after installing.
+Any time a non-obvious decision is made, record it in docs/assumptions.md:
+- Assumption: one clear sentence
+- Why: rationale
+- Recorded by: <agent or developer name>
+- Date: YYYY-MM-DD
+
+## Project-Specific Rules
+
+<!-- Kept outside the Golden Rules section so /golden-rules --update does not remove them. -->
 
 CLAUDE CODE PLUGIN & SKILL LAYOUT (MANDATORY)
 
@@ -234,10 +244,10 @@ skills/<skill-name>/            ← plugin root
 - Run `./scripts/validate.sh skills/<skill-name>` after creating or editing a skill.
 - Use `./scripts/new-skill.sh <name>` to scaffold; it generates the correct structure automatically.
 
-ASSUMPTIONS TRACKING
+PYTHON ENVIRONMENT (MANDATORY)
 
-Any time a non-obvious decision is made, record it in docs/assumptions.md:
-- Assumption: one clear sentence
-- Why: rationale
-- Recorded by: <agent or developer name>
-- Date: YYYY-MM-DD
+- Never install Python packages into the OS Python install. Always use a virtual environment.
+- Create a venv at the project root: `python3 -m venv .venv`
+- Activate before running or installing: `source .venv/bin/activate`
+- Add `.venv/` to `.gitignore` — never commit it.
+- Pin all dependencies in `requirements.txt` (or `pyproject.toml`). Use `pip freeze > requirements.txt` after installing.
