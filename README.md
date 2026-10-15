@@ -5,19 +5,27 @@ last-refreshed: 2026-10-14
 generated-by: doc-refresh skill
 -->
 
-# Claude Code Skills Marketplace
+# Claude Code Skills Marketplace (_ClaudeMarketplace_)
+
+Reusable Claude Code skills for code review, security, architecture, and documentation work.
+
+## Table of Contents
+
+- [Background](#background)
+- [Install](#install)
+- [Usage](#usage)
+- [Repository structure](#repository-structure)
+- [Security](#security)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Background
 
 This repository is a marketplace of skills for [Claude Code](https://code.claude.com/docs),
 the Anthropic agentic coding tool. Each skill is a slash command. It gives Claude a tested
 set of instructions for one job, for example a security audit.
 
-## Requirements
-
-- Claude Code, installed and signed in.
-- Git. The marketplace URL uses SSH. If you do not use SSH, use the HTTPS URL in
-  [Install the marketplace](#install-the-marketplace).
-
-## What a skill is
+### What a skill is
 
 A skill is a set of instructions in a `SKILL.md` file, with optional templates and rules.
 You start a skill with its slash command, for example `/code-review`. A skill does nothing
@@ -28,7 +36,15 @@ Claude Code calls a package of skills a **plugin**. That is why `settings.json` 
 in this marketplace are plugins that contain only instructions. They do not start a server
 and do not call an external API.
 
-## Install the marketplace
+## Install
+
+### Requirements
+
+- Claude Code, installed and signed in.
+- Git. The marketplace URL uses SSH. If you do not use SSH, use the HTTPS URL in
+  [Add the marketplace](#add-the-marketplace).
+
+### Add the marketplace
 
 1. Add the marketplace to `~/.claude/settings.json`:
 
@@ -65,7 +81,7 @@ and do not call an external API.
 With `"autoUpdate": true`, Claude Code gets skill updates from this repository
 automatically. You do not install a skill again after it changes.
 
-### Choose where skills are enabled
+#### Choose where skills are enabled
 
 | Method | Where | Result |
 |---|---|---|
@@ -76,17 +92,21 @@ automatically. You do not install a skill again after it changes.
 An enabled skill has no runtime cost. It adds one entry to the slash-command list, and it
 does nothing until you start it.
 
-## Available skills
+## Usage
+
+Start a skill with its slash command, for example `/full-security-review`.
+
+### Available skills
 
 `example-skill` is a reference for contributors. It is not a working skill.
 
-### Base (always-on context)
+#### Base (always-on context)
 
 | Skill | Slash command | What it does |
 |---|---|---|
 | [golden-rules](skills/golden-rules/) | `/golden-rules` | Writes security, coding, testing, error-handling, and API standards into your project's `CLAUDE.md`. |
 
-### Workflow
+#### Workflow
 
 | Skill | Slash command | What it does |
 |---|---|---|
@@ -100,7 +120,7 @@ does nothing until you start it.
 | [incident-report](skills/incident-report/) | `/incident-report` | Writes an incident report from a template: outage, security, performance, or data loss. |
 | [requirements-generator](skills/requirements-generator/) | `/requirements-generator` | Writes requirements with Gherkin acceptance criteria, edge cases, and items out of scope. |
 
-### Standards
+#### Standards
 
 | Skill | Slash command | What it does |
 |---|---|---|
@@ -115,14 +135,14 @@ does nothing until you start it.
 Claude Code has a built-in `/code-review` command. Use `/code-review:code-review` to start
 the marketplace skill.
 
-### Security
+#### Security
 
 | Skill | Slash command | What it does |
 |---|---|---|
 | [dependency-audit](skills/dependency-audit/) | `/dependency-audit` | Audits dependencies for unpinned versions, deprecated packages, known CVEs, and supply-chain risks. |
 | [full-security-review](skills/full-security-review/) | `/full-security-review` | Audits a codebase against OWASP Top 10 2025, the OWASP LLM and agentic lists, and CWE. Gives findings by severity. |
 
-### Productivity
+#### Productivity
 
 | Skill | Slash command | What it does |
 |---|---|---|
@@ -130,7 +150,7 @@ the marketplace skill.
 | [log-correlation](skills/log-correlation/) | `/log-correlation` | Correlates logs from the OS, AWS, applications, and web servers to find the cause of a problem. |
 | [onboarding](skills/onboarding/) | `/onboarding` | Writes an `ONBOARDING.md` guide for new developers from the codebase. |
 
-## Base skills
+### Base skills
 
 A skill with `"category": "base"` writes its content into your project's `CLAUDE.md` when you
 start it. Claude Code reads `CLAUDE.md` at the start of each session. Thus the content stays
@@ -139,7 +159,7 @@ in effect after the first run, and you do not start the skill again.
 To get a new version of the content, run the skill again with `--update`, for example
 `/golden-rules --update`.
 
-## Git hooks
+### Git hooks
 
 Two skills can install a git pre-commit hook. The hook then runs on each commit.
 
@@ -213,7 +233,14 @@ ClaudeMarketplace/
 | `scripts/scan-prompts.sh` | Scans skill instructions for dangerous patterns. |
 | `scripts/generate-changelog-entry.sh` | Writes a changelog entry from the git log. |
 
-## Make a skill
+## Security
+
+Report a vulnerability privately. Do not open a public issue. [SECURITY.md](SECURITY.md)
+gives the procedure.
+
+## Contributing
+
+Contributions are welcome. Make a new skill with these commands:
 
 ```bash
 ./scripts/new-skill.sh my-new-skill
@@ -224,11 +251,6 @@ ClaudeMarketplace/
 Then write the instructions in `skills/my-new-skill/SKILL.md`. [CONTRIBUTING.md](CONTRIBUTING.md)
 gives the full procedure and the checks to do before a pull request.
 
-## Security
-
-Report a vulnerability privately. Do not open a public issue. [SECURITY.md](SECURITY.md)
-gives the procedure.
-
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT © Doug Eubanks. See [LICENSE](LICENSE).
