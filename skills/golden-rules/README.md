@@ -23,7 +23,8 @@ The installed block covers these areas:
 
 ### Security (Non-Negotiable)
 - Security is paramount in every decision.
-- No insecure storage of secrets, passwords, API keys, or PII.
+- No insecure storage of secrets, passwords, API keys, or PII. Passwords hashed with Argon2id, bcrypt, or scrypt.
+- Password policy per NIST SP 800-63B-4: breached-password screening, no composition or rotation rules, phishing-resistant MFA (passkeys).
 - Design for untrusted input, least privilege, and secure defaults.
 - Document accepted risks in `docs/assumptions.md`.
 
@@ -38,7 +39,7 @@ The installed block covers these areas:
 - Support light and dark mode; persist user preference.
 - Minimalist, clean visual design with clear hierarchy.
 - Responsive layouts for mobile, tablet, and desktop.
-- WCAG AA contrast minimum; never rely on color alone for meaning.
+- WCAG 2.2 AA contrast minimum; never rely on color alone for meaning.
 
 ### Testing Standards
 - Every module with logic must have tests. Name tests descriptively.

@@ -89,5 +89,5 @@ Once enabled, invoke with `/mvp-readiness` in any Claude Code session.
 ## Related Skills
 
 - `/golden-rules` — install always-on security and coding standards
-- `/security-review` — deep security audit with OWASP coverage
+- `/full-security-review` — deep security audit with OWASP coverage
 - `/agent-based-development` — full multi-agent workflow with built-in MVP gate

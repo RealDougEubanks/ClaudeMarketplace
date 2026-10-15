@@ -75,30 +75,32 @@ Recommend URL versioning for public APIs, header versioning for internal.
 
 Document the chosen approach in the spec.
 
-**Error response format** — standardize on one format for ALL errors:
+**Error response format** — standardize on RFC 9457 Problem Details (`Content-Type: application/problem+json`) for ALL errors. Use the standard members `type` (a URI identifying the problem type), `title`, `status`, `detail`, and `instance`; put anything else in extension members such as `requestId` and `errors`:
 ```json
 {
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Human-readable description",
-    "details": [{ "field": "email", "message": "Invalid email format" }],
-    "requestId": "abc-123"
-  }
+  "type": "https://api.example.com/problems/validation-error",
+  "title": "Request validation failed",
+  "status": 422,
+  "detail": "One or more fields are invalid.",
+  "instance": "/v1/users",
+  "requestId": "abc-123",
+  "errors": [{ "field": "email", "message": "Invalid email format" }]
 }
 ```
+RFC 9457 (July 2023, obsoletes RFC 7807): <https://www.rfc-editor.org/rfc/rfc9457>. If the project already ships a different error envelope, keep it for the current version and move to Problem Details in the next major version; changing the format in place is a breaking change.
 
 **Standard HTTP status codes to use:**
 - 200 OK, 201 Created, 204 No Content
 - 400 Bad Request (validation), 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable Entity, 429 Too Many Requests
 - 500 Internal Server Error (never expose internal details in the response body)
 
-**Rate limiting headers:** `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`
+**Rate limiting headers:** prefer the IETF `RateLimit-Policy` (advertises quota policies) and `RateLimit` (current remaining quota) fields from draft-ietf-httpapi-ratelimit-headers. This is still an Internet-Draft (revision -11 as of May 2026), not an RFC, so check <https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/> for the current syntax before relying on it. The legacy `X-RateLimit-Limit` / `X-RateLimit-Remaining` / `X-RateLimit-Reset` headers remain acceptable for existing APIs. Always send `Retry-After` with 429 responses.
 
 ---
 
 ### Step 5 — Generate OpenAPI Spec (REST) or Schema (GraphQL/gRPC)
 
-For REST: produce a valid OpenAPI 3.1 YAML spec covering all endpoints, request/response schemas, auth security schemes, and error responses. For APIs with more than ~4 resources, generate the spec per resource (paths + schemas for one resource at a time), then assemble the sections into the final document — do not attempt the whole spec in a single pass.
+For REST: produce a valid OpenAPI 3.2 YAML spec (`openapi: 3.2.1`, the latest 3.2 patch; see <https://spec.openapis.org/oas/>) covering all endpoints, request/response schemas, auth security schemes, and error responses. For APIs with more than ~4 resources, generate the spec per resource (paths + schemas for one resource at a time), then assemble the sections into the final document — do not attempt the whole spec in a single pass. Fall back to OpenAPI 3.1 (`openapi: 3.1.2`) when the project's tooling (code generators, gateways, validators, docs renderers) does not yet support 3.2, and note the reason in the spec's `info.description`.
 
 For GraphQL: produce a `schema.graphql` with types, queries, mutations, subscriptions, and input types. Include field descriptions.
 
@@ -132,7 +134,8 @@ Use Glob to find: `openapi.yml`, `openapi.yaml`, `swagger.yml`, `schema.graphql`
 - [ ] Consistent naming: snake_case or camelCase in JSON (not mixed)
 - [ ] Versioning strategy present and consistent
 - [ ] Pagination implemented on all list endpoints
-- [ ] Standardized error response format across all endpoints
+- [ ] Standardized error response format across all endpoints (RFC 9457 `application/problem+json` preferred)
+- [ ] Rate-limited endpoints return 429 with `Retry-After` and rate-limit headers (`RateLimit`/`RateLimit-Policy`, or legacy `X-RateLimit-*`)
 - [ ] 401 vs 403 used correctly (not authenticated vs not authorized)
 - [ ] No sensitive data in URL paths or query params (tokens, passwords)
 - [ ] Request bodies validated with schema
@@ -176,8 +179,10 @@ Diff the current spec against the last released version — do not rely on memor
 ```bash
 # Find the previous version of the spec (last tag, or main)
 git log --oneline -5 -- <specfile>
-git show <last-tag-or-main>:<specfile> > /tmp/previous-spec
-git diff --no-index /tmp/previous-spec <specfile>
+# Diff the committed previous version against the working copy; no temp file needed
+git diff <last-tag-or-main> -- <specfile>
+# If the spec was moved or renamed since that ref, view the old copy instead
+git show <last-tag-or-main>:<old-specfile-path>
 ```
 
 Flag any changes that would break existing consumers:
@@ -204,4 +209,14 @@ For each finding include:
 - Location (endpoint, field, file)
 - Issue description
 - Recommended fix (with diff if applicable)
-- OWASP mapping where relevant (e.g., OWASP API Security Top 10)
+- OWASP mapping where relevant, using the OWASP API Security Top 10 2023 edition (<https://api-security.owasp.org/editions/2023/en/0x11-t10/>) and its IDs:
+  - API1:2023 Broken Object Level Authorization
+  - API2:2023 Broken Authentication
+  - API3:2023 Broken Object Property Level Authorization
+  - API4:2023 Unrestricted Resource Consumption
+  - API5:2023 Broken Function Level Authorization
+  - API6:2023 Unrestricted Access to Sensitive Business Flows
+  - API7:2023 Server Side Request Forgery
+  - API8:2023 Security Misconfiguration
+  - API9:2023 Improper Inventory Management
+  - API10:2023 Unsafe Consumption of APIs

@@ -4,11 +4,37 @@ All notable changes to the Claude Code Skills Marketplace are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow [Semantic Versioning](https://semver.org/).
 
+From 1.0.6, each section matches a git tag (`vX.Y.Z`) that `publish.yml` creates on merge. The 1.0.0 to 1.1.1 sections predate the automated tags and use an earlier numbering.
+
 ---
 
 ## [Unreleased]
 
 *No unreleased changes.*
+
+---
+
+## [1.0.6] — 2026-10-15
+
+### Added
+
+- `doc-refresh` 1.4.0 — selectable documentation standard (`--standard auto|ste-lite|ste|plain|google|microsoft|diataxis`), tiered STE-lite rules, accessible-writing and inclusive-language rules for every doc, Standard Readme order for READMEs, AsyncAPI 3.1 for event APIs, and `scripts/ste_check.py` with tests
+- `doc-refresh` preflight — confirms the target repository, asks before it overwrites docs with uncommitted changes, and stops when a file changes during the run
+- `full-security-review` 1.5.0 — OWASP Top 10 for Agentic Applications checks, CWE IDs on findings, CI pinning and `pull_request_target` checks
+
+### Changed
+
+- Standards updated: OWASP Top 10 2025 (`full-security-review`, `abd-security`), OWASP LLM Top 10 2025, OpenAPI 3.2 and RFC 9457 errors (`api-design`), MADR 4.0 (`adr`), WCAG 2.2 criteria and the 24px target size (`accessibility`), Keep a Changelog 1.1 sections (`changelog-generator`), Argon2id and NIST SP 800-63B-4 (`golden-rules` 1.9.0)
+- `pre-commit` and `doc-refresh` hooks share one marker, backup, and chain convention, and resolve the hooks directory with `git rev-parse --git-path hooks`
+- `doc-refresh` hook runs `check` mode by default; set `DOC_REFRESH_HOOK_MODE=write` to rewrite docs
+- Frontmatter: `incident-report` uses `sonnet`, `adr` inherits the session model, and `best-practices`, `mvp-readiness`, `dependency-audit` use `effort: high`
+
+### Fixed
+
+- `pre-commit` never fell back to unstaged files; secrets in test files were skipped instead of reported
+- `git-workflow` release-branch detection matched any branch name containing "release"
+- `dependency-audit` deprecated-package check listed standard-library modules that never appear in `requirements.txt`
+- `mvp-readiness` greps dropped every line containing "then" and every path containing "test"
 
 ---
 

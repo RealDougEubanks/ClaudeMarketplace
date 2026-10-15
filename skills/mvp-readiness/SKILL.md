@@ -3,6 +3,7 @@ name: mvp-readiness
 description: Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence.
 argument-hint: "[--quick]"
 allowed-tools: Bash, Read, Glob, Grep
+effort: high
 ---
 
 # MVP Readiness Audit
@@ -38,10 +39,11 @@ Check that `README.md` or `readme.md` exists and is greater than 100 bytes. **FA
 ### Check 3 — External Call Error Handling
 
 ```bash
-grep -rn "fetch(\|axios\.\|\.query(\|\.connect(" --include="*.js" --include="*.ts" . | grep -v "try\|catch\|then\|rescue"
+grep -rn "fetch(\|axios\.\|\.query(\|\.connect(" --include="*.js" --include="*.ts" --exclude-dir=node_modules . \
+  | grep -vE '(^|[^[:alnum:]_])(try|catch|rescue)([^[:alnum:]_]|$)|\.then\('
 ```
 
-This is a rough heuristic. **FAIL** if more than 5 uncovered calls are found.
+The filter drops a line only when `try`, `catch`, or `rescue` appears as a whole word, or when the call chains `.then(`. Words such as `then` or `retry` inside identifiers or strings no longer hide a match. This is a rough heuristic. **FAIL** if more than 5 uncovered calls are found.
 
 ### Check 4 — No Secrets in Git History
 
@@ -54,8 +56,12 @@ git log --all --oneline -- "*.env" 2>/dev/null | head -5
 ### Check 5 — Placeholder Code
 
 ```bash
-grep -rn "TODO\|FIXME\|stub\|placeholder\|impl later" --include="*.js" --include="*.ts" --include="*.py" --exclude-dir=node_modules . | grep -v "test\|spec"
+grep -rn "TODO\|FIXME\|stub\|placeholder\|impl later" --include="*.js" --include="*.ts" --include="*.py" \
+  --exclude-dir=node_modules --exclude-dir=test --exclude-dir=tests --exclude-dir=__tests__ \
+  --exclude="*.test.*" --exclude="*.spec.*" --exclude="test_*.py" --exclude="*_test.py" .
 ```
+
+Test files are excluded by directory name and file pattern, not by substring, so paths such as `src/latest/` or `src/inspector.ts` are still scanned.
 
 **FAIL** if any results are found in non-test files.
 
@@ -139,7 +145,7 @@ Run all steps below, then evaluate every item in the MVP Checklist.
 ### 5. Documentation & UX
 - [ ] README explains how to go from "clone" to "run" in fewer than 3 steps.
 - [ ] Help commands (`--help`) or README usage examples are provided.
-- [ ] (For web projects) Meets WCAG AA contrast and works on mobile.
+- [ ] (For web projects) Meets WCAG 2.2 AA contrast and works on mobile.
 
 ### 6. Implementation Integrity
 - [ ] No placeholder or "impl later" comments in production code paths.

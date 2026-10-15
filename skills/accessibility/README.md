@@ -39,7 +39,13 @@ WCAG 2.2 is organized around four principles (POUR):
 | Understandable | Information and operation must be understandable |
 | Robust | Content must be interpretable by a wide range of user agents |
 
-Level AA compliance is the legal standard in most jurisdictions (ADA, EN 301 549, AODA).
+Level AA is the level most accessibility laws point to, though the WCAG version differs by law. The skill audits against WCAG 2.2 AA, which also covers 2.1 AA:
+
+- **US ADA Title II** (state and local government): WCAG 2.1 AA, with compliance dates of 26 April 2027 or 26 April 2028 depending on population, per the DOJ's April 2026 interim final rule.
+- **EU European Accessibility Act**: applies from 28 June 2025; EN 301 549 is the harmonised standard used to show conformance.
+- **WCAG 3.0** is still a W3C Working Draft and is not used as an audit target.
+
+WCAG 2.2 adds checks the skill covers: Focus Not Obscured (Minimum) (2.4.11), Target Size (Minimum) (2.5.8, 24x24 CSS px), Consistent Help (3.2.6), Redundant Entry (3.3.7), and Accessible Authentication (Minimum) (3.3.8: no cognitive tests at login; allow paste and password managers). 4.1.1 Parsing was removed in 2.2 and is not checked.
 
 ## What Each Check Catches
 
@@ -50,7 +56,8 @@ Level AA compliance is the legal standard in most jurisdictions (ADA, EN 301 549
 | Forms | Missing labels, required field marking, error association |
 | Keyboard Navigation | Tab order issues, focus traps, missing keyboard handlers |
 | ARIA Usage | Invalid roles, aria-hidden on focusable elements, missing live regions |
-| Color and Visual | Semantic-only color, small touch targets, pointer-events misuse |
+| Color and Visual | Semantic-only color, pointer targets under 24x24 CSS px, pointer-events misuse |
+| Authentication | Paste blocking, password managers disabled, cognitive tests at login |
 | Motion and Animation | Missing prefers-reduced-motion support, autoplaying media |
 | Language | Missing lang attribute on html element |
 

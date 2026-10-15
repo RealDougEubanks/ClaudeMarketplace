@@ -112,12 +112,21 @@ Run these Grep searches across all in-scope files. Record every match with file 
 - `app\.use\(express\.static` serving sensitive directories
 
 **AI/LLM Integration (if the codebase calls an LLM API):**
-- Prompt injection: user input concatenated directly into system prompts or tool instructions without delimiting/sanitization
-- Insecure output handling: LLM output passed to `eval`, `exec`, shell commands, SQL, or `innerHTML` without validation
-- Excessive agency: LLM-driven tool/function calls that can mutate data or spend money without a human-approval gate or allowlist
-- PII/secret leakage into prompts: user PII, credentials, or proprietary data sent to third-party LLM APIs without minimization or documented consent
-- Unbounded consumption: LLM endpoints without rate limiting, token caps, or cost controls
-- System-prompt secrets: API keys or sensitive logic embedded in prompts that users can extract
+- Prompt injection (LLM01:2025): user input concatenated directly into system prompts or tool instructions without delimiting/sanitization
+- Improper output handling (LLM05:2025): LLM output passed to `eval`, `exec`, shell commands, SQL, or `innerHTML` without validation
+- Excessive agency (LLM06:2025): LLM-driven tool/function calls that can mutate data or spend money without a human-approval gate or allowlist
+- Sensitive information disclosure (LLM02:2025): user PII, credentials, or proprietary data sent to third-party LLM APIs without minimization or documented consent
+- Unbounded consumption (LLM10:2025): LLM endpoints without rate limiting, token caps, or cost controls
+- System-prompt secrets: API keys or sensitive logic embedded in prompts that users can extract (LLM07:2025 System Prompt Leakage)
+
+**Agents, MCP servers, and tool calling (if the codebase runs an agent loop or exposes or consumes MCP tools):** map findings to the OWASP Top 10 for Agentic Applications (December 2025) as well as the LLM list.
+- Goal hijack (ASI01): retrieved documents, web pages, tool results, or emails can redirect the agent's task; untrusted content is not separated from instructions
+- Tool misuse (ASI02): tools exposed with broader scope than the task needs (generic shell, raw SQL, unrestricted HTTP fetch); no allowlist, rate cap, or loop limit on tool calls
+- Identity and privilege abuse (ASI03): the agent or MCP server acts with a shared high-privilege credential instead of the requesting user's scoped identity; delegated tokens are not narrowed
+- Agentic supply chain (ASI04): MCP servers, plugins, tool schemas, or prompt templates pulled from unpinned or unverified sources
+- Unexpected code execution (ASI05): model-generated code or commands run outside a sandbox
+- Memory and context poisoning (ASI06): persistent agent memory or shared context written from untrusted input without provenance or scoping
+- No human-approval gate on destructive or financial tool actions, and no kill switch to stop a running agent (ASI09, ASI10)
 
 ---
 
@@ -134,7 +143,8 @@ Read the entry point, main router, auth middleware, and data models. Assess:
 
 **Authentication Design:**
 - Is there a consistent auth middleware applied at the router level, or are checks scattered per-endpoint (easy to miss one)?
-- Are passwords hashed with a modern adaptive function (Argon2, bcrypt, scrypt)? Flag MD5/SHA1/SHA256 used directly.
+- Use OWASP ASVS 5.0 as the reference for authentication, session, and token checks; cite the ASVS requirement ID when a finding maps to one.
+- Are passwords hashed with a modern adaptive function (Argon2id, bcrypt, scrypt)? Flag MD5/SHA1/SHA256 used directly.
 - Is MFA available for privileged operations?
 - Are there protections against brute force (rate limiting, lockout, CAPTCHA)?
 - Are session tokens rotated after login (session fixation prevention)?
@@ -182,6 +192,9 @@ Read the entry point, main router, auth middleware, and data models. Assess:
 - Is there a secret scanning step in the CI pipeline?
 - Are branch protection rules enabled on `main`? (Required reviews, status checks)
 - Are pull request workflows protected against injection via `github.event.pull_request.head.ref`?
+- Are third-party GitHub Actions pinned to a full-length commit SHA rather than a tag or branch (`uses: owner/action@<40-char sha>`)? Tags can be moved to point at malicious code.
+- Does any `pull_request_target` (or `workflow_run`) workflow check out the PR head (`ref: ${{ github.event.pull_request.head.sha }}`) and then build, install, or run it? That runs untrusted code with the base repo's secrets and write token: flag as critical.
+- Is the workflow `GITHUB_TOKEN` restricted with an explicit `permissions:` block?
 - Is there a SAST or dependency scanning step before merge?
 
 **Logging & Monitoring:**
@@ -196,7 +209,8 @@ Read the entry point, main router, auth middleware, and data models. Assess:
 
 1. For each finding:
    - Assign severity (see Severity Definitions)
-   - Map to OWASP Top 10 2021 category (see OWASP Reference)
+   - Map to an OWASP Top 10 2025 category (see OWASP Reference)
+   - Assign the most specific CWE ID (e.g. CWE-89 SQL injection, CWE-862 Missing Authorization); prefer weaknesses on the 2025 CWE Top 25 list when one fits
    - Write a minimal before/after diff (≤ 10 lines). For architectural issues, describe the fix in prose.
 
 2. Check if `handoffs/reviews/` exists. If so, write a JSON artifact (see JSON Artifact Format).
@@ -219,20 +233,22 @@ Read the entry point, main router, auth middleware, and data models. Assess:
 
 ## OWASP Reference
 
-Map findings to OWASP Top 10 2021 categories (table below). Note: the OWASP Top 10 2025 revision elevates **Software Supply Chain Failures** to its own top-level category — treat supply-chain findings (compromised dependencies, lifecycle scripts, unpinned versions, CI/CD tampering) with correspondingly higher weight. For AI/LLM findings, additionally cite the OWASP Top 10 for LLM Applications category (LLM01 Prompt Injection, LLM02 Insecure Output Handling, LLM06 Sensitive Information Disclosure, LLM08 Excessive Agency, LLM10 Unbounded Consumption).
+Map findings to the OWASP Top 10 2025 categories in the table below (source: <https://top10.owasp.org/2025/>). Every finding also carries a CWE ID (2025 CWE Top 25: <https://cwe.mitre.org/top25/>).
+
+For AI/LLM findings, also cite the OWASP Top 10 for LLM Applications 2025 code (<https://genai.owasp.org/llm-top-10/>): LLM01 Prompt Injection, LLM02 Sensitive Information Disclosure, LLM03 Supply Chain, LLM04 Data and Model Poisoning, LLM05 Improper Output Handling, LLM06 Excessive Agency, LLM07 System Prompt Leakage, LLM08 Vector and Embedding Weaknesses, LLM09 Misinformation, LLM10 Unbounded Consumption. Write the codes with the year suffix (`LLM07:2025`) so they are not confused with other editions. For agent and MCP findings, cite the OWASP Top 10 for Agentic Applications code (ASI01-ASI10, <https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/>).
 
 | Code | Category | Maps To |
 |------|----------|---------|
-| A01 | Broken Access Control | IDOR, missing auth checks, privilege escalation, path traversal |
-| A02 | Cryptographic Failures | Weak hashing, plaintext secrets, no TLS, localStorage secrets |
-| A03 | Injection | SQL, command, XSS, template, LDAP, NoSQL, prompt injection |
-| A04 | Insecure Design | No rate limiting, no defense-in-depth, no schema validation |
-| A05 | Security Misconfiguration | Debug on, CORS wildcard, verbose errors, default credentials |
-| A06 | Vulnerable & Outdated Components | Known CVEs, unpinned deps, abandoned packages, supply chain |
-| A07 | Auth & Session Failures | Session fixation, weak tokens, brute force, JWT none algorithm |
-| A08 | Software & Data Integrity | Insecure deserialization, unsigned updates, no SRI, insecure LLM output handling |
-| A09 | Logging & Monitoring Failures | No audit log, secrets in logs, no security alerting |
-| A10 | Server-Side Request Forgery | SSRF via user-controlled URLs or redirects |
+| A01 | Broken Access Control | IDOR, missing auth checks, privilege escalation, path traversal, SSRF |
+| A02 | Security Misconfiguration | Debug on, CORS wildcard, missing security headers, default credentials, over-broad IAM |
+| A03 | Software Supply Chain Failures | Known CVEs, unpinned deps, abandoned packages, lifecycle scripts, unpinned CI actions, CI/CD tampering |
+| A04 | Cryptographic Failures | Weak hashing, plaintext secrets, no TLS, localStorage secrets, insecure RNG |
+| A05 | Injection | SQL, command, XSS, template, LDAP, NoSQL, prompt injection |
+| A06 | Insecure Design | No rate limiting, no defense-in-depth, no schema validation, no approval gate on agent actions |
+| A07 | Authentication Failures | Session fixation, weak tokens, brute force, JWT none algorithm, user enumeration |
+| A08 | Software or Data Integrity Failures | Insecure deserialization, unsigned updates, no SRI, unvalidated LLM output reaching an interpreter |
+| A09 | Security Logging and Alerting Failures | No audit log, secrets in logs, no security alerting |
+| A10 | Mishandling of Exceptional Conditions | Stack traces or SQL errors returned to clients, fail-open error paths, unhandled exceptions, swallowed errors |
 
 ---
 
@@ -253,7 +269,7 @@ Map findings to OWASP Top 10 2021 categories (table below). Note: the OWASP Top 
 ### OWASP Coverage
 | Category | Findings |
 |----------|---------|
-| A03 Injection | 2 |
+| A05 Injection | 2 |
 
 (Only categories with findings.)
 
@@ -261,7 +277,8 @@ Map findings to OWASP Top 10 2021 categories (table below). Note: the OWASP Top 
 
 **[CRITICAL] Hardcoded AWS secret key in config loader**
 - **File:** `src/config.ts:14`
-- **OWASP:** A02 — Cryptographic Failures
+- **OWASP:** A04 — Cryptographic Failures
+- **CWE:** CWE-798 Use of Hard-coded Credentials
 - **Description:** AWS secret access key is hardcoded as a string literal. Anyone with repo access can use it to access AWS resources.
 - **Recommendation:** Load from `process.env.AWS_SECRET_ACCESS_KEY` and add to `.env.example`. Rotate the exposed key immediately.
 - **Fix:**
@@ -273,7 +290,8 @@ Map findings to OWASP Top 10 2021 categories (table below). Note: the OWASP Top 
 
 **[SEVERE] JWT decoded without algorithm allowlist**
 - **File:** `src/auth/middleware.ts:38`
-- **OWASP:** A07 — Auth & Session Failures
+- **OWASP:** A07 — Authentication Failures
+- **CWE:** CWE-347 Improper Verification of Cryptographic Signature
 - **Description:** `jwt.verify()` called without an explicit `algorithms` option. An attacker can forge a token using the "none" algorithm.
 - **Recommendation:** Explicitly specify allowed algorithms.
 - **Fix:**
@@ -284,7 +302,8 @@ Map findings to OWASP Top 10 2021 categories (table below). Note: the OWASP Top 
 
 **[INFO] No security event logging for failed authentication**
 - **File:** `src/auth/login.ts`
-- **OWASP:** A09 — Logging & Monitoring Failures
+- **OWASP:** A09 — Security Logging and Alerting Failures
+- **CWE:** CWE-778 Insufficient Logging
 - **Description:** Failed login attempts are silently discarded. Without this data, brute-force attacks and credential stuffing are invisible.
 - **Recommendation:** Log failed auth attempts with timestamp, IP, and username (not password). Set up alerting for repeated failures from the same IP.
 ```
@@ -306,7 +325,8 @@ If `handoffs/reviews/` exists, write `handoffs/reviews/{taskId}_security_{unixTi
     "findings": [
       {
         "severity": "critical",
-        "owasp": "A02",
+        "owasp": "A04",
+        "cwe": "CWE-798",
         "title": "Hardcoded AWS secret key",
         "file": "src/config.ts:14",
         "description": "AWS secret access key hardcoded as string literal.",

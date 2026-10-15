@@ -1,7 +1,7 @@
 {
   "name": "doc-refresh",
-  "version": "1.3.0",
-  "description": "Complete documentation refresh — audits stale docs, creates missing docs, rewrites for a 2am on-call engineer with zero assumed context. Security callouts mandatory.",
+  "version": "1.4.0",
+  "description": "Documentation refresh: audits stale docs, creates missing ones, and rewrites them to a selected standard (STE-lite, plain language, Diataxis) with mandatory security callouts.",
   "author": {
     "name": "Doug Eubanks",
     "url": "https://github.com/RealDougEubanks"

@@ -1,56 +1,60 @@
 <!--
 doc: README
+standard: plain (structure: Standard Readme)
 last-refreshed: YYYY-MM-DD
 generated-by: doc-refresh skill
 -->
 
-# <Project Name>
+<!--
+Section order follows the Standard Readme spec (github.com/RichardLitt/standard-readme):
+Title, Short Description, [Security], [Background], [Table of Contents], Install, Usage,
+[extra sections], Contributing, License (last). Delete this comment when you fill the template.
+-->
 
-**One sentence: what does this do and why does it exist.**
+# <Project Name — match the repository and package name>
 
-> **SECURITY:** <State here if project handles auth, payments, PII, or secrets. Link to SECURITY.md.>
+<Short description: one line, under 120 characters, the same as the repository and package description.>
 
-## Quick Start
+> **SECURITY:** <State here if the project handles auth, payments, PII, or secrets. Link to SECURITY.md. Delete if not applicable.>
 
-> **Prerequisites:** <List only non-standard requirements. E.g. "Node 20+, Docker 24+">
+## Background
 
-```bash
-# 1. Clone and install
-git clone <repo-url>
-cd <project>
-<install command>      # npm install / pip install -r requirements.txt / go mod download
-
-# 2. Configure environment
-cp .env.example .env
-# Edit .env — fill in values marked REQUIRED
-
-# 3. Run
-<start command>
-```
-
-## What This Does
-
-<2–4 sentences. Plain English. No jargon. Assume the reader has never heard of this.>
-
-## Architecture in 30 Seconds
+<2–4 sentences. Plain English. What this does and why it exists. Assume the reader has never heard of it.>
 
 ```mermaid
 <Insert sequenceDiagram for request flows, graph LR for service dependencies>
 ```
+
+<!-- Add "## Table of Contents" here, linking every H2 below, when the README is 100 lines or longer. -->
+
+## Install
+
+> **Prerequisites:** <List only non-standard requirements. For example: Node 22+, Docker 24+.>
+
+```bash
+git clone <repo-url>
+cd <project>
+<install command>      # npm install / pip install -r requirements.txt / go mod download
+cp .env.example .env   # then fill in the values marked REQUIRED
+```
+
+## Usage
+
+```bash
+<start command>
+```
+
+| Command | What it does |
+|---------|-------------|
 
 ## Key Files
 
 | Path | Purpose |
 |------|---------|
 
-## Commands
-
-| Command | What it does |
-|---------|-------------|
-
 ## Environment Variables
 
-> **SECURITY:** Never log or commit these values. See [`docs/ENV_VARS.md`](docs/ENV_VARS.md).
+> **SECURITY:** Never log or commit these values. See [the environment variable reference](docs/ENV_VARS.md).
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -62,4 +66,8 @@ cp .env.example .env
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+See [the contributing guide](CONTRIBUTING.md).
+
+## License
+
+<SPDX identifier, for example MIT> © <license owner>. See [LICENSE](LICENSE).

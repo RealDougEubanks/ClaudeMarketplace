@@ -39,10 +39,13 @@ Print the full Git Workflow Reference section below.
 
 ### Action (b) — Start New Work
 
-1. Use Bash to identify the current release branch:
+1. Use Bash to fetch, confirm a clean working tree, and identify the current release branch:
    ```bash
-   git branch -r | grep release | sort -V | tail -1
+   git fetch origin
+   git status --porcelain
+   git for-each-ref --sort=-v:refname --count=1 --format='%(refname:lstrip=3)' 'refs/remotes/origin/release/*'
    ```
+   If `git status --porcelain` prints anything, stop and ask the user to commit or stash first. The last command prints the highest `release/*` branch by version order (for example `release/1.10`, not `origin/release/1.10`), so it can be used directly as `<release-branch>`. It only matches branches under `release/`, unlike a plain `grep release`.
 
    **No-release-branch fallback:** If the command above returns no output (no `release/*` branch exists), fall back to branching from `main` and target `main` for the PR. Inform the user:
    > "No release branch found. Branching from `main` and the PR will target `main` directly. This is normal for simple repos and early-stage projects that do not yet use the release-branch model."
@@ -54,9 +57,8 @@ Print the full Git Workflow Reference section below.
 
 3. Construct the branch name: `feature/task-XXX-short-description` or `fix/task-XXX-short-description`.
 
-4. Use Bash to fetch the latest remote state, then create and check out the branch from the release branch:
+4. Use Bash to create and check out the branch from the freshly fetched release branch (the fetch in step 1 keeps the base current):
    ```bash
-   git fetch origin
    git checkout -b <branch-name> origin/<release-branch>
    ```
    Without the fetch, a stale remote-tracking ref would create the branch off an old tip.
@@ -77,15 +79,17 @@ Print the full Git Workflow Reference section below.
 
 2. Use Glob to check if `handoffs/reviews/` exists. If it does, use Read on any open review artifacts to check for unresolved findings with `severity: critical | severe | moderate`. If any exist, **block the PR** and inform the user these must be resolved first.
 
-3. Use Bash to identify the target release branch:
+3. Use Bash to identify the target release branch (same detection as Action (b); fall back to `main` if it prints nothing):
    ```bash
-   git branch -r | grep release | sort -V | tail -1
+   git fetch origin
+   git for-each-ref --sort=-v:refname --count=1 --format='%(refname:lstrip=3)' 'refs/remotes/origin/release/*'
    ```
 
 4. Use Read to check `handoffs/plans/` for context to include in the PR description.
 
-5. Produce a PR description with: summary of changes, related task IDs, testing notes. Then use Bash:
+5. Produce a PR description with: summary of changes, related task IDs, testing notes. Push the branch first so the PR has a head on the remote, then use Bash:
    ```bash
+   git push -u origin "$(git branch --show-current)"
    gh pr create --title "<title>" --body "<description>" --base <release-branch>
    ```
    If `gh` is not available, print the PR body for the user to paste manually.
@@ -112,9 +116,10 @@ Print the full Git Workflow Reference section below.
    ```bash
    git checkout main
    git pull origin main
-   git tag v<version>
+   git tag -a v<version> -m "Release v<version>"
    git push origin v<version>
    ```
+   Use an annotated tag: it records the tagger, date, and message, and `git describe` ignores lightweight tags by default. If the user signs tags (`git config --get tag.gpgSign` prints `true`, or they ask for a signed tag), use `git tag -s v<version> -m "Release v<version>"` instead.
 
 5. Remind the user to invoke `/abd-docs` (or the Documentation agent) to create the changelog for this release in `docs/CHANGELOG.md` or `docs/changelogs/<version>.md`.
 
@@ -260,7 +265,7 @@ feature/* or fix/*
        ↓  (PR)
 release/<version>
        ↓  (PR when release is ready)
-      main  →  tag v<version>
+      main  →  annotated tag v<version>
 ```
 
 ### Who Does What
@@ -279,7 +284,7 @@ release/<version>
 
 - Feature branches: `feature/task-NNN-short-description`
 - Fix branches: `fix/issue-NNN-short-description`
-- Version tags: `vMAJOR.MINOR.PATCH` (e.g. `v1.0.0`)
+- Version tags: `vMAJOR.MINOR.PATCH` (e.g. `v1.0.0`), always annotated (`git tag -a`) or signed (`git tag -s`)
 - Changelog: `docs/CHANGELOG.md` or `docs/changelogs/<version>.md`
 
 ### Merge Style

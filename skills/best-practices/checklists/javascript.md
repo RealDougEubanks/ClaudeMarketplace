@@ -6,10 +6,12 @@
 - [ ] `==` instead of `===`
 - [ ] `console.log` left in production code paths
 - [ ] No ESLint or Prettier config
-- [ ] Missing `.eslintrc` rules for security (`no-eval`, `no-implied-eval`)
+- [ ] Missing security rules (`no-eval`, `no-implied-eval`) in the ESLint flat config (`eslint.config.js` / `.mjs` / `.cjs` / `.ts`)
+- [ ] Legacy `.eslintrc*` config still in use — ESLint v10 no longer supports it; migrate to `eslint.config.*`
 - [ ] `require()` mixed with ES module `import`
 - [ ] Callback-style async code instead of async/await
 - [ ] Missing `package.json` `engines` field (Node version not specified)
+- [ ] `engines` or CI targets an end-of-life Node release (Node 20 and older reached EOL on 2026-04-30) — require Node 22+ and prefer the current Active LTS
 
 ## React (if detected)
 

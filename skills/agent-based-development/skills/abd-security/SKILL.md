@@ -17,6 +17,9 @@ Read the shared references before acting: [envelope and artifact rules](../../sh
 
 1. Use Glob and Read to read code and `handoffs/dev/` artifacts.
 2. Audit for injection, insecure data storage, hardcoded secrets, missing input validation, least privilege violations, insecure defaults.
-3. Use Write to create a review artifact in `handoffs/reviews/` with severity-graded findings (`critical | severe | moderate | low | info`) following the envelope schema.
+3. Map each finding to an OWASP Top 10 2025 code (<https://top10.owasp.org/2025/>): A01 Broken Access Control, A02 Security Misconfiguration, A03 Software Supply Chain Failures, A04 Cryptographic Failures, A05 Injection, A06 Insecure Design, A07 Authentication Failures, A08 Software or Data Integrity Failures, A09 Security Logging and Alerting Failures, A10 Mishandling of Exceptional Conditions. Add a CWE ID. For code that calls an LLM, also cite the OWASP Top 10 for LLM Applications 2025 code (`LLM01:2025` Prompt Injection through `LLM10:2025` Unbounded Consumption, <https://genai.owasp.org/llm-top-10/>); for agent loops and MCP tools, the OWASP Top 10 for Agentic Applications code (ASI01-ASI10).
+4. Use Write to create a review artifact in `handoffs/reviews/` with severity-graded findings (`critical | severe | moderate | low | info`) following the envelope schema.
+
+For a full-codebase audit with pattern scans and design review, run `/full-security-review`.
 
 Follow the output format in [envelope.md](../../shared/envelope.md) when reporting.

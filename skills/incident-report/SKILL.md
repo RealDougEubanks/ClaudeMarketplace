@@ -3,7 +3,7 @@ name: incident-report
 description: Generates professional incident reports using customizable templates. Supports outage, security, performance, and data-loss incident types. Extensible via templates/ and rules/.
 argument-hint: "[incident description]"
 allowed-tools: Read, Write, Glob, Bash(mkdir:*)
-model: haiku
+model: sonnet
 ---
 
 # Incident Report

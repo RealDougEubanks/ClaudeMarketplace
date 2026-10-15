@@ -1,0 +1,15 @@
+# Inclusive-language glossary for ste_check.py --glossary.
+# Format: preferred: avoid, avoid. Matches are case-insensitive whole words, outside code.
+# Sources: Google "Write inclusive documentation"; Microsoft "Bias-free communication".
+allowlist: whitelist, white-list
+denylist: blacklist, black-list
+primary/replica or primary/secondary: master/slave, slave
+person-hours: man-hours, man hours
+workforce: manpower
+humanity: mankind
+perimeter network: demilitarized zone
+stops responding: hangs
+placeholder: dummy
+confidence check: sanity check
+native (built-in) feature: first-class citizen
+older adults: the elderly

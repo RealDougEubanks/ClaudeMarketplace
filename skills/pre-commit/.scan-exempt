@@ -7,3 +7,6 @@ AWS_SECRET
 # Skill documents the --no-verify bypass and steers users away from it
 no-verify
 --no-verify
+# The secret scan reports matches in test files as warnings; "credentials"
+# describes what the scan looks for, not something the skill accesses.
+credentials
