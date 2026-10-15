@@ -10,7 +10,7 @@ When working in this repo, your job is to help build, validate, and publish skil
 - Each skill directory has this structure: `SKILL.md` at the plugin root (with YAML frontmatter), `metadata.json`, `README.md`, `.claude-plugin/plugin.json`. There is NO `commands/` directory (legacy layout, removed — see `docs/decisions/0001-migrate-to-skill-md-layout.md`). Multi-skill plugins (agent-based-development) use `skills/<sub-skill>/SKILL.md` instead of a root `SKILL.md`.
 - `metadata.json` must validate against `schema/metadata.schema.json`.
 - After creating or editing a skill, run `./scripts/validate.sh skills/<skill-name>`.
-- After adding a skill directory, update `skills/registry.json` and run `./scripts/check-registry.sh`.
+- After adding a skill directory, run `./scripts/check-registry.sh`. `new-skill.sh` already adds the skill to `registry.json` and `marketplace.json`; edit them by hand only for a skill made without the script.
 - Use `./scripts/new-skill.sh <name>` to scaffold a new skill. It creates the full directory structure (including `.claude-plugin/plugin.json`) and registers the skill in `registry.json` and `marketplace.json`.
 - Skills are distributed via the Claude Code marketplace — there is no manual install script. Direct users to add this repo as a marketplace in `~/.claude/settings.json`.
 - Do not modify `skills/example-skill/` — it is the canonical reference for contributors.
@@ -25,6 +25,7 @@ Always run these checks before committing. CI will fail if any are skipped.
 4. **Run ShellCheck** — `shellcheck scripts/*.sh tests/*.sh`. All scripts must pass with no errors.
 5. **Run markdownlint** — `npx markdownlint-cli2 "skills/**/*.md" "*.md"`. No bare URLs — wrap emails and URLs in backticks or angle brackets.
 6. **Check registration and version sync** — `./scripts/check-registry.sh` to confirm every skill directory is registered, and `./scripts/sync-versions.sh --check` to confirm versions agree across `metadata.json`, `registry.json`, `marketplace.json`, and `plugin.json`.
+7. **Run the tests** — `bash tests/run-all.sh`. CI runs the same suite.
 
 ## Golden Rules
 
