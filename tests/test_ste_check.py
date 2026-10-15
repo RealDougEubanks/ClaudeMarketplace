@@ -205,6 +205,29 @@ def test_main_bad_glossary_exits_2():
         Path(handle.name).unlink()
 
 
+def test_markup_empty_alt_text_flagged_but_score_unchanged():
+    report = check("![](diagram.png)\n\nSet the token.\n")
+    assert "a11y-alt-text" in rules(report)
+    assert report.score == 100.0
+
+
+def test_markup_vague_link_text_flagged_descriptive_passes():
+    assert "a11y-link-text" in rules(check("See [here](docs/x.md) for details.\n"))
+    assert check("See [the setup guide](docs/x.md).\n").violations == []
+
+
+def test_markup_heading_skip_flagged_and_inside_code_ignored():
+    assert "a11y-heading-skip" in rules(check("# Title\n\n### Deep\n"))
+    assert check("# Title\n\n## Next\n\n```md\n#### in code\n```\n").violations == []
+
+
+def test_inclusive_terms_glossary_file_parses_and_flags():
+    path = SCRIPT.parent.parent / "standards" / "inclusive-terms.txt"
+    glossary = mod.parse_glossary(path.read_text())
+    report = mod.check_text("t.md", "Add the host to the whitelist.\n", 20, 25, glossary=glossary)
+    assert rules(report) == ["glossary"]
+
+
 if __name__ == "__main__":
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     passed = failed = 0

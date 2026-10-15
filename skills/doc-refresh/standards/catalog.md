@@ -10,8 +10,8 @@ Each document gets three layers:
 1. **Structure.** The page type and the order of its sections (Diátaxis, a template, or a
    format specification).
 2. **Sentence rules.** STE-lite, plain language, or a house style guide.
-3. **Overlay.** Always applied: security notices before the step, file and line references,
-   the metadata comment, and freshness checks against the code.
+3. **Overlay.** Always applied: the universal rules below, security notices before the step,
+   file and line references, the metadata comment, and freshness checks against the code.
 
 ## Supported values for `--standard`
 
@@ -36,8 +36,9 @@ the tree by Diátaxis and writes procedures in STE-lite.
 | How-to guide | Diátaxis how-to | `ste-lite` for steps, `plain` elsewhere |
 | Tutorial | Diátaxis tutorial | `plain` (STE is too stiff for teaching) |
 | API reference | OpenAPI document as the source of truth; Diátaxis reference | `ste-lite`, terse |
+| Event-driven API reference (queues, streams, webhooks) | AsyncAPI 3.1 document as the source of truth; Diátaxis reference | `ste-lite`, terse |
 | Generated reference (Terraform/OpenTofu Registry, CLI help) | The generator's page format | `ste-lite` |
-| README | [templates/readme.md](../templates/readme.md) | `plain` |
+| README | Standard Readme section order; [templates/readme.md](../templates/readme.md) | `plain` |
 | Architecture | arc42 sections and C4 diagrams | `plain` |
 | ADR | MADR (see the adr skill) | `plain` |
 | Changelog | Keep a Changelog 1.1.0 (see the changelog-generator skill) | `plain` |
@@ -50,6 +51,53 @@ the tree by Diátaxis and writes procedures in STE-lite.
 
 If the project already declares a style guide (in `CONTRIBUTING.md`, a `.vale.ini`, or a
 `styles/` directory), use that guide for sentence rules unless the user named a standard.
+
+## Universal rules (every document, every standard)
+
+These rules apply on top of the selected standard.
+
+**STE-lite Tier 1.** Sentence and paragraph limits, one instruction per step, notices before
+the step, one term per concept. See [ste-lite.md](ste-lite.md).
+
+**Accessible writing** (W3C WAI, "Writing for Web Accessibility";
+<https://www.w3.org/WAI/tips/writing/>):
+
+- Give every image alt text that states its information or function. Use empty alt text
+  only for a decorative image (WCAG 1.1.1).
+- Write link text that names the target. Do not use "click here", "here", "this", or "link"
+  (WCAG 2.4.4).
+- Use real headings in order. Do not skip a level, for example from H2 to H4 (WCAG 1.3.1,
+  2.4.6).
+- Give each page a title that tells it apart from other pages (WCAG 2.4.2).
+- Expand each abbreviation on first use (WCAG 3.1.4).
+- Give diagrams a text summary or a table with the same information.
+
+**Inclusive language** (Google, "Write inclusive documentation",
+<https://developers.google.com/style/inclusive-documentation>; Microsoft, "Bias-free
+communication", <https://learn.microsoft.com/style-guide/bias-free-communication>):
+
+- Use neutral terms: allowlist and denylist, primary and replica, person-hours.
+- Use "you", a role ("the operator"), or "they" for a generic person. Do not use "he" or "she"
+  for a generic person.
+- Do not use ableist, violent, or figurative terms ("crazy", "kill", "hang"). Say what happens:
+  "stop", "does not respond".
+- Do not call a task "simple", "easy", or "just". The reader's experience can be different.
+- In examples, use varied names and places. Do not use culture-specific references.
+- If code requires a non-inclusive identifier, show it only in code font and use the neutral
+  term in prose.
+
+The checker enforces the term lists with
+[inclusive-terms.txt](inclusive-terms.txt) (`--glossary`), and checks alt text, link text,
+and heading order directly.
+
+## README structure (Standard Readme)
+
+When the doc is a README, use the section order of the Standard Readme spec
+(<https://github.com/RichardLitt/standard-readme>): title (the repository or package name),
+short description (one line, under 120 characters, the same as the repository description),
+optional Security and Background, a table of contents when the README is 100 lines or longer,
+Install, Usage, extra sections, Contributing, and License as the last section (SPDX
+identifier and owner). The bundled README template follows this order.
 
 ## STE-lite tiers
 

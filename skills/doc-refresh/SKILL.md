@@ -50,7 +50,9 @@ Read [standards/catalog.md](standards/catalog.md) (resolve it like the templates
   name one, keep that standard so successive runs stay consistent.
 - Always read [standards/ste-lite.md](standards/ste-lite.md): its Tier 1 rules apply to every
   document. Build a short project glossary (one term per concept) and write it to a temporary
-  file in the format that file describes, before you write any doc.
+  file in the format that file describes, before you write any doc. Append the lines of
+  [standards/inclusive-terms.txt](standards/inclusive-terms.txt) to that file.
+- For a README, use the Standard Readme section order (see the catalog).
 - Tier 2 (procedural) rules apply to runbooks, troubleshooting pages, reference pages, and
   agent context files, and to the numbered steps of every other doc.
 
@@ -83,6 +85,10 @@ Rules for every document written or rewritten, whatever the standard:
 - **File + line references** when pointing to code: `src/auth/middleware.ts:42`.
 - **Stale content is harmful.** A wrong doc is worse than no doc. Correct it, or propose
   deletion (Step 2).
+- **Accessible writing.** Alt text on every informative image, link text that names the
+  target, headings in order with no skipped level, abbreviations expanded on first use.
+- **Inclusive language.** Neutral terms (allowlist, primary/replica), no gendered generic
+  pronouns, no "simple", "easy", or "just". See the catalog's universal rules.
 - **No AI-isms.** Follow the project's style rules (for example the forbidden-phrase list in
   `CLAUDE.md`).
 - **AI-friendly structure:** consistent heading hierarchy (H1 = title, H2 = major sections,
@@ -198,8 +204,8 @@ any placeholder unfilled — if the information is not found, write `Unknown —
 
 1. Re-read the doc against the selected standard's rules.
 2. Run the bundled checker on every doc. Use `--tier full` for Tier 2 document types and
-   `--tier always` for the rest. Fix flagged sentences until the score is 90% or more and no
-   glossary violation remains. Passive-voice and "-ing" hits are heuristics: keep a sentence
+   `--tier always` for the rest. Fix flagged sentences until the score is 90% or more, and fix
+   every glossary and `a11y-*` issue (empty alt text is acceptable only for a decorative image). Passive-voice and "-ing" hits are heuristics: keep a sentence
    when the rewrite is worse, and say so in the summary.
 
    ```bash

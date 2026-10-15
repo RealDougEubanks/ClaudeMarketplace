@@ -5,7 +5,9 @@ Scores each file as the share of prose sentences with no rule violation.
 Tier "always" checks sentence and paragraph length and glossary terms in all
 prose, and the procedural rules only inside numbered steps. Tier "full"
 applies the procedural rules (modal verbs, -ing phrases, likely passive
-voice) to all prose. Passive and -ing checks are heuristics.
+voice) to all prose. Passive and -ing checks are heuristics. Markup checks
+(empty alt text, vague link text, skipped heading levels) run on every file
+and are listed, but do not change the sentence score.
 """
 
 import argparse
@@ -25,6 +27,9 @@ PASSIVE_RE = re.compile(
     r"(\w+ed|built|done|made|known|given|taken|shown|seen|written|sent|kept|found|held|run|set)\b",
     re.IGNORECASE)
 ING_PHRASE_RE = re.compile(r"\b(?:by|when|before|after|while|without|on)\s+(\w{3,}ing)\b", re.IGNORECASE)
+EMPTY_ALT_RE = re.compile(r"!\[\s*\]\(")
+VAGUE_LINK_RE = re.compile(r"(?<!!)\[\s*(click here|here|this|link|read more|more)\s*\]\(", re.IGNORECASE)
+HEADING_RE = re.compile(r"^(#{1,6})\s+\S")
 ING_EXEMPT = {"thing", "things", "string", "nothing", "something", "anything", "everything",
               "during", "morning", "ring", "spring", "king", "logging", "monitoring", "tracing",
               "caching", "routing", "pricing", "staging", "testing", "scheduling", "existing"}
@@ -129,6 +134,45 @@ def prose_blocks(lines):
         yield done
 
 
+def markup_problems(lines) -> list:
+    """Accessibility checks on raw Markdown outside front matter, comments, and code."""
+    problems, in_fence, in_comment, previous_level = [], False, False, 0
+    in_frontmatter = bool(lines) and lines[0].strip() == "---"
+    for number, raw in enumerate(lines, start=1):
+        line = raw.rstrip("\n")
+        if in_frontmatter:
+            if number > 1 and line.strip() == "---":
+                in_frontmatter = False
+            continue
+        if in_comment:
+            in_comment = "-->" not in line
+            continue
+        if line.lstrip().startswith("<!--"):
+            in_comment = "-->" not in line
+            continue
+        if FENCE_RE.match(line):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        text = re.sub(r"`[^`]*`", "", line)
+        if EMPTY_ALT_RE.search(text):
+            problems.append(Violation(number, "a11y-alt-text",
+                                      "empty alt text (acceptable only for a decorative image)"))
+        vague = VAGUE_LINK_RE.search(text)
+        if vague:
+            problems.append(Violation(number, "a11y-link-text",
+                                      f"link text '{vague.group(1)}' does not name the target"))
+        heading = HEADING_RE.match(line)
+        if heading:
+            level = len(heading.group(1))
+            if previous_level and level > previous_level + 1:
+                problems.append(Violation(number, "a11y-heading-skip",
+                                          f"H{previous_level} to H{level} skips a level"))
+            previous_level = level
+    return problems
+
+
 def parse_glossary(text: str) -> list:
     """Parse 'preferred: avoid, avoid' lines into (preferred, compiled-avoid-regex) pairs."""
     entries = []
@@ -169,6 +213,7 @@ def check_text(path: str, text: str, max_procedural: int, max_descriptive: int,
     if tier not in ("always", "full"):
         raise CheckError(f"unknown tier {tier!r}")
     report = FileReport(path=path)
+    report.violations.extend(markup_problems(text.splitlines()))
     for start, kind, block in prose_blocks(text.splitlines()):
         sentences = [s for s in SENTENCE_END_RE.split(strip_inline(block)) if s.strip()]
         limit = max_procedural if kind == "procedural" else max_descriptive

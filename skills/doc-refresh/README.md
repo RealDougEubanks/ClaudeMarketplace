@@ -33,6 +33,12 @@ modal verbs or "-ing" phrases) applies to runbooks, reference pages, and agent c
 and to numbered steps everywhere. The bundled `scripts/ste_check.py` scores each doc for its
 tier, flags likely passive voice and glossary terms to avoid, and the skill aims for 90%.
 
+Every doc also gets two universal rules, whatever the standard: accessible writing (alt text,
+descriptive link text, heading order, per W3C WAI) and inclusive language (per the Google and
+Microsoft style guides; a default term list ships in `standards/inclusive-terms.txt`). The
+checker reports `a11y-*` issues alongside the score. READMEs follow the Standard Readme section
+order, and event-driven API references use AsyncAPI 3.1.
+
 ### Safety checks
 
 Before writing, the skill confirms the target repository, asks before overwriting docs that

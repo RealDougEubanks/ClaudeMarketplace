@@ -114,7 +114,8 @@ python3 "${CLAUDE_PLUGIN_ROOT:-skills/doc-refresh}/scripts/ste_check.py" --tier 
 ```
 
 The checker tests the rules that a script can test: sentence and paragraph length, modal
-verbs, "-ing" phrases, likely passive voice, and glossary terms to avoid. The passive-voice and
+verbs, "-ing" phrases, likely passive voice, glossary terms to avoid, and the accessibility
+markup rules from the catalog (alt text, link text, heading order). The passive-voice and
 "-ing" checks are heuristics: review each hit, and keep the sentence when the rewrite is worse.
 The checker skips frontmatter, HTML comments, code blocks, tables, and headings.
 
