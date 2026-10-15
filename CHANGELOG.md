@@ -4,9 +4,17 @@ All notable changes to the Claude Code Skills Marketplace are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow [Semantic Versioning](https://semver.org/).
 
+From 1.0.6, each section matches a git tag (`vX.Y.Z`) that `publish.yml` creates on merge. The 1.0.0 to 1.1.1 sections predate the automated tags and use an earlier numbering.
+
 ---
 
 ## [Unreleased]
+
+*No unreleased changes.*
+
+---
+
+## [1.0.6] — 2026-10-15
 
 ### Added
 
