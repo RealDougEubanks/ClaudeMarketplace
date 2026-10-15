@@ -1,6 +1,7 @@
 <!--
-doc: SECURITY
-last-refreshed: 2026-04-07
+doc: security
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
 generated-by: doc-refresh skill
 -->
 
@@ -8,53 +9,66 @@ generated-by: doc-refresh skill
 
 ## Scope
 
-This security policy covers the **Claude Code Skills Marketplace** repository, including:
+This policy covers the Claude Code Skills Marketplace repository:
 
-- Skill content (`skills/*/commands/<name>.md`) — prompt instructions that execute with user-granted Claude Code permissions
-- Tooling scripts (`scripts/`) — shell and Python scripts run locally and in CI
-- CI/CD workflows (`.github/workflows/`) — automated pipelines with repository write access
+| Area | Path | Risk |
+|---|---|---|
+| Skill content | `skills/*/SKILL.md`, `skills/*/skills/*/SKILL.md`, and supporting files (`templates/`, `rules/`, `standards/`, `scripts/`) | The instructions run with the Claude Code permissions that the user gives. |
+| Tool scripts | `scripts/`, `tests/` | The scripts run on contributor machines and in CI. |
+| CI/CD workflows | `.github/workflows/` | The workflows run with repository tokens. |
 
-## Reporting a Vulnerability
+## Report a vulnerability
 
-**Please do not open a public GitHub issue for security vulnerabilities.**
+> **SECURITY:** Do not open a public GitHub issue for a vulnerability.
 
-Use GitHub's private vulnerability reporting feature:
+1. Go to the
+   [Security tab](https://github.com/RealDougEubanks/ClaudeMarketplace/security) of this
+   repository.
+2. Select **Report a vulnerability**.
+3. Give the steps to reproduce the problem, the affected files, and the possible impact.
 
-1. Go to the [Security tab](../../security) of this repository
-2. Click **"Report a vulnerability"**
-3. Fill in the details — include steps to reproduce, affected files, and potential impact
+If you cannot use GitHub reporting, send an email to `security@realdougeubanks.dev`.
 
-You can also email **`security@realdougeubanks.dev`** if you prefer not to use GitHub's reporting tool.
+> **SECURITY:** Do not put real tokens, passwords, or personal data in a report. Use
+> placeholders. If a token was exposed, revoke it first.
 
-## What to Report
+## What to report
 
-Report anything that could allow a skill to:
+Report each problem that lets a skill do one of these things:
 
-- Execute unintended commands on a user's machine (beyond what the skill declares in `metadata.json`)
-- Exfiltrate files, credentials, or environment variables without user awareness
-- Bypass Claude Code's permission system
-- Inject instructions that override Claude's safety guidelines (prompt injection)
+- Run commands on a user's machine that the skill does not declare.
+- Send files, credentials, or environment variables out of the machine without the user's
+  knowledge.
+- Get around the Claude Code permission system.
+- Inject instructions that override Claude's safety guidelines (prompt injection).
 
-Also report vulnerabilities in the CI/CD pipeline, scripts, or any hardcoded credentials.
+Also report vulnerabilities in the CI/CD pipeline or the scripts, and any credential in the
+repository.
 
-## Response Timeline
+## Response targets
 
 | Stage | Target |
-|-------|--------|
-| Acknowledgement | Within 48 hours |
-| Initial assessment | Within 5 business days |
-| Fix or mitigation | Depends on severity — critical issues within 7 days |
+|---|---|
+| Acknowledgement | 48 hours or less |
+| First assessment | 5 business days or less |
+| Fix or mitigation | Set by severity. A critical problem gets a fix in 7 days or less. |
 
-## Skill Safety Model
+## Skill safety model
 
-Skills in this marketplace run inside Claude Code with permissions explicitly granted by the user. Each skill declares the tools it uses in `metadata.json`. Users should review tool declarations before installing a skill.
+Skills run inside Claude Code with the permissions that the user gives. Each skill declares
+its tools in `metadata.json` and in the `allowed-tools` field of `SKILL.md`. Read these
+declarations before you enable a skill.
 
-The CI pipeline runs `scripts/scan-prompts.sh` on all skill prompt files (`SKILL.md`) to flag potentially dangerous patterns before merge. This is a best-effort control, not a guarantee.
+CI runs `scripts/scan-prompts.sh` on each skill before a merge. The scanner flags dangerous
+patterns. It is a best-effort control, not a guarantee.
 
-Skills may include a `.scan-exempt` file listing patterns (one per line) that are expected and have been reviewed. Lines starting with `#` are comments. Exemptions are used by skills that legitimately reference sensitive terms (e.g., security audit skills discussing credentials). Changes to `.scan-exempt` files receive heightened scrutiny during PR review.
+A skill can have a `.scan-exempt` file. The file lists patterns that the skill needs and that
+a reviewer accepted, with one pattern on each line. Lines that start with `#` are comments.
+Security audit skills use exemptions because they must name sensitive terms. Reviewers
+examine each change to a `.scan-exempt` file with extra care.
 
-## Out of Scope
+## Out of scope
 
-- Vulnerabilities in Claude Code itself (report to Anthropic)
-- Issues requiring physical access to the user's machine
-- Social engineering attacks
+- Vulnerabilities in Claude Code itself. Report them to Anthropic.
+- Attacks that need physical access to the user's machine.
+- Social engineering.

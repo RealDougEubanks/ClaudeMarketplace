@@ -1,51 +1,77 @@
-# Onboarding Skill
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
 
-Generates a comprehensive developer onboarding guide for any codebase and writes it to `docs/ONBOARDING.md`.
+# onboarding
+
+This skill reads a codebase and writes a developer onboarding guide to `docs/ONBOARDING.md`.
+The guide includes a directory map, entry points, environment variables, key commands, and a
+Mermaid architecture diagram.
 
 ## Usage
+
+| Slash command | Arguments | Result |
+|---|---|---|
+| `/onboarding` | None | Writes `docs/ONBOARDING.md` for the current repository. |
 
 ```
 /onboarding
 ```
 
-Run this command when landing in an unfamiliar codebase — either as a new developer joining a project or as Claude beginning work in a new repository.
+Use the skill when you start work in a codebase that you do not know. This applies to a new
+developer and to a new Claude agent.
 
 ## What It Does
 
-1. Reads project metadata: `README.md`, `package.json` / `pyproject.toml` / `go.mod`, `CLAUDE.md`, and `docs/assumptions.md` if present.
-2. Maps the top-level directory structure and describes the purpose of each folder.
-3. Finds and reads the primary application entry point (`index.*`, `main.*`, `server.*`, `app.*`, `cmd/**/*`).
-4. Reads `package.json` scripts, Makefile, or `Taskfile.yml` to extract key commands (install, run, test, build, lint).
-5. Finds `.env.example` or equivalent env documentation and lists all required environment variables.
-6. Counts files by detected language type.
-7. Checks for `docs/agentRoster.md` and includes the agent roster if found.
-8. Writes the complete guide to `docs/ONBOARDING.md`.
+1. Reads `README.md`. Then reads `package.json`, `pyproject.toml`, `go.mod`, `CLAUDE.md`, and `docs/assumptions.md` if they exist.
+2. Maps the top-level directories and gives the purpose of each one.
+3. Finds the entry points (`index.*`, `main.*`, `server.*`, `app.*`, `cmd/**/*`) and reads the primary one.
+4. Reads `Makefile`, the `package.json` scripts, or `Taskfile.yml` to find the install, run, test, build, and lint commands.
+5. Finds `.env.example` or other env var documentation and lists the required variables.
+6. Counts the source files for each detected language.
+7. Makes a Mermaid architecture diagram from the entry point, the infrastructure config files, and the imports.
+8. Reads `docs/agentRoster.md` if it exists and adds the agent roster to the guide.
+9. Writes the guide to `docs/ONBOARDING.md` and gives you a summary of its sections.
+
+> **SECURITY:** The skill reads `.env.example` only. It does not read `.env` or other files
+> with real credentials, and it writes variable names and descriptions only. Do not add real
+> secret values to the guide when you edit it.
 
 ## Output
 
-The skill writes a structured Markdown document to `docs/ONBOARDING.md` containing:
+The skill writes `docs/ONBOARDING.md` with these sections:
 
-- **What This Project Does** — 1-2 sentence summary
-- **Tech Stack** — language, framework, database, CI/CD
-- **Directory Map** — path-to-purpose table for every top-level folder
-- **Getting Started** — copy-paste shell commands to install, configure, and run
-- **Key Entry Points** — primary files with line references
-- **Environment Variables** — full table of required and optional vars
-- **Key Commands** — what each npm/make/task command does
-- **Architecture Overview** — brief description of data/request flow
-- **Agent Roster** — team of agents (if `docs/agentRoster.md` exists)
-- **How to Contribute** — branching strategy and PR process
+| Section | Content |
+|---|---|
+| What This Project Does | A summary of 1 or 2 sentences from the README |
+| Tech Stack | Language, framework, database, CI/CD |
+| Directory Map | A path-to-purpose table for each top-level folder |
+| Getting Started | Shell commands to install, configure, and run |
+| Key Entry Points | Primary files with line references |
+| Environment Variables | Required and optional variables, with descriptions |
+| Key Commands | What each npm, make, or task command does |
+| Architecture | A Mermaid diagram (`sequenceDiagram`, `graph LR`, or `graph TD`) with a note that it was auto-generated |
+| Architecture Overview | A short description of the data or request flow |
+| Agent Roster | Only if `docs/agentRoster.md` exists |
+| How to Contribute | A summary of the project's own branch, review, and merge rules |
+
+The skill reads the "How to Contribute" rules from `CONTRIBUTING.md`, `CLAUDE.md`, or
+`.github/PULL_REQUEST_TEMPLATE.md` in the target project. If none of these files exist, the
+section tells the reader to confirm the conventions with a maintainer.
 
 ## When to Use
 
-- First day on a new project
-- Onboarding a new team member (have Claude generate the guide, then review it)
-- After a large refactor to refresh stale documentation
-- Before handing a codebase to a new Claude agent
+- On the first day on a new project.
+- When a new team member joins. Let Claude write the guide, then review it.
+- After a large refactor, to replace stale documentation.
+- Before you give a codebase to a new Claude agent.
 
 ## Installation
 
-Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+Enable the plugin through the Claude Code marketplace. Add this to `~/.claude/settings.json`:
 
 ```json
 {
@@ -55,4 +81,4 @@ Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 }
 ```
 
-Once enabled, invoke with `/onboarding` in any Claude Code session.
+Then run `/onboarding` in a Claude Code session.

@@ -1,296 +1,234 @@
 <!--
-doc: README
-last-refreshed: 2026-06-04
+doc: readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
 generated-by: doc-refresh skill
 -->
 
 # Claude Code Skills Marketplace
 
-A community-driven collection of custom skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — Anthropic's CLI tool that lets you work with Claude directly in your terminal and editor.
+This repository is a marketplace of skills for [Claude Code](https://code.claude.com/docs),
+the Anthropic agentic coding tool. Each skill is a slash command. It gives Claude a tested
+set of instructions for one job, for example a security audit.
 
-## Prerequisites
+## Requirements
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated
-- Git with SSH configured (for the marketplace source URL), or use the HTTPS URL below
-- No other dependencies required
+- Claude Code, installed and signed in.
+- Git. The marketplace URL uses SSH. If you do not use SSH, use the HTTPS URL in
+  [Install the marketplace](#install-the-marketplace).
 
-## What are Skills?
+## What a skill is
 
-Skills are reusable prompt templates that extend Claude Code's capabilities. They let you package expert instructions into shareable, versioned modules that anyone can invoke with a slash command.
+A skill is a set of instructions in a `SKILL.md` file, with optional templates and rules.
+You start a skill with its slash command, for example `/code-review`. A skill does nothing
+until you start it.
 
-> **Skills vs Plugins:** Internally, Claude Code calls these "plugins" — you'll see `enabledPlugins` in `settings.json` and `.claude-plugin/` directories in the repo. Skills are plugins implemented purely as prompt instructions, with no MCP server or external API required.
+Claude Code calls a package of skills a **plugin**. That is why `settings.json` has an
+`enabledPlugins` key and each skill directory has a `.claude-plugin/` directory. The skills
+in this marketplace are plugins that contain only instructions. They do not start a server
+and do not call an external API.
 
-Examples of what skills can do:
+## Install the marketplace
 
-- Enforce project-specific code review checklists
-- Generate boilerplate tailored to your stack
-- Run multi-step workflows (test, lint, commit, deploy)
-- Automate documentation generation
-- Perform security audits with custom rulesets
+1. Add the marketplace to `~/.claude/settings.json`:
 
-## Repository Structure
+   ```json
+   {
+     "extraKnownMarketplaces": {
+       "claude-skills-marketplace": {
+         "source": {
+           "source": "git",
+           "url": "git@github.com:RealDougEubanks/ClaudeMarketplace.git"
+         },
+         "autoUpdate": true
+       }
+     }
+   }
+   ```
 
-```
-ClaudeMarketplace/
-├── skills/                         # Published skills
-│   ├── registry.json               # Index of all available skills
-│   └── example-skill/              # One directory per skill (= one plugin)
-│       ├── SKILL.md                # Skill prompt with YAML frontmatter
-│       ├── .claude-plugin/
-│       │   └── plugin.json         # Claude Code plugin manifest
-│       ├── metadata.json           # Name, version, author, tags, etc.
-│       └── README.md               # Human-readable documentation
-├── schema/
-│   └── metadata.schema.json        # JSON Schema for metadata validation
-├── scripts/
-│   ├── validate.sh                 # Validate a skill's structure
-│   ├── new-skill.sh                # Scaffold a new skill (creates all files, registers it)
-│   ├── check-registry.sh           # Verify registry.json consistency
-│   ├── validate-all.sh             # Run all validation checks
-│   ├── scan-prompts.sh             # Prompt safety scanner
-│   ├── sync-versions.sh            # Sync versions across metadata files
-│   └── generate-changelog-entry.sh # Generate a changelog entry from git log
-├── CONTRIBUTING.md                 # How to submit a skill
-└── LICENSE                         # MIT
-```
+   If you do not use SSH, set `"url"` to `"https://github.com/RealDougEubanks/ClaudeMarketplace.git"`.
 
-## Available Skills
+2. Enable the skills that you want in the same file:
 
-> The `example-skill` is a contributor reference — it demonstrates the expected file structure but is not a functional skill.
+   ```json
+   {
+     "enabledPlugins": {
+       "golden-rules@claude-skills-marketplace": true,
+       "code-review@claude-skills-marketplace": true,
+       "full-security-review@claude-skills-marketplace": true
+     }
+   }
+   ```
+
+3. Start a new Claude Code session. Type `/` to see the slash commands.
+
+With `"autoUpdate": true`, Claude Code gets skill updates from this repository
+automatically. You do not install a skill again after it changes.
+
+### Choose where skills are enabled
+
+| Method | Where | Result |
+|---|---|---|
+| All skills, all projects | `~/.claude/settings.json` | All slash commands are available everywhere. |
+| Some skills, all projects | `~/.claude/settings.json` | Only the skills that you list are available. |
+| Some skills, one project | `.claude/settings.json` in the project | The project list adds to your global list. |
+
+An enabled skill has no runtime cost. It adds one entry to the slash-command list, and it
+does nothing until you start it.
+
+## Available skills
+
+`example-skill` is a reference for contributors. It is not a working skill.
 
 ### Base (always-on context)
 
-| Skill | Command | Description |
-|-------|---------|-------------|
-| [golden-rules](skills/golden-rules/) | `/golden-rules` | Installs mandatory security, coding, naming, design, testing, error handling, API contract, and performance standards into CLAUDE.md as always-on context for every Claude Code session |
+| Skill | Slash command | What it does |
+|---|---|---|
+| [golden-rules](skills/golden-rules/) | `/golden-rules` | Writes security, coding, testing, error-handling, and API standards into your project's `CLAUDE.md`. |
 
 ### Workflow
 
-| Skill | Command | Description |
-|-------|---------|-------------|
-| [agent-based-development](skills/agent-based-development/) | `/agent-based-development` | Full async multi-agent development workflow: Planning → Design → Dev → Security/Tech Review loop with file-based handoffs and release-branch Git model |
-| [git-workflow](skills/git-workflow/) | `/git-workflow` | Enforces the release-branch Git model: scaffold feature branches, open PRs with review checks, cut releases with tags, and view workflow reference |
-| [adr](skills/adr/) | `/adr` | Creates and maintains Architecture Decision Records (ADRs) in docs/decisions/ using the MADR 4.0 format. Supports creating, listing, updating, superseding, and searching ADRs |
-| [api-design](skills/api-design/) | `/api-design` | Designs REST, GraphQL, and gRPC APIs (OpenAPI/schema/proto output) and reviews existing APIs for consistency, best practices, and breaking change risks |
-| [architecture-design](skills/architecture-design/) | `/architecture-design` | Designs new systems from requirements: C4 model diagrams, service boundaries, API contracts, data design, failure modes, and cross-cutting concerns |
-| [changelog-generator](skills/changelog-generator/) | `/changelog-generator` | Generates a structured CHANGELOG.md following Keep a Changelog format from git history and ABD handoff artifacts |
-| [database-design](skills/database-design/) | `/database-design` | Designs database schemas from domain requirements (ERD, indexes, migrations, security) or reviews existing schemas for normalization issues, missing indexes, unsafe migrations, and scalability risks |
-| [incident-report](skills/incident-report/) | `/incident-report` | Generates professional incident reports using customizable templates. Supports outage, security, performance, and data-loss incident types |
-| [requirements-generator](skills/requirements-generator/) | `/requirements-generator` | Generates structured requirements documents with functional and non-functional requirements, Gherkin acceptance criteria, edge cases, and out-of-scope items |
+| Skill | Slash command | What it does |
+|---|---|---|
+| [agent-based-development](skills/agent-based-development/) | `/agent-based-development` and 11 `/abd-*` commands | Runs a multi-agent workflow: plan, design, develop, then security and technical review, with file-based handoffs. |
+| [git-workflow](skills/git-workflow/) | `/git-workflow` | Makes feature branches, opens pull requests, and tags releases in the release-branch model. |
+| [adr](skills/adr/) | `/adr` | Creates and updates Architecture Decision Records in MADR 4.0 format. |
+| [api-design](skills/api-design/) | `/api-design` | Designs REST, GraphQL, and gRPC APIs, and reviews existing APIs. Writes OpenAPI 3.2 by default. |
+| [architecture-design](skills/architecture-design/) | `/architecture-design` | Designs a new system from requirements, with C4 diagrams and failure modes. |
+| [changelog-generator](skills/changelog-generator/) | `/changelog-generator` | Writes `CHANGELOG.md` entries in Keep a Changelog 1.1.0 format from the git history. |
+| [database-design](skills/database-design/) | `/database-design` | Designs a database schema, or reviews an existing schema and its migrations. |
+| [incident-report](skills/incident-report/) | `/incident-report` | Writes an incident report from a template: outage, security, performance, or data loss. |
+| [requirements-generator](skills/requirements-generator/) | `/requirements-generator` | Writes requirements with Gherkin acceptance criteria, edge cases, and items out of scope. |
 
 ### Standards
 
-| Skill | Command | Description |
-|-------|---------|-------------|
-| [accessibility](skills/accessibility/) | `/accessibility` | Audits code for WCAG 2.2 AA compliance and provides design guidance for accessible components. Covers semantic HTML, ARIA, keyboard nav, contrast, focus management, and motion |
-| [architecture-review](skills/architecture-review/) | `/architecture-review` | Audits existing architecture for anti-patterns, scalability and reliability risks, and testability gaps. Graded findings with migration paths and a to-be diagram |
-| [best-practices](skills/best-practices/) | `/best-practices` | Holistic codebase audit that auto-detects the stack and produces a prioritized improvement roadmap with level-of-effort estimates |
-| [code-review](skills/code-review/) | `/code-review` | Structured engineering code review covering readability, complexity, test gaps, SOLID principles, and API consistency |
-| [mvp-readiness](skills/mvp-readiness/) | `/mvp-readiness` | Runs a structured MVP quality-gate audit covering stability, security, logging, docs, and implementation integrity. Reports pass/fail with evidence |
-| [pre-commit](skills/pre-commit/) | `/pre-commit` | Fast pre-commit quality gate: scans staged files for secrets, dead code, naming issues, merge conflict markers, and direct-to-main commits. Installs as a git hook via `/pre-commit install` |
-| [test-writer](skills/test-writer/) | `/test-writer` | Generates comprehensive unit and integration tests for a given file or function, auto-detecting the project test framework and matching existing test style |
+| Skill | Slash command | What it does |
+|---|---|---|
+| [accessibility](skills/accessibility/) | `/accessibility` | Audits code against WCAG 2.2 AA, and gives design guidance for accessible components. |
+| [architecture-review](skills/architecture-review/) | `/architecture-review` | Audits an existing architecture for anti-patterns and for scale and reliability risks. |
+| [best-practices](skills/best-practices/) | `/best-practices` | Audits the whole codebase and gives a list of improvements in order of priority. |
+| [code-review](skills/code-review/) | `/code-review:code-review` | Reviews code for readability, complexity, test gaps, and API consistency. |
+| [mvp-readiness](skills/mvp-readiness/) | `/mvp-readiness` | Audits a project against an MVP quality gate and reports pass or fail with evidence. |
+| [pre-commit](skills/pre-commit/) | `/pre-commit` | Scans staged files for secrets, dead code, and conflict markers. Can install a git hook. |
+| [test-writer](skills/test-writer/) | `/test-writer` | Writes unit and integration tests in the style of the project's existing tests. |
+
+Claude Code has a built-in `/code-review` command. Use `/code-review:code-review` to start
+the marketplace skill.
 
 ### Security
 
-| Skill | Command | Description |
-|-------|---------|-------------|
-| [dependency-audit](skills/dependency-audit/) | `/dependency-audit` | Audits dependencies across npm, pip, Go, Cargo, Composer, .NET, and Ruby manifests for unpinned versions, deprecated packages, missing lockfiles, and known CVEs |
-| [full-security-review](skills/full-security-review/) | `/full-security-review` | Structured security audit covering injection, auth, secrets, input validation, dependencies, cryptography, and AI/LLM risks. Produces severity-graded findings |
+| Skill | Slash command | What it does |
+|---|---|---|
+| [dependency-audit](skills/dependency-audit/) | `/dependency-audit` | Audits dependencies for unpinned versions, deprecated packages, known CVEs, and supply-chain risks. |
+| [full-security-review](skills/full-security-review/) | `/full-security-review` | Audits a codebase against OWASP Top 10 2025, the OWASP LLM and agentic lists, and CWE. Gives findings by severity. |
 
 ### Productivity
 
-| Skill | Command | Description |
-|-------|---------|-------------|
-| [doc-refresh](skills/doc-refresh/) | `/doc-refresh` | Documentation refresh: audits stale docs, creates missing ones, and rewrites them to a selected standard (STE-lite, plain language, Diataxis) with mandatory security callouts |
-| [log-correlation](skills/log-correlation/) | `/log-correlation` | Correlates and troubleshoots logs across OS (Linux/macOS), AWS (CloudWatch, CloudTrail, ALB, Lambda), application (JSON, logfmt), and web servers (Nginx, Apache) |
-| [onboarding](skills/onboarding/) | `/onboarding` | Generates a comprehensive developer onboarding guide (ONBOARDING.md) by reading the codebase: directory map, entry points, environment variables, key commands, and architecture overview |
+| Skill | Slash command | What it does |
+|---|---|---|
+| [doc-refresh](skills/doc-refresh/) | `/doc-refresh` | Finds stale docs, writes missing docs, and rewrites docs to a standard that you select (for example STE-lite or plain language). |
+| [log-correlation](skills/log-correlation/) | `/log-correlation` | Correlates logs from the OS, AWS, applications, and web servers to find the cause of a problem. |
+| [onboarding](skills/onboarding/) | `/onboarding` | Writes an `ONBOARDING.md` guide for new developers from the codebase. |
 
----
+## Base skills
 
-## Git Hooks
+A skill with `"category": "base"` writes its content into your project's `CLAUDE.md` when you
+start it. Claude Code reads `CLAUDE.md` at the start of each session. Thus the content stays
+in effect after the first run, and you do not start the skill again.
 
-Two skills can install themselves as git hooks so they run on every commit.
+To get a new version of the content, run the skill again with `--update`, for example
+`/golden-rules --update`.
+
+## Git hooks
+
+Two skills can install a git pre-commit hook. The hook then runs on each commit.
 
 | Skill | What the hook does |
-|-------|--------------------|
-| [pre-commit](skills/pre-commit/) | Scans staged files for secrets, dead code, naming issues, conflict markers, and direct-to-main commits. Blocks the commit if a BLOCKER is found. |
-| [doc-refresh](skills/doc-refresh/) | Reports documentation drift. With `DOC_REFRESH_HOOK_MODE=write`, rewrites stale docs and stages them in the same commit. Never blocks a commit. |
+|---|---|
+| [pre-commit](skills/pre-commit/) | Scans the staged files for secrets, dead code, naming problems, conflict markers, and commits to `main`. Stops the commit if it finds a BLOCKER. |
+| [doc-refresh](skills/doc-refresh/) | Reports stale documentation. With `DOC_REFRESH_HOOK_MODE=write`, it rewrites stale docs and stages them in the same commit. It never stops a commit. |
 
-Both hooks write to the hooks directory that git reports (`git rev-parse --git-path hooks`),
-so they respect worktrees. If `core.hooksPath` is set (husky, lefthook), the installers warn
-and stop, because a hook manager owns the hooks.
-
-The two hooks stack. Each installer moves an existing hook to `pre-commit.backup.<skill>`
-and runs it first. Each uninstaller removes only its own hook (identified by a
-`# claude-skill-hook: <skill>` marker) and restores the backup.
+To install or remove a hook, use these commands:
 
 ```text
 /pre-commit install      /pre-commit uninstall
 /doc-refresh install     /doc-refresh uninstall
 ```
 
-| Skill | Skip one commit |
-|-------|-----------------|
+The two hooks can be installed together. Each installer moves the current hook to
+`pre-commit.backup.<skill>`, and the new hook runs that backup first. Each uninstaller
+removes only its own hook and puts the backup back.
+
+> **CAUTION:** If `core.hooksPath` is set (for example by husky or lefthook), a hook manager
+> controls the hooks. The installers stop and tell you. Add the check to the hook manager's
+> configuration.
+
+To skip one hook for one commit, set its variable:
+
+| Skill | Command |
+|---|---|
 | `pre-commit` | `SKIP_PRE_COMMIT=1 git commit ...` |
 | `doc-refresh` | `SKIP_DOC_REFRESH=1 git commit ...` |
 
-`git commit --no-verify` skips every hook, including the secret scan. Prefer the skip
-variables. Hooks are local to each clone, so each team member runs the install command.
+> **SECURITY:** `git commit --no-verify` skips all hooks, including the secret scan. Use the
+> variables above.
 
----
+Git does not commit the hooks directory. Each team member must install the hooks in their
+own clone.
 
-## How Base Skills Work
+## Repository structure
 
-Skills with `"category": "base"` (like `golden-rules`) do two things when enabled via the marketplace:
-
-1. Register as a slash command (e.g. `/golden-rules`) so you can invoke it on demand.
-2. **When invoked, append the skill content to `CLAUDE.md`** in your project root.
-
-Because Claude Code loads `CLAUDE.md` automatically at the start of every session, base skills become **always-on context** — no invocation required after the first run.
-
----
-
-## Why Marketplace Format?
-
-Skills in this repo are distributed as a Claude Code marketplace rather than as individually installed files. This was a deliberate design decision:
-
-**Skills stay automatically up to date.** With `"autoUpdate": true`, Claude Code syncs with this repo whenever it pulls updates. Any improvement to a skill — better instructions, new capabilities, bug fixes — is available immediately without any action from the user. There is no "reinstall" step.
-
-**Skills are passive — there is no overhead to having them enabled.** A skill is just a slash command. It does nothing until you invoke it. Having 22 skills enabled globally costs nothing at runtime: no background processes, no memory usage, no effect on Claude's behavior unless you type the command. The only practical consideration is 22 extra entries in the slash command autocomplete list.
-
-**You control which skills are enabled.** You can enable all of them globally, a curated subset, or configure different skills per project. See [Selective Installation](#selective-installation) below.
-
----
-
-## Quick Start
-
-### Browse Skills
-
-Look through the [`skills/`](skills/) directory or check [`skills/registry.json`](skills/registry.json) for a full index.
-
-### Install via Claude Code Marketplace
-
-Skills are distributed through the Claude Code marketplace system. Add this marketplace to your `~/.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "claude-skills-marketplace": {
-      "source": {
-        "source": "git",
-        "url": "git@github.com:RealDougEubanks/ClaudeMarketplace.git"
-      },
-      "autoUpdate": true
-    }
-  }
-}
+```text
+ClaudeMarketplace/
+├── .claude-plugin/
+│   └── marketplace.json        # Marketplace manifest: all plugins and versions
+├── skills/
+│   ├── registry.json           # Index of all skills
+│   └── <skill-name>/           # One directory for each skill (one plugin)
+│       ├── SKILL.md            # Instructions, with YAML frontmatter
+│       ├── metadata.json       # Name, version, author, tags, tools
+│       ├── README.md           # Documentation for people
+│       ├── .claude-plugin/
+│       │   └── plugin.json     # Plugin manifest
+│       └── templates/ ...      # Optional supporting files
+├── schema/
+│   └── metadata.schema.json    # JSON Schema for metadata.json
+├── scripts/                    # Validation, scaffolding, and release tools
+├── tests/                      # Tests for the scripts
+├── docs/                       # Decisions, assumptions, and reviews
+├── CONTRIBUTING.md
+├── SECURITY.md
+└── LICENSE                     # MIT
 ```
 
-> **No SSH?** Use the HTTPS URL instead: `"url": "https://github.com/RealDougEubanks/ClaudeMarketplace.git"`
+| Script | Purpose |
+|---|---|
+| `scripts/new-skill.sh` | Makes a new skill directory and registers the skill. |
+| `scripts/validate.sh` | Checks the structure of one skill. |
+| `scripts/validate-all.sh` | Checks all skills. |
+| `scripts/check-registry.sh` | Checks that each skill directory is in `registry.json`. |
+| `scripts/sync-versions.sh` | Copies each version from `metadata.json` to the other manifests. Use `--check` in CI. |
+| `scripts/check-version-bump.py` | Checks that each changed skill has a higher version. |
+| `scripts/check-commands.py` | Finds duplicate slash commands. |
+| `scripts/scan-prompts.sh` | Scans skill instructions for dangerous patterns. |
+| `scripts/generate-changelog-entry.sh` | Writes a changelog entry from the git log. |
 
-Then enable the skills you want under `enabledPlugins`. You can enable all of them, or just the ones relevant to your work:
-
-```json
-{
-  "enabledPlugins": {
-    "golden-rules@claude-skills-marketplace": true,
-    "code-review@claude-skills-marketplace": true,
-    "full-security-review@claude-skills-marketplace": true
-  }
-}
-```
-
-Once enabled, skills are available as slash commands in any Claude Code session:
-
-```
-/code-review          ← runs a structured code review on the current file or selection
-/full-security-review ← audits the codebase for security issues
-/test-writer          ← generates tests for a given file or function
-```
-
-### Selective Installation
-
-You don't have to enable everything. There are three common patterns:
-
-**Enable all skills globally** — add every skill to `~/.claude/settings.json`. All slash commands are available in every project, always up to date.
-
-**Enable a curated global set** — enable only the skills you use regularly (e.g. `golden-rules`, `code-review`, `full-security-review`) in `~/.claude/settings.json`, and skip the rest.
-
-**Per-project overrides** — add an `enabledPlugins` block to a project's `.claude/settings.json` to enable skills only for that project. Project settings layer on top of your global config.
-
-In a project's `.claude/settings.json`:
-
-```json
-{
-  "enabledPlugins": {
-    "accessibility@claude-skills-marketplace": true,
-    "database-design@claude-skills-marketplace": true
-  }
-}
-```
-
-### Create Your Own Skill
+## Make a skill
 
 ```bash
-# Scaffold a new skill
 ./scripts/new-skill.sh my-new-skill
-
-# Edit the generated files:
-# - skills/my-new-skill/SKILL.md                  → instructions Claude follows
-# - skills/my-new-skill/metadata.json             → name, version, category, tags, tools
-# - skills/my-new-skill/README.md                 → human-readable docs
-
-# Validate structure
 ./scripts/validate.sh skills/my-new-skill
-
-# Check registry consistency
 ./scripts/check-registry.sh
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full submission guide.
+Then write the instructions in `skills/my-new-skill/SKILL.md`. [CONTRIBUTING.md](CONTRIBUTING.md)
+gives the full procedure and the checks to do before a pull request.
 
-## Skill Anatomy
+## Security
 
-Every skill has four files:
-
-| File                          | Purpose                                                    |
-|-------------------------------|------------------------------------------------------------|
-| `SKILL.md`                    | The prompt with YAML frontmatter — what Claude executes    |
-| `metadata.json`               | Machine-readable metadata (name, version, tags, tools)     |
-| `.claude-plugin/plugin.json`  | Claude Code plugin manifest for discovery                  |
-| `README.md`                   | Human-readable docs (usage, examples, installation notes)  |
-
-### metadata.json
-
-```json
-{
-  "name": "my-skill",
-  "version": "1.0.0",
-  "description": "What the skill does in one sentence",
-  "author": {
-    "name": "Your Name",
-    "github": "your-username"
-  },
-  "license": "MIT",
-  "tags": ["category"],
-  "commands": ["/my-skill"],
-  "tools": ["Bash", "Read"]
-}
-```
-
-See [`schema/metadata.schema.json`](schema/metadata.schema.json) for the full validation schema.
-
-## Contributing
-
-We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
-
-**TL;DR:**
-1. Run `./scripts/new-skill.sh your-skill-name` to scaffold (it also registers the skill)
-2. Write your `SKILL.md`, `metadata.json`, and `README.md`
-3. Validate with `./scripts/validate.sh skills/your-skill-name`
-4. Run the pre-commit checklist in [CONTRIBUTING.md](CONTRIBUTING.md)
-5. Open a PR
+Report a vulnerability privately. Do not open a public issue. [SECURITY.md](SECURITY.md)
+gives the procedure.
 
 ## License
 
-This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
+MIT. See [LICENSE](LICENSE).

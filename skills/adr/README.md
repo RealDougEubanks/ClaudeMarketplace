@@ -1,61 +1,70 @@
-# adr — Architecture Decision Records
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
 
-**Command:** `/adr`
-**Category:** workflow
-**Version:** 1.0.0
+# adr
 
----
+The adr skill creates and maintains Architecture Decision Records (ADRs). It uses the
+MADR 4.0 format (Markdown Architectural Decision Records). Template reference:
+<https://adr.github.io/madr/>.
 
-## What Are ADRs and Why Do They Matter?
+An ADR is a short document. It records the context, the options, the chosen option, and
+the consequences of one architectural decision. ADRs tell new team members why the code
+has its current shape.
 
-Architecture Decision Records (ADRs) are short documents that capture the context, rationale, and consequences of significant architectural choices. Without them, knowledge lives only in the heads of whoever was in the room — and walks out the door when people leave.
+## Usage
 
-ADRs answer: *Why does this codebase look the way it does?* They are the institutional memory of your system's evolution.
+| Slash command | What it does |
+|---|---|
+| `/adr` | Asks which action you want |
+| `/adr create <title>` | Creates a new ADR with the given title |
+| `/adr list` | Shows all ADRs in a table: number, title, status, date, tags |
+| `/adr update <n> <status>` | Sets the status of ADR `<n>` and sets its date to today |
+| `/adr supersede <n>` | Creates a new ADR that replaces ADR `<n>` |
+| `/adr search <keyword>` | Finds ADRs that contain the keyword, tag, or status |
 
-This skill uses the **MADR 4.0** (Markdown Architectural Decision Records) format, a lightweight Markdown template that is easy to write, easy to read, and diffs cleanly in version control. Template reference: <https://adr.github.io/madr/>.
+If you give the action as an argument, the skill does not ask for it.
 
----
+## ADR directory
 
-## MADR Format Overview
+The skill finds the ADR directory before it writes. It checks these patterns in this
+order and uses the first directory that already contains ADRs:
 
-Each ADR starts with YAML front matter (`status`, `date`, `decision-makers`, `consulted`, `informed`, plus an optional `tags` key that this skill adds for filtering), followed by these sections:
+1. `docs/decisions/ADR-*.md`
+2. `docs/decisions/[0-9][0-9][0-9][0-9]-*.md`
+3. `docs/adr/*.md`
+4. `adr/*.md`
+5. `docs/architecture/decisions/*.md`
 
-| Section | Purpose |
-|---------|---------|
-| **Context and Problem Statement** | The situation that forced a decision |
-| **Decision Drivers** (optional) | The constraints and goals that mattered most |
-| **Considered Options** | The alternatives that were evaluated |
-| **Decision Outcome** | What was chosen and why |
-| **Consequences** (optional) | Good, Bad, and Neutral effects of the choice |
-| **Confirmation** (optional) | How compliance with the decision will be checked |
-| **Pros and Cons of the Options** (optional) | Good / Neutral / Bad arguments per option |
-| **More Information** (optional) | Evidence, revisit conditions, links to related ADRs, RFCs, tickets |
+If no ADRs exist, the skill uses `docs/decisions/`. The default file name is
+`ADR-NNN-kebab-case-title.md`. If the existing ADRs use another pattern, such as MADR
+`NNNN-title.md`, the skill uses that pattern.
 
-Files are stored as `docs/decisions/ADR-NNN-kebab-case-title.md`. If the project already has ADRs under another name pattern (such as MADR's `NNNN-title.md`), the skill follows that pattern.
+## Actions
 
----
+### Create
 
-## Five Actions
+1. The skill finds the next free ADR number.
+2. The skill reads related ADRs that you mention.
+3. The skill asks for the title, the context, the decision-makers, and who was consulted
+   and informed. It also asks for the options, the chosen option, and the confirmation
+   method.
+4. The skill writes the ADR in MADR format.
+5. The skill updates the ADR index.
 
-### (a) Create a new ADR
+### List
 
-Invoke `/adr` and select **create**. The skill will:
+The skill reads each ADR and shows a sorted table. It reads metadata from the YAML front
+matter. For older ADRs, it reads bold fields such as `**Status:**`.
 
-1. Find the next available ADR number from existing files in `docs/decisions/`.
-2. Ask for the decision title, context, decision-makers, who was consulted and informed, options considered, the chosen option, and how compliance will be confirmed.
-3. Generate a complete MADR-formatted ADR.
-4. Save it to `docs/decisions/ADR-<NNN>-<kebab-title>.md`.
-5. Regenerate the ADR index at `docs/decisions/README.md`.
+### Update status
 
-### (b) List existing ADRs
+Valid status changes:
 
-Displays a sorted table of all ADRs with number, title, status, date, and tags. Useful for getting oriented in an unfamiliar codebase.
-
-### (c) Update an ADR's status
-
-Valid status transitions:
-
-```
+```text
 Proposed → Accepted
 Proposed → Rejected
 Proposed → Deprecated
@@ -63,21 +72,42 @@ Accepted → Deprecated
 Accepted → Superseded by ADR-NNN
 ```
 
-Invoke `/adr`, select **update**, specify the ADR number and new status.
+### Supersede
 
-### (d) Supersede an ADR
+1. The skill creates a new ADR for the new decision.
+2. The skill adds "Supersedes ADR-NNN: [title]" to the More Information section of the
+   new ADR.
+3. The skill sets the status of the old ADR to `superseded by ADR-NNN`.
 
-When a previous decision is overturned:
+### Search
 
-1. A new ADR is created documenting the replacement decision.
-2. The new ADR links back to the one it supersedes.
-3. The old ADR's status is updated to `Superseded by ADR-NNN`.
+The skill searches the ADR directory with `Grep`. It returns each matching ADR with
+context lines.
 
-### (e) Search ADRs
+## ADR index
 
-Search across `docs/decisions/` by keyword, tag, or status. Returns matching ADRs with relevant context lines.
+After each create or update, the skill writes `README.md` again in the ADR directory. The
+index lists all ADRs by number. Each status shows as a text badge: `[ACCEPTED]`,
+`[PROPOSED]`, `[REJECTED]`, `[DEPRECATED]`, or `[SUPERSEDED]`.
 
----
+## MADR format
+
+Each ADR starts with YAML front matter: `status`, `date`, `decision-makers`, `consulted`,
+and `informed`. MADR does not define `tags`. The skill adds `tags` as an optional key for
+`list` and `search`.
+
+| Section | Purpose |
+|---|---|
+| Context and Problem Statement | The situation that caused the decision |
+| Decision Drivers (optional) | The most important constraints and goals |
+| Considered Options | The options that the team evaluated |
+| Decision Outcome | The chosen option and the reason |
+| Consequences (optional) | Good, bad, and neutral effects |
+| Confirmation (optional) | How the team checks compliance with the decision |
+| Pros and Cons of the Options (optional) | Arguments for and against each option |
+| More Information (optional) | Evidence, when to revisit, links to related ADRs and tickets |
+
+The skill removes optional sections that add nothing.
 
 ## Example ADR
 
@@ -127,38 +157,11 @@ and matches team expertise.
 
 Schema migrations are reviewed by the DBA, and a CI check rejects any new
 datastore client library that has not been approved through an ADR.
-
-## Pros and Cons of the Options
-
-### PostgreSQL
-
-* Good, because of full ACID compliance
-* Good, because JSONB handles flexible fields
-* Good, because the team knows it well
-* Bad, because vertical scaling limits appear at extreme write volumes
-
-### MySQL
-
-* Good, because hosting support is wide
-* Bad, because it has fewer query features than PostgreSQL
-
-### MongoDB
-
-* Good, because it scales horizontally
-* Bad, because schema flexibility can lead to data consistency issues
 ```
 
----
+## File layout
 
-## Integration with /architecture-design
-
-`/adr` works as a companion to `/architecture-design`. When the architecture skill produces design artifacts (C4 diagrams, service boundaries, API contracts), it can invoke `/adr` to document the key decisions made during the design session. The two skills share the `docs/` directory structure.
-
----
-
-## File Layout
-
-```
+```text
 docs/
   decisions/
     README.md          ← Auto-generated index (maintained by /adr)
@@ -167,8 +170,24 @@ docs/
     ADR-003-redis-session-storage.md
 ```
 
----
+## Related skills
+
+The `/architecture-design` skill produces C4 diagrams, service boundaries, and API
+contracts. At the end of a design session, it offers to run `/adr` for the key decisions.
+
+## Installation
+
+Add this repository as a marketplace in `~/.claude/settings.json` (see the root
+[README](../../README.md)). Then enable the plugin:
+
+```json
+{
+  "enabledPlugins": {
+    "adr@claude-skills-marketplace": true
+  }
+}
+```
 
 ## Author
 
-Doug Eubanks — [github.com/RealDougEubanks](https://github.com/RealDougEubanks)
+Doug Eubanks: <https://github.com/RealDougEubanks>

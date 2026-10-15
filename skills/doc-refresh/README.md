@@ -1,37 +1,60 @@
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
+
 # doc-refresh
 
-> Complete documentation refresh. Audits stale docs, creates missing docs, and rewrites
-> them to a documentation standard chosen per document, for a reader with zero context.
+> The doc-refresh skill audits stale documentation, creates missing documents, and rewrites
+> them to a documentation standard. It writes for a reader with no context.
 
-## What It Does
+## What it does
 
-This skill performs a full documentation overhaul on any project:
+The skill does a full documentation refresh on a project:
 
-- **Audits** every `.md` file for dead file references, removed commands, and missing env vars.
-- **Deletes** docs that are no longer valid (wrong is worse than missing).
-- **Creates** standard docs that are absent: `README.md`, `docs/RUNBOOK.md`, `CONTRIBUTING.md`,
-  `SECURITY.md`, `docs/ENV_VARS.md`.
-- **Rewrites** stale docs to the selected standard, plus an overlay: no assumed context, numbered steps,
-  mandatory security callouts, tables over prose, AI-friendly heading structure.
+- **Audit.** It checks each `.md` file for file paths, commands, and environment variables
+  that no longer exist.
+- **Propose deletions.** It lists each document that no longer applies, with the reason. It
+  deletes a document only after you confirm.
+- **Create.** It writes standard documents that are missing: `README.md`, `docs/RUNBOOK.md`,
+  `CONTRIBUTING.md`, `SECURITY.md`, and `docs/ENV_VARS.md`.
+- **Rewrite.** It rewrites stale documents to the selected standard. It also adds an
+  overlay: no assumed context, numbered steps, security notices, tables, and a metadata
+  comment.
+
+A full run audits 10 documents or fewer. If there are more, the skill does the core documents
+first and lists the skipped files for a second run.
+
+You start the skill with the slash command only. Claude does not start it automatically.
 
 ### Documentation standards
 
-Pass `--standard` to choose one, or let the skill pick per document (`auto`):
+Use `--standard` to select one standard, or let the skill select one for each document
+(`auto`):
 
 | Value | Use |
 |-------|-----|
 | `auto` | Default. Runbooks and reference get `ste-lite`; READMEs, policies and guides get `plain`. |
-| `ste-lite` | ASD-STE100 Issue 9 writing rules in two tiers, without the controlled dictionary. |
+| `ste-lite` | ASD-STE100 Issue 9 writing rules in two tiers, no controlled dictionary. |
 | `ste` | Full ASD-STE100; needs your copy of the STE dictionary, otherwise falls back to `ste-lite`. |
 | `plain` | ISO 24495-1 plain language. |
 | `google` / `microsoft` | The Google or Microsoft developer style guide. |
 | `diataxis` | Diátaxis page structure; combine with a sentence standard, e.g. `diataxis,ste-lite`. |
 
-STE-lite has two tiers. Tier 1 (sentence limits, one instruction per step, notices before
-the step, one term per concept) applies to every doc. Tier 2 (imperative, active voice, no
-modal verbs or "-ing" phrases) applies to runbooks, reference pages, and agent context files,
-and to numbered steps everywhere. The bundled `scripts/ste_check.py` scores each doc for its
-tier, flags likely passive voice and glossary terms to avoid, and the skill aims for 90%.
+If a document already names a standard in its metadata comment, the skill keeps that
+standard. The catalog of standards is in `standards/catalog.md`. The STE-lite rules are in
+`standards/ste-lite.md`.
+
+STE-lite has two tiers. Tier 1 applies to every document: sentence limits, one instruction
+per step, notices before the step, and one term for each concept. Tier 2 adds imperative
+mood, active voice, and no modal verbs or "-ing" phrases. It applies to runbooks, reference
+pages, and agent context files, and to numbered steps in all other documents.
+
+The bundled `scripts/ste_check.py` scores each document for its tier. It also flags likely
+passive voice and terms that the project glossary rejects. The target is 90%. The skill
+gives each score in its summary.
 
 Every doc also gets two universal rules, whatever the standard: accessible writing (alt text,
 descriptive link text, heading order, per W3C WAI) and inclusive language (per the Google and
@@ -41,41 +64,35 @@ order, and event-driven API references use AsyncAPI 3.1.
 
 ### Safety checks
 
-Before writing, the skill confirms the target repository, asks before overwriting docs that
-have uncommitted changes, stops if a file changes on disk while it works, runs any tests that
-check the docs, and leaves historical records (changelog entries, accepted ADRs, dated
-reports, LICENSE, NOTICE) unchanged.
+Before the skill writes, it does these checks:
 
-### The 2am-Engineer Persona
+1. Confirm the target repository. If the arguments name a different path, it stops and asks.
+2. List documents that have uncommitted changes, and ask whether to overwrite, skip, or stop.
+3. Compare each file's content hash before the write. If the file changed on disk, it does
+   not write that file.
+4. Find tests that check the documents, and run them after the write.
+5. Leave historical records unchanged: changelog entries, accepted ADRs, dated reports,
+   `LICENSE`, and `NOTICE`.
 
-Runbooks and troubleshooting pages are written as if the reader was just paged, is not fully
-awake, and has never seen the codebase. Short sentences. Numbered procedures. Security warnings before any sensitive step.
-No jargon without a definition. This also makes docs highly consumable by AI agents.
+### The 2am-engineer persona
 
-## Installation
-
-Add this repo as a marketplace in `~/.claude/settings.json`:
-
-```json
-{
-  "enabledPlugins": {
-    "doc-refresh@claude-skills-marketplace": true
-  }
-}
-```
+The skill writes runbooks and troubleshooting pages for a reader who was just paged. That
+reader is tired and has never seen the codebase. The pages use short sentences, numbered
+procedures, and security notices before each sensitive step. Each acronym has a definition.
+AI agents can also use these pages easily.
 
 ## Usage
 
-| Command | What it does |
-|---------|-------------|
-| `/doc-refresh` | Full refresh: audit, purge stale, fill gaps |
-| `/doc-refresh --standard ste-lite` | Full refresh with one standard for every doc |
+| Slash command | What it does |
+|---------------|-------------|
+| `/doc-refresh` | Full refresh: audit, propose deletions, create missing documents, rewrite stale documents |
+| `/doc-refresh --standard ste-lite` | Full refresh with one standard for every document |
 | `/doc-refresh runbook` | Generate `docs/RUNBOOK.md` only |
-| `/doc-refresh check` | Audit only — no writes. Reports STE-lite scores. Good for CI. |
-| `/doc-refresh install` | Install as a pre-commit git hook (backs up and chains any existing hook, including the `/pre-commit` hook) |
-| `/doc-refresh uninstall` | Remove the hook it installed and restore the previous hook |
+| `/doc-refresh check` | Audit only, no writes. Gives STE-lite scores. Use it in CI. |
+| `/doc-refresh install` | Install a pre-commit git hook (backs up and chains any existing hook, including the `/pre-commit` hook) |
+| `/doc-refresh uninstall` | Remove the hook that it installed and restore the previous hook |
 
-## Example Output
+## Example output
 
 ```
 doc-refresh Results
@@ -87,18 +104,43 @@ Docs unchanged:       2  (CONTRIBUTING.md, docs/assumptions.md)
 
 Standard per doc:     README.md=plain, docs/RUNBOOK.md=ste-lite
 STE-lite scores:      docs/RUNBOOK.md 94% (full), README.md 98% (always)
+Doc tests run:        pytest tests/test_docs.py — pass
 Notices added:        4 SECURITY, 1 WARNING, 1 CAUTION
+Skipped (uncommitted or changed during the run): 0
 
 Next: commit these changes, then run /pre-commit to verify.
 ```
 
-## Pre-Commit Hook
+## Pre-commit hook
 
-Run `/doc-refresh install` to attach this skill as a pre-commit git hook. It shares the
-pre-commit skill's conventions, so the two hooks stack: each backs up the hook it replaces and
-runs it first.
+The pre-commit hook follows the conventions of the pre-commit skill, so the two hooks can
+stack. Each one backs up the hook that it replaces and runs that hook first.
 
-By default the hook runs `/doc-refresh check` and reports drift without writing. Set
-`DOC_REFRESH_HOOK_MODE=write` to let it rewrite docs and stage them in the same commit; in
-that mode it never deletes files and skips any doc you have already edited. Skip one run with
-`SKIP_DOC_REFRESH=1 git commit ...`. The hook never blocks a commit.
+> **CAUTION:** If `core.hooksPath` is set, a hook manager such as husky or lefthook probably
+> controls your hooks. In that case, the skill stops and recommends that you call
+> `claude -p "/doc-refresh check"` from the hook manager.
+
+To install the hook, type `/doc-refresh install`.
+
+The hook has two modes:
+
+| Mode | How to select it | Behavior |
+|------|------------------|----------|
+| Check (default) | No setting | Runs `/doc-refresh check` and reports drift. Writes nothing. |
+| Write | `DOC_REFRESH_HOOK_MODE=write` | Rewrites documents and stages them in the same commit. Never deletes files. Skips each document that you already changed. |
+
+To skip one run, use `SKIP_DOC_REFRESH=1 git commit ...`. The hook never blocks a commit.
+
+The hook runs only on your machine. Each team member must install it.
+
+## Installation
+
+Add this repository as a marketplace in `~/.claude/settings.json`, then enable the plugin:
+
+```json
+{
+  "enabledPlugins": {
+    "doc-refresh@claude-skills-marketplace": true
+  }
+}
+```

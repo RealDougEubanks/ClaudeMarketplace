@@ -1,28 +1,49 @@
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
+
 # Changelog Generator
 
-A Claude Code skill that generates a structured `CHANGELOG.md` following the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format from git history and ABD (Agent-Based Development) handoff artifacts.
+The changelog-generator skill writes a `CHANGELOG.md` in the
+[Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/) format. It uses the git
+history and, if they exist, the ABD (Agent-Based Development) handoff artifacts.
 
 ## Usage
 
 ```
-/changelog-generator
+/changelog-generator [--strict] [--dry-run]
 ```
 
-Run this command from the root of a git repository. The skill will prompt you for the new version number, then automatically build or update your changelog.
+Run the slash command from the root of a git repository.
 
-## What It Does
+| Argument | Effect |
+|----------|--------|
+| *(none)* | Auto mode. Sort commits into sections by keyword. You supply the new version. |
+| `--strict` | Parse commits against the Conventional Commits specification. The skill calculates the semver bump and you confirm it. |
+| `--dry-run` | Do all steps, then print the new version section. Do not write the file. |
 
-1. **Finds the last release tag** — Uses `git describe --tags` to determine where the current release starts.
-2. **Prompts for the new version** — Asks you to confirm the version being released (e.g., `1.2.0`).
-3. **Collects commits** — Runs `git log` to gather all commits since the last tag, excluding merge commits.
-4. **Reads ABD handoff artifacts** — If `handoffs/docs/` exists, reads those files to supplement commit data with richer feature and bug fix context.
-5. **Categorizes commits** — Sorts commits into Keep a Changelog sections (Added, Changed, Deprecated, Removed, Fixed, Security) based on commit message conventions.
-6. **Writes or updates CHANGELOG.md** — Prepends the new version section to an existing changelog, or creates a fresh one with the standard header.
-7. **Confirms and reminds** — Reports what was written and flags any uncategorized commits for manual review.
+You can use `--strict` and `--dry-run` together.
 
-## Keep a Changelog Format
+## What it does
 
-This skill follows <https://keepachangelog.com/en/1.1.0/> exactly. The generated output looks like:
+1. **Find the last release tag.** The skill runs `git describe --tags --abbrev=0`. If there is no tag, it uses all commits.
+2. **Get the new version.** In auto mode, the skill asks for a `MAJOR.MINOR.PATCH` version. In strict mode, it calculates the version and asks you to confirm it.
+3. **Collect commits.** The skill runs `git log` from the last tag to `HEAD` and excludes merge commits.
+4. **Read ABD handoff artifacts.** If `handoffs/docs/` exists, the skill reads it for more context on features, bug fixes, and security fixes.
+5. **Sort the commits** into the Keep a Changelog sections: Added, Changed, Deprecated, Removed, Fixed, and Security.
+6. **Find the changelog.** The skill looks for `CHANGELOG.md`, `docs/CHANGELOG.md`, and `docs/changelogs/`, in that order. If none exists, it creates `CHANGELOG.md` at the repository root.
+7. **Write the changelog.** The skill adds the new version section above the first `## [` heading. With `--dry-run`, it prints the section and writes nothing.
+8. **Report.** The skill gives the version, date, section counts, and file path. It also lists the uncategorized commits.
+
+The skill copies commit subjects as data. It does not follow instructions in commit
+messages.
+
+## Output format
+
+The generated section looks like this:
 
 ```markdown
 ## [1.2.0] - 2026-04-06
@@ -37,28 +58,55 @@ This skill follows <https://keepachangelog.com/en/1.1.0/> exactly. The generated
 - Patched XSS vulnerability in comment renderer (ghi9012)
 ```
 
-## Commit Message Conventions
+The skill omits empty sections. It does not add sections that Keep a Changelog does not
+define. The one exception is a temporary **Uncategorized — Please Review** list. Sort those
+entries into the standard sections before the release.
 
-For best results, use these prefixes in your commit messages:
+## Auto mode: commit keywords
 
-| Prefix | Section |
-|--------|---------|
-| `feat:`, `add`, `new` | Added |
-| `refactor:`, `update`, `change`, `improve` | Changed |
-| `deprecat` (anywhere in message) | Deprecated |
-| `remove`, `delete`, `drop` | Removed |
-| `fix:`, `bug`, `patch` | Fixed |
-| `security:`, `vuln`, `cve`, `hotfix` | Security |
+Matching is not case-sensitive.
 
-Commits that do not match any pattern are placed in an **Uncategorized** section for manual review.
+| Commit message | Section |
+|----------------|---------|
+| Starts with `feat:`, `add`, `new` | Added |
+| Starts with `refactor:`, `update`, `change`, `improve` | Changed |
+| Contains `deprecat` | Deprecated |
+| Starts with `remove`, `delete`, `drop` | Removed |
+| Starts with `fix:`, `bug`, `patch` | Fixed |
+| Starts with `security:`, `vuln`, `cve`, `hotfix` | Security |
+| Anything else | Uncategorized — Please Review |
 
-## Integration with ABD Workflow
+## Strict mode: Conventional Commits
 
-If your project uses the Agent-Based Development (ABD) workflow, place completed handoff documents in `handoffs/docs/`. The skill reads these artifacts to enrich changelog entries with context beyond what is captured in commit messages — particularly useful for features that span multiple commits or work items resolved across agents.
+The skill parses each commit as `<type>(<scope>): <description>`. The scope is optional.
+
+| Commit type | Section |
+|-------------|---------|
+| `feat` | Added |
+| `fix` | Fixed |
+| `perf`, `refactor`, `style` | Changed |
+| `revert` | Fixed or Removed, with the prefix `Reverted:` |
+| `docs`, `ci`, `build`, `chore`, `test` | No entry (internal only) |
+| Breaking change (`!` after the type, or a `BREAKING CHANGE:` footer) | Changed or Removed, with the prefix `**BREAKING:**`, listed first |
+| Does not match the format | Uncategorized — Please Review |
+
+The skill recommends a version bump from the commits:
+
+| Commits | Bump |
+|---------|------|
+| Any breaking change | MAJOR |
+| Any `feat`, no breaking change | MINOR |
+| Only `fix`, `perf`, or `refactor` | PATCH |
+
+## Integration with the ABD workflow
+
+If your project uses the ABD workflow, put completed handoff documents in `handoffs/docs/`.
+The skill reads them to add context that commit messages do not contain. This helps when one
+feature spans many commits.
 
 ## Installation
 
-Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+Add this repository as a marketplace in `~/.claude/settings.json`, then enable the plugin:
 
 ```json
 {
@@ -68,4 +116,4 @@ Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 }
 ```
 
-Once enabled, invoke with `/changelog-generator` in any Claude Code session.
+Then type `/changelog-generator` in a Claude Code session.

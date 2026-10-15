@@ -1,19 +1,28 @@
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
+
 # git-workflow
 
-Enforce and execute the release-branch Git model. Claude guides you through the correct git operations for your current context — starting new work, opening a PR (with security review gate), cutting a release, or viewing the full workflow reference.
+This skill applies the release-branch Git model and runs the git operations for each task. It starts new work, opens a PR with a review check, cuts a release, resolves merge conflicts, and manages stashes. It also prints the workflow reference.
 
 ## What It Does
 
-When you run `/git-workflow`, Claude asks what you're trying to do and then executes:
+When you run `/git-workflow`, Claude asks which action you want. Then Claude runs that action:
 
 | Action | What Claude Does |
 |--------|-----------------|
 | **View docs** | Prints the full release-branch workflow reference |
-| **Start new work** | Detects the release branch, asks for task info, creates `feature/` or `fix/` branch |
-| **Open a PR** | Checks for unresolved `critical/severe/moderate` findings first, then generates PR with `gh pr create` |
-| **Cut a release** | Opens a release PR into `main`, then creates an annotated tag on `main` after the merge |
-| **Resolve a merge conflict** | Walks through each conflicted file, explains both sides, applies the agreed resolution, completes the rebase or merge |
-| **Manage stashes** | Lists, inspects, applies, pops, or drops stashes (with confirmation before destructive drops) |
+| **Start new work** | Fetches `origin`, stops if the working tree is not clean, finds the highest `release/*` branch, and creates a `feature/` or `fix/` branch from it |
+| **Open a PR** | Checks `handoffs/reviews/` for unresolved `critical`, `severe`, or `moderate` findings, pushes the branch, and runs `gh pr create` |
+| **Cut a release** | Opens a release PR into `main`. After the merge, creates an annotated (or signed) tag on `main`. |
+| **Resolve a merge conflict** | Explains both sides of each conflicted file, applies the resolution you choose, and completes the rebase or merge |
+| **Manage stashes** | Inspects, applies, pops, or drops stashes. Asks for confirmation before a drop. |
+
+If no `release/*` branch exists, Claude creates the branch from `main`, and the PR targets `main`.
 
 ## Branch Model
 
@@ -27,6 +36,8 @@ main                  ← production only; never commit directly
 
 When the release is ready: `release/1.0` → PR → `main` → tag `v1.0.0`
 
+The skill never commits or pushes directly to `main`. It never force-pushes to `main`.
+
 ## Naming Conventions
 
 | Type | Pattern | Example |
@@ -34,25 +45,39 @@ When the release is ready: `release/1.0` → PR → `main` → tag `v1.0.0`
 | Feature branch | `feature/task-NNN-description` | `feature/task-042-user-auth` |
 | Fix branch | `fix/task-NNN-description` | `fix/task-107-login-crash` |
 | Release branch | `release/<version>` | `release/1.0` |
-| Version tag | `vMAJOR.MINOR.PATCH` (annotated) | `v1.0.0` |
+| Version tag | `vMAJOR.MINOR.PATCH` (annotated or signed) | `v1.0.0` |
 
 ## PR Safety Gate
 
-Before opening a PR, Claude checks `handoffs/reviews/` for unresolved findings with severity `critical`, `severe`, or `moderate`. If any exist, the PR is blocked until they are resolved by the Planning agent (via `/abd-triage`).
+Before Claude opens a PR, it reads the review artifacts in `handoffs/reviews/`. If a finding with severity `critical`, `severe`, or `moderate` is not resolved, Claude blocks the PR. The Planning agent resolves the finding with `/abd-triage`.
 
 ## Usage
 
+| Slash command | Action |
+|---------------|--------|
+| `/git-workflow` | Claude asks which action you want |
+| `/git-workflow start` | Start new work |
+| `/git-workflow pr` | Open a PR for the current branch |
+| `/git-workflow release` | Cut a release |
+| `/git-workflow conflict` | Resolve a merge conflict on the current branch |
+| `/git-workflow stash` | Manage stashes |
+
 ```
 /git-workflow
+/git-workflow start
+/git-workflow release
 ```
 
-Claude will prompt you for the specific action. Or specify inline:
+To resolve a conflict, Claude asks you to choose rebase or merge. Rebase gives a linear history. Merge keeps the history of both sides and is safer for shared branches. Claude stages only the resolved files by name, never `git add .`.
 
-```
-/git-workflow — start new work for task-042
-/git-workflow — open PR
-/git-workflow — cut release 1.0.0
-```
+> **CAUTION:** A rebase rewrites history. Do not rebase a branch that other people use.
+
+1. If you chose rebase, push with `git push --force-with-lease origin <branch>`.
+2. If you chose merge, push with `git push origin <branch>`.
+
+> **WARNING:** A stash drop or `git stash clear` deletes stashed changes permanently. Inspect the stash before you confirm.
+
+To drop a stash, select the drop sub-action and confirm the prompt.
 
 ## Who Does What
 
@@ -66,9 +91,11 @@ Claude will prompt you for the specific action. Or specify inline:
 | Cut release | Planning or DevOps |
 | Create changelog | Documentation agent |
 
+After a release, Claude tells you to run `/abd-docs` to create the changelog in `docs/CHANGELOG.md` or `docs/changelogs/<version>.md`.
+
 ## Installation
 
-Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+Enable the plugin through the Claude Code marketplace. Add this to `~/.claude/settings.json`:
 
 ```json
 {
@@ -78,9 +105,10 @@ Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 }
 ```
 
-Once enabled, invoke with `/git-workflow` in any Claude Code session.
+Then run `/git-workflow` in any Claude Code session.
+
 ## Related Skills
 
-- `/agent-based-development` — full workflow where git-workflow is embedded
-- `/full-security-review` — run a security audit before opening PRs
-- `/mvp-readiness` — quality gate to run before cutting a release
+- `/agent-based-development`: full workflow that contains git-workflow
+- `/full-security-review`: security audit to run before you open a PR
+- `/mvp-readiness`: quality gate to run before you cut a release

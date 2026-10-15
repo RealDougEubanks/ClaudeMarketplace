@@ -1,43 +1,90 @@
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
+
 # Code Review Skill
 
-A structured engineering code review for Claude Code. Evaluates changed or specified source files across five quality dimensions and produces a markdown report with file:line citations.
+The code-review skill does a structured engineering review of source files. It checks
+readability, complexity, test gaps, SOLID principles, API consistency, and naming. It writes a
+markdown report with a `file:line` citation for each finding.
 
-## What it does
+## Usage
 
-When you run `/code-review`, Claude will:
+```
+/code-review [--quick] [path]
+```
 
-1. Collect the diff for the current branch (`git diff main...HEAD`) or scan specified files
-2. Read each changed file and evaluate it against five categories:
-   - **Readability** — clear names, no magic numbers, self-evident logic
-   - **Complexity** — functions over 25 lines or cyclomatic complexity over 5 branch points
-   - **Test coverage gaps** — public functions with no corresponding test file
-   - **SOLID violations** — Single Responsibility, Open/Closed, and DRY checks
-   - **API consistency** — signatures, return types, and error handling match codebase patterns
-3. Optionally write a JSON review artifact to `handoffs/reviews/` (if that directory exists)
-4. Output a markdown summary table and detailed findings with severity labels
+| Argument | Effect |
+|----------|--------|
+| *(none)* | Full mode. The skill asks for the scope: the branch diff (default), a file or directory, or all source files. |
+| `path` | Review this file or directory. |
+| `--quick` | Quick mode. Check only long functions and clear naming problems. |
 
-## What it does NOT cover
-
-This skill covers **engineering code quality only**. It does not audit for:
-
-- Security vulnerabilities (SQL injection, XSS, authentication flaws, etc.)
-- Dependency vulnerabilities
-- Secrets or credentials in source
-
-For security audits, use `/full-security-review`.
-
-## How to invoke
+Examples:
 
 ```
 /code-review
-```
-
-Optionally specify scope:
-
-```
 /code-review src/services/orderService.ts
-/code-review src/
+/code-review --quick src/
 ```
+
+Claude Code has a built-in `/code-review` slash command with the same name. If the built-in
+command runs instead of this skill, type `/code-review:code-review`.
+
+## Modes
+
+| Mode | Checks | Use it |
+|------|--------|--------|
+| Full (default) | Readability, complexity, test gaps, SOLID, API consistency, naming | Before you open a pull request |
+| Quick (`--quick`) | Functions longer than 20 lines; clear naming problems | During active development |
+
+Quick mode does not check SOLID principles or test gaps, and it does not write a review
+artifact.
+
+## What it does
+
+1. **Find the default branch.** The skill reads `origin/HEAD`. If that fails, it reads the
+   output of `git remote show origin`. It does not assume `main`.
+2. **Get the scope.** The default scope is `git diff <default>...HEAD`. If the branch has no
+   changes, the skill reviews all source files.
+3. **Read and evaluate each file** in full mode:
+   - **Readability:** clear names, no magic numbers, logic that is easy to follow.
+   - **Complexity:** functions longer than 25 lines, or more than 5 branch points.
+   - **Test gaps:** public functions with no matching test file.
+   - **SOLID:** Single Responsibility, Open/Closed, and DRY (duplicate blocks of 5 or more
+     lines).
+   - **API consistency:** signatures, return types, and error handling that differ from the
+     rest of the codebase.
+   - **Naming:** differences from the naming rules in `CLAUDE.md` or `docs/assumptions.md`.
+4. **Write a review artifact.** If `handoffs/reviews/` exists, the skill writes a JSON
+   artifact there.
+5. **Write the report.** The report has a summary table and the findings.
+
+## Severity
+
+Each finding title starts with a severity and a category, for example
+`[MED][COMPLEXITY]`.
+
+| Severity | Meaning |
+|----------|---------|
+| `[HIGH]` | Likely to cause bugs or maintenance failures |
+| `[MED]` | Makes the code harder to maintain or test |
+| `[LOW]` | Style or a minor improvement |
+
+Categories: `READABILITY`, `COMPLEXITY`, `TEST_GAP`, `SOLID`, `CONSISTENCY`, `NAMING`.
+
+## Scope limits
+
+This skill checks engineering quality only. It does not check for:
+
+- Security vulnerabilities (SQL injection, XSS, authentication flaws)
+- Dependency vulnerabilities
+- Secrets or credentials in source
+
+For a security audit, use `/full-security-review`.
 
 ## Example output
 
@@ -68,7 +115,7 @@ Optionally specify scope:
 
 ## Installation
 
-Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
+Add this repository as a marketplace in `~/.claude/settings.json`, then enable the plugin:
 
 ```json
 {
@@ -78,4 +125,5 @@ Enable via the Claude Code marketplace. Add to `~/.claude/settings.json`:
 }
 ```
 
-Once enabled, invoke with `/code-review` in any Claude Code session.
+Then type `/code-review` in a Claude Code session. If the built-in command takes precedence,
+type `/code-review:code-review`.

@@ -109,7 +109,7 @@
         "complexity",
         "standards"
       ],
-      "version": "1.3.0",
+      "version": "1.3.1",
       "category": "standards"
     },
     {
@@ -124,7 +124,7 @@
         "quality",
         "tdd"
       ],
-      "version": "1.3.0",
+      "version": "1.3.1",
       "category": "standards"
     },
     {
@@ -169,7 +169,7 @@
         "getting-started",
         "architecture"
       ],
-      "version": "1.3.0",
+      "version": "1.3.1",
       "category": "productivity"
     },
     {
@@ -184,7 +184,7 @@
         "planning",
         "product"
       ],
-      "version": "1.3.0",
+      "version": "1.3.1",
       "category": "workflow"
     },
     {
@@ -201,7 +201,7 @@
         "cloudwatch",
         "incident"
       ],
-      "version": "1.5.0",
+      "version": "1.5.1",
       "category": "productivity"
     },
     {
@@ -266,7 +266,7 @@
         "diagrams",
         "planning"
       ],
-      "version": "1.3.0",
+      "version": "1.3.1",
       "category": "workflow"
     },
     {
@@ -282,7 +282,7 @@
         "refactoring",
         "technical-debt"
       ],
-      "version": "1.3.0",
+      "version": "1.3.1",
       "category": "standards"
     },
     {

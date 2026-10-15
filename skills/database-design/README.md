@@ -1,78 +1,135 @@
+<!--
+doc: skill-readme
+standard: ste-lite (ASD-STE100 Issue 9 writing rules, no controlled dictionary)
+last-refreshed: 2026-10-14
+generated-by: doc-refresh skill
+-->
+
 # database-design
 
-A Claude Code skill for designing database schemas from domain requirements and auditing existing schemas for common issues.
+The database-design skill designs database schemas from domain requirements. It also audits
+existing schemas for common problems.
 
-## Commands
+## Usage
 
-- `/database-design` — Design a new database schema (design mode, default)
-- `/database-design --review` — Audit an existing schema (review mode)
+```
+/database-design
+/database-design --review [path]
+```
 
-## Modes
+| Slash command | Mode |
+|---------------|------|
+| `/database-design` | Design mode (default). Design a new schema. |
+| `/database-design --review` | Review mode. Audit the existing schema in the repository. |
+| `/database-design --review <path>` | Review mode. Audit only the files in this directory. |
 
-### Design Mode (default)
+## Design mode (default)
 
-Guides you through creating a production-ready database schema from scratch:
+The skill does these steps:
 
-1. Gathers domain description, data volume estimates, read/write ratios, and compliance requirements
-2. Recommends appropriate database type(s) with justification
-3. Models entities and relationships with full field definitions
-4. Produces a Mermaid ERD diagram saved to `docs/database/schema.md`
-5. Recommends an index strategy for each table
-6. Identifies PII and compliance requirements, recommending encryption and row-level security where needed
-7. Generates backwards-compatible migration files to `db/migrations/` or `migrations/`
+1. Ask for the domain, the one-year data volume, the read/write ratio, and any existing schema.
+2. Ask for compliance needs (PII, HIPAA, PCI).
+3. Recommend one or more database types and give the reasons.
+4. Model the entities and relationships, with full field definitions.
+5. Normalize to third normal form (3NF). Record each denormalization decision in `docs/assumptions.md`.
+6. Recommend indexes for each table.
+7. Identify PII and compliance needs. Recommend encryption, row-level security, retention rules, and an audit log table where they apply.
+8. Write migration files that keep backward compatibility.
+9. Save the ERD to `docs/database/schema.md` and the migrations to `db/migrations/` or `migrations/`.
 
-### Review Mode (`--review`)
+Each table gets `created_at` and `updated_at`. Business-critical tables also get
+`deleted_at` for soft delete.
 
-Audits an existing schema against a comprehensive checklist:
+### Primary keys
 
-- **Normalization**: repeating groups, transitive dependencies, duplicate data
-- **Indexes**: missing FK indexes, missing query indexes, redundant indexes
-- **Data integrity**: FK constraints, NOT NULL, CHECK constraints, soft delete consistency
-- **Security**: PII encryption, password hashing, row-level security, audit logs
-- **Migrations**: versioning, backwards compatibility, CONCURRENTLY for large tables
-- **Performance**: N+1 risks, large blob handling, partition strategy
+The skill uses UUIDs for distributed systems and auto-increment keys for simple systems. For
+UUIDs, it recommends UUIDv7 (RFC 9562). UUIDv7 keys are time-ordered, so inserts append to the
+B-tree index. Random UUIDv4 keys fragment the index and make inserts slower on large tables.
 
-Produces a severity-graded report (Critical/High/Medium/Low) with specific fix recommendations and migration SQL.
+A UUIDv7 key shows when the row was created. If that is sensitive, use UUIDv4.
 
-## Supported Databases
+## Review mode (`--review`)
 
-- PostgreSQL (primary target — RLS, CONCURRENTLY, partitioning)
-- MySQL / MariaDB
-- SQLite (dev/embedded)
-- MongoDB (document store guidance)
-- Redis / DynamoDB (key-value guidance)
-- TimescaleDB / InfluxDB (time-series guidance)
+The skill finds migration files, ORM model files, and schema definitions. Then it audits them
+against this checklist:
 
-## Supported ORMs / Schema Formats
+| Area | Checks |
+|------|--------|
+| Normalization | Repeating groups, transitive dependencies, duplicate data |
+| Indexes | Foreign key indexes, `WHERE` and `ORDER BY` columns, unique constraints, redundant indexes |
+| Data integrity | Foreign key constraints, `NOT NULL`, `CHECK` constraints, timestamps, consistent soft delete |
+| Security | PII encryption, password hashes, row-level security, audit logs |
+| Migrations | Versioned files, backward compatibility, `CONCURRENTLY` or batches on large tables, rollbacks |
+| Performance | N+1 risks, large text and blob fields, partitions for tables over 100M rows, connection pools |
+
+The report grades each finding by severity (Critical, High, Medium, Low). Each finding has a
+fix and, where it applies, migration SQL.
+
+## Supported database types
+
+| Type | Examples | Use it for |
+|------|----------|-----------|
+| Relational | PostgreSQL, MySQL, MariaDB, SQLite | Structured data, ACID transactions, complex queries |
+| Document | MongoDB | Variable schema, nested data, content |
+| Key-value | Redis, DynamoDB | Sessions, cache, leaderboards, feature flags |
+| Time-series | TimescaleDB, InfluxDB | Metrics, IoT, audit logs, events |
+| Search | Elasticsearch, Meilisearch | Full-text search, faceted filters |
+| Graph | Neo4j | Highly connected data such as social networks |
+| Vector | pgvector, Pinecone, Qdrant | Embedding similarity search, RAG pipelines |
+
+PostgreSQL is the primary target for row-level security, `CREATE INDEX CONCURRENTLY`, and
+partitions.
+
+## Supported ORMs and schema formats
 
 - Prisma (`schema.prisma`)
 - ActiveRecord / Rails (`schema.rb`, `db/migrate/`)
 - Django (`models.py`, `migrations/`)
-- TypeORM / Drizzle (entity files)
+- TypeORM (`*.entity.ts`, `ormconfig.*`, `data-source.ts`)
+- Drizzle (`drizzle.config.*`, `drizzle/**/*.ts`)
 - Raw SQL (`schema.sql`, numbered migration files)
 
-## Output Files
+## Output files
 
 | File | Contents |
 |------|----------|
-| `docs/database/schema.md` | Mermaid ERD + table definitions |
-| `db/migrations/<timestamp>_<name>.sql` | Forward migration SQL |
-| `db/migrations/<timestamp>_<name>_rollback.sql` | Rollback migration SQL |
+| `docs/database/schema.md` | Mermaid ERD and table definitions |
+| `db/migrations/` or `migrations/` | Forward and rollback migration files (SQL or ORM-specific) |
 
-## Migration Safety Rules
+## Migration safety rules
 
-- Add columns as nullable first; populate data; then apply NOT NULL
-- Never DROP or RENAME a column without a deprecation period
-- Use `CREATE INDEX CONCURRENTLY` on large tables to avoid locking
-- Every forward migration has a corresponding rollback migration
-- Breaking changes require a multi-step deployment process
+The skill follows these rules in each migration that it writes:
 
-## Integration with Other Skills
+- Add a column as nullable, fill the data, then add `NOT NULL`.
+- Do not drop or rename a column without a deprecation period.
+- Use `CREATE INDEX CONCURRENTLY` on large tables. This prevents table locks.
+- Write a rollback migration for each forward migration.
+- Split breaking changes into steps for zero-downtime deployment.
 
-- `/architecture-design` — use after `/database-design` to document the full system architecture
-- `/full-security-review` — run after schema design to review for security vulnerabilities
-- `/api-design` — design REST or GraphQL APIs on top of the schema
+> **CAUTION:** Review each generated migration before you run it on a shared or production
+> database. Test the rollback migration in a staging database first.
 
-## ERD Format
+## Integration with other skills
 
-This skill uses [Mermaid](https://mermaid.js.org/) `erDiagram` syntax, which renders in GitHub, GitLab, Notion, and most modern documentation tools.
+| Slash command | Use it |
+|---------------|--------|
+| `/architecture-design` | After `/database-design`, to document the full system |
+| `/full-security-review` | After the schema design, to find security vulnerabilities |
+| `/api-design` | To design REST or GraphQL APIs on top of the schema |
+
+## ERD format
+
+The skill uses the [Mermaid](https://mermaid.js.org/) `erDiagram` syntax. GitHub, GitLab,
+Notion, and most documentation tools render it.
+
+## Installation
+
+Add this repository as a marketplace in `~/.claude/settings.json`, then enable the plugin:
+
+```json
+{
+  "enabledPlugins": {
+    "database-design@claude-skills-marketplace": true
+  }
+}
+```
